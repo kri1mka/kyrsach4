@@ -26,7 +26,8 @@
             android:layout_height="50dp"
             android:hint="Телефон или адрес эл. почты"
             android:background="@drawable/rounded_text_fields"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:inputType="textEmailAddress|phone"/>
 
         <EditText
             android:id="@+id/password"
