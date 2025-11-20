@@ -33,6 +33,8 @@ android {
 
 dependencies {
 
+    implementation("com.google.mlkit:translate:17.0.1")
+    implementation("com.github.Infomaniak:android-pdfview:3.2.13")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -41,3 +43,4 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
+
