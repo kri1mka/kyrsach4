@@ -50,7 +50,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/circle_white"
-        android:text="🎨"
+        android:text="🏝️"
         android:gravity="center"
         android:textSize="30sp"
         app:layout_constraintTop_toBottomOf="@id/subtitle"
@@ -63,7 +63,7 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:background="@drawable/circle_white"
-        android:text="🥾"
+        android:text="🌍"
         android:gravity="center"
         android:textSize="32sp"
         app:layout_constraintTop_toBottomOf="@id/subtitle"
@@ -75,27 +75,79 @@
         android:id="@+id/circle3"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="92dp"
         android:background="@drawable/circle_white"
-        android:text="🍹"
         android:gravity="center"
+        android:text="🍹"
         android:textSize="32sp"
-        app:layout_constraintTop_toBottomOf="@id/circle1"
         app:layout_constraintStart_toEndOf="@id/circle1"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"/>
+        app:layout_constraintTop_toBottomOf="@id/circle1" />
 
     <TextView
         android:id="@+id/circle4"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/circle_white"
-        android:text="🏄"
+        android:text="🌞"
         android:gravity="center"
         android:textSize="30sp"
         app:layout_constraintTop_toBottomOf="@id/circle2"
         app:layout_constraintEnd_toStartOf="@id/circle2"
         android:layout_marginEnd="30dp"
         android:layout_marginTop="40dp"/>
+
+    <TextView
+        android:id="@+id/circle5"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="256dp"
+        android:background="@drawable/circle_white"
+        android:gravity="center"
+        android:text="👭🏻"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@id/circle2"
+        app:layout_constraintTop_toBottomOf="@id/circle2" />
+
+    <TextView
+        android:id="@+id/circle6"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="256dp"
+        android:background="@drawable/circle_white"
+        android:gravity="center"
+        android:text="⛱️"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@id/circle2"
+        app:layout_constraintTop_toBottomOf="@id/circle2" />
+
+    <TextView
+        android:id="@+id/circle7"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="256dp"
+        android:background="@drawable/circle_white"
+        android:gravity="center"
+        android:text="✈️"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@id/circle2"
+        app:layout_constraintTop_toBottomOf="@id/circle2" />
+
+    <TextView
+        android:id="@+id/circle8"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="256dp"
+        android:background="@drawable/circle_white"
+        android:gravity="center"
+        android:text="📸"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@id/circle2"
+        app:layout_constraintTop_toBottomOf="@id/circle2" />
 
     <Button
         android:id="@+id/btnStart"
