@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/backtomainBtn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:src="@android:drawable/ic_menu_revert"/>
+
+    <!-- Верхняя панель: выбор языков -->
+    <LinearLayout
+        android:id="@+id/langPanel"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:layout_marginVertical="50dp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:background="@drawable/lang_panel_bg">
+
+        <TextView
+            android:id="@+id/langFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="РУССКИЙ"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/swapBtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@android:drawable/ic_menu_rotate"/>
+
+        <TextView
+            android:id="@+id/langTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="АНГЛИЙСКИЙ"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Поле ввода -->
+    <EditText
+        android:id="@+id/inputText"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:hint="Начните писать текст"
+        android:layout_below="@id/langPanel"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:background="@drawable/textbox_bg"
+        android:gravity="top" />
+
+    <!-- Поле результата -->
+    <TextView
+        android:id="@+id/outputText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/inputText"
+        android:layout_marginTop="20dp"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:background="@drawable/textbox_bg"
+        android:minHeight="120dp"
+        android:gravity="top" />
+
+    <!-- Кнопка -->
+    <Button
+        android:id="@+id/btnTranslate"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="Перевести"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="#D6D0D0" />
+
+</RelativeLayout>

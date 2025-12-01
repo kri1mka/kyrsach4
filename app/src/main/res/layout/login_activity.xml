@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вход"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:paddingBottom="24dp" />
+
+        <EditText
+            android:id="@+id/email_phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Телефон или адрес эл. почты"
+            android:background="@drawable/rounded_text_fields"
+            android:padding="12dp"
+            android:inputType="textEmailAddress|phone"/>
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Введите пароль"
+            android:inputType="textPassword"
+            android:background="@drawable/rounded_text_fields"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/forgot_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Забыли пароль?"
+            android:textColor="#4A75E0"
+            android:layout_gravity="end"
+            android:paddingTop="8dp"/>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Войти"
+            android:backgroundTint="#9CCBFF"
+            android:layout_marginTop="22dp"/>
+
+        <TextView
+            android:id="@+id/no_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="32dp"
+            android:text="У вас нет аккаунта? Зарегистрироваться"
+            android:textColor="#4A75E0" />
+
+    </LinearLayout>
+</ScrollView>

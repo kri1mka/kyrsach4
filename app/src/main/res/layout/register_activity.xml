@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title_reg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Регистрация"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:paddingBottom="24dp" />
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Имя пользователя"
+            android:background="@drawable/rounded_text_fields"
+            android:padding="15dp" />
+
+        <EditText
+            android:id="@+id/password_reg"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Пароль"
+            android:inputType="textPassword"
+            android:background="@drawable/rounded_text_fields"
+            android:padding="15dp"
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:id="@+id/gender"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Пол"
+            android:background="@drawable/rounded_text_fields"
+            android:padding="15dp"
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:id="@+id/birthdate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Дата рождения"
+            android:background="@drawable/rounded_text_fields"
+            android:padding="15dp"
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_text_fields"
+            android:hint="О себе"
+            android:padding="15dp" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_height="50dp"
+            android:text="Далее"
+            android:backgroundTint="#9CCBFF"
+            android:layout_marginTop="30dp" />
+
+    </LinearLayout>
+</ScrollView>

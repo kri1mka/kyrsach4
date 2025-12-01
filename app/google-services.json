@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1003600184902",
+    "firebase_url": "https://travelmatesdatabase-default-rtdb.firebaseio.com",
+    "project_id": "travelmatesdatabase",
+    "storage_bucket": "travelmatesdatabase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003600184902:android:a6489c162dc290c4aa2c47",
+        "android_client_info": {
+          "package_name": "com.example.kyrsach4"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8fe3UG0xUt-EEPnlVMAkajPRX41dXe9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
