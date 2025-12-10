@@ -19,6 +19,7 @@ public class ImageGridAdapterKs extends RecyclerView.Adapter<ImageGridAdapterKs.
         this.inflater = LayoutInflater.from(context);
     }
 
+
     @NonNull
     @Override
     public ImageGridAdapterKs.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

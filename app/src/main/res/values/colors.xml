@@ -2,4 +2,26 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Основной цвет приложения -->
+    <color name="primary">#435986</color>
+    <color name="primary_dark">#35476D</color>
+    <color name="primary_light">#5A6F9C</color>
+    <color name="accent">#FF9800</color>
+
+    <!-- Текстовые цвета -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Фоновые цвета -->
+    <color name="background">#FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="divider">#E0E0E0</color>
+
+    <!-- Системные цвета -->
+    <color name="error">#F44336</color>
+    <color name="success">#4CAF50</color>
+    <color name="warning">#FFC107</color>
+
 </resources>

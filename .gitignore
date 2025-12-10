@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/src/main/res/drawable/a.JPG
+/.idea/AndroidProjectSystem.xml
+/.idea/runConfigurations.xml
+/app/src/main/res/drawable/sample_photo1.png

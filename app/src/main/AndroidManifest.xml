@@ -25,6 +25,9 @@
         <activity android:name=".HelpActivity" />
         <activity android:name=".PdfActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".ChangeDataActivityKs"/>
+        <activity android:name=".CreatePublicationActivityKs"/>
+
 
     </application>
 
