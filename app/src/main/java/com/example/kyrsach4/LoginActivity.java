@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Вы вошли успешно!", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+        Intent intent = new Intent(LoginActivity.this, TranslatorActivity.class);
         startActivity(intent);
         finish();
     }
