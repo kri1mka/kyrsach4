@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private long randomSpeed() {
-        return (long) (5000 + Math.random() * 5000); // 5–10 сек
+        return (long) (5000 + Math.random() * 5000);
     }
 
     private void addFloatingEffect(View view) {
-        float wiggle = (float) (Math.random() * 40 - 20); // колебания ±20dp
+        float wiggle = (float) (Math.random() * 40 - 20);
 
         view.animate()
                 .translationYBy(wiggle)
@@ -94,6 +94,4 @@ public class MainActivity extends AppCompatActivity {
 
         addFloatingEffect(view);
     }
-
-
 }
