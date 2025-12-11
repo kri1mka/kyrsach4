@@ -21,12 +21,32 @@
             android:paddingBottom="24dp" />
 
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Имя пользователя"
+            android:hint="Имя"
             android:background="@drawable/rounded_text_fields"
             android:padding="15dp" />
+
+        <EditText
+            android:id="@+id/surname"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_text_fields"
+            android:hint="Фамилия"
+            android:padding="15dp"
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_text_fields"
+            android:hint="Почта"
+            android:padding="15dp"
+            android:layout_marginTop="15dp" />
+
+
 
         <EditText
             android:id="@+id/password_reg"
@@ -71,7 +91,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_height="50dp"
             android:text="Далее"
-            android:backgroundTint="#9CCBFF"
+            android:backgroundTint="#435986"
             android:layout_marginTop="30dp" />
 
     </LinearLayout>
