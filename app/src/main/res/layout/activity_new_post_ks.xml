@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="#000">
+
+    <!-- AppBar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        android:background="#111"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIcon="@android:drawable/btn_dialog"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
+
+            <TextView
+                android:id="@+id/tv_title_center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Новая публикация"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_next"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingEnd="12dp"
+                android:text="Далее"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ImageView
+        android:id="@+id/iv_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Selected image"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:src="@drawable/a"
+        android:background="#000"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:id="@+id/bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:padding="8dp"
+        android:background="#CC000000"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/tv_recent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Недавние"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:paddingBottom="6dp"
+            android:textSize="14sp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_thumbnails"
+            android:layout_width="match_parent"
+            android:layout_height="116dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:padding="4dp">
+
+            <Button
+                android:id="@+id/btn_publication"
+                android:layout_width="2dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_left"
+                android:text="ПУБЛИКАЦИЯ"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_trip"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="44dp"
+                android:text="ПОЕЗДКА"
+                android:textAllCaps="false"
+                android:background="@drawable/button_right"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

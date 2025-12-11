@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CircleImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="ButtonKsStyle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="DialogButtonStyle" parent="Widget.MaterialComponents.Button">
+        <!-- Скругление -->
+        <item name="shapeAppearance">@style/DialogButtonShape</item>
+
+        <!-- Цвет текста -->
+        <item name="android:textColor">#FFFFFF</item>
+
+        <!-- Самое главное: цвет кнопки -->
+        <item name="backgroundTint">#435986</item>
+
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
+    <style name="DialogButtonShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="CustomAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/DialogShape</item>
+        <item name="materialButtonStyle">@style/DialogButtonStyle</item>
+        <item name="android:background">@drawable/dialog_bg_ks</item>
+    </style>
+
+    <style name="DialogShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+</resources>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Шапка с кнопкой назад и заголовком -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@android:color/white">
+
+            <!-- Кнопка назад -->
+            <ImageView
+                android:id="@+id/buttonBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:padding="8dp"
+                android:src="@drawable/icons8_arri_re_24"
+                android:tint="#435986" />
+
+            <!-- Заголовок по центру -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Изменить информацию"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+        <!-- Горизонтальная линия -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginTop="4dp" />
+
+        <!-- Основной контент -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Контейнер для фото и аватара -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="32dp">
+
+                <!-- Два круга для фото и аватара -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Фото профиля -->
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp">
+
+                        <FrameLayout
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:background="@drawable/circle_bg">
+
+                            <ImageView
+                                android:id="@+id/imageProfilePhoto"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/circle_bg"
+                                app:shapeAppearanceOverlay="@style/CircleImage" />
+                        </FrameLayout>
+                    </FrameLayout>
+
+                    <!-- Аватар -->
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp">
+
+                        <FrameLayout
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:background="@drawable/circle_bg">
+
+                            <ImageView
+                                android:id="@+id/imageProfileAvatar"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/circle_bg"
+                                app:shapeAppearanceOverlay="@style/CircleImage" />
+                        </FrameLayout>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- Текст "Изменить фото или аватар" -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Изменить фото или аватар"
+                    android:textSize="14sp"
+                    android:textColor="#435986"
+                    android:textStyle="normal"
+                    android:padding="8dp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Имя и фамилия в строку -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/editName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:hint="Имя"
+                    android:inputType="textPersonName"
+                    android:background="@drawable/edittext_bg"
+                    android:padding="16dp"
+                    android:minHeight="52dp"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/editSurname"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:hint="Фамилия"
+                    android:inputType="textPersonName"
+                    android:background="@drawable/edittext_bg"
+                    android:padding="16dp"
+                    android:minHeight="52dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Дата рождения -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/editBirthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Дата рождения"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:background="@drawable/edittext_bg"
+                    android:padding="16dp"
+                    android:minHeight="52dp"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    android:tint="#435986" />
+            </RelativeLayout>
+
+            <!-- Город и страна -->
+            <EditText
+                android:id="@+id/editCityCountry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:hint="Город, Страна"
+                android:background="@drawable/edittext_bg"
+                android:padding="16dp"
+                android:minHeight="52dp"
+                android:textSize="16sp" />
+
+            <!-- Вид путешествий -->
+            <EditText
+                android:id="@+id/editTravelType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:hint="Вид путешествий"
+                android:background="@drawable/edittext_bg"
+                android:padding="16dp"
+                android:minHeight="52dp"
+                android:textSize="16sp"
+                android:minLines="2"
+                android:maxLines="3" />
+
+            <!-- Кнопки с отступами -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="16dp"
+                android:paddingBottom="24dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonCancel"
+                    style="@style/ButtonKsStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/button_outline_ks"
+                    android:text="Отмена"
+                    android:textColor="#435986"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonSave"
+                    style="@style/ButtonKsStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/button_ks"
+                    android:text="Сохранить"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
