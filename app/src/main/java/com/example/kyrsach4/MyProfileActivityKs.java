@@ -5,61 +5,84 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.kyrsach4.adapters.PostAdapterKs;
+import com.example.kyrsach4.adapters.TripsAdapterKs;
+import com.example.kyrsach4.entity.PostCard;
+import com.example.kyrsach4.entity.TripCard;
+import com.example.kyrsach4.entity.UserProfile;
+import com.example.kyrsach4.network.ApiClient;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyProfileActivityKs extends AppCompatActivity {
 
     // Элементы интерфейса
     private TextView userName, userAge, userLocation, userTripType;
     private TextView numbOfPublications, numbOfFriends;
-    private RecyclerView rvPhotos, rvTrips;
-    private TextView tvEmptyPhotos, tvEmptyTrips;
-    private View indicatorPhotos, indicatorTrips;
-    private ImageButton bthPhotos, btnTrips;
+    private LinearLayout postsContainer;
+    private RecyclerView rvTrips;
+    private TextView tvEmptyPosts, tvEmptyTrips;
+    private View indicatorPosts, indicatorTrips;
+    private ImageButton btnPosts, btnTrips;
 
     // Навигация
     private ImageButton btnBack, btnBell;
     private ImageButton navHome, navChat, navHeart, navTranslate, navProfile;
 
-    // Данные
-    private List<Integer> photoList;
-    private List<TripKs> tripList;
+    // Данные и адаптеры
+    private List<PostCard> postList = new ArrayList<>();
+    private List<TripCard> tripList = new ArrayList<>();
+    private TripsAdapterKs tripsAdapter;
+    private PostAdapterKs postAdapter;
+    private ImageView ivAvatar;
+
+    private int currentUserId = 1; // Замените на реальный ID пользователя
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // ВАЖНО: проверьте точное имя вашего XML файла!
         setContentView(R.layout.activity_my_pfofile_ks);
-        // Если вышеуказанное не работает, попробуйте:
-        // setContentView(R.layout.activity_my_pfofile_ks); // если такое имя
 
         // Инициализация элементов
         initViews();
 
-        // Проверка всех найденных элементов
-        checkViews();
+        // Получаем ID пользователя из SharedPreferences или Intent
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        currentUserId = prefs.getInt("userId", 1);
 
-        // Загрузка данных пользователя
+        // Инициализация адаптеров
+        tripsAdapter = new TripsAdapterKs(tripList);
+
+        rvTrips.setLayoutManager(new LinearLayoutManager(this));
+        rvTrips.setAdapter(tripsAdapter);
+
+        // Загрузка данных
         loadUserData();
-
-        // Настройка адаптеров
-        setupAdapters();
+        loadUserPosts();
+        loadUserTrips();
 
         // Установка обработчиков событий
         setupClickListeners();
 
-        // Изначально показываем фото
-        showPhotos();
+        // Изначально показываем посты
+        showPosts();
     }
 
     private void initViews() {
@@ -69,33 +92,24 @@ public class MyProfileActivityKs extends AppCompatActivity {
         userLocation = findViewById(R.id.user_location);
         userTripType = findViewById(R.id.type_of_trip);
         numbOfPublications = findViewById(R.id.numb_of_publications);
-        numbOfFriends = findViewById(R.id.numb_of_friends);
+        numbOfFriends = findViewById(R.id.tv_followers_count);
+        ivAvatar = findViewById(R.id.iv_avatar);
+
+        // Контейнеры контента
+        postsContainer = findViewById(R.id.posts_container);
+        rvTrips = findViewById(R.id.rv_trips);
+        tvEmptyPosts = findViewById(R.id.tv_empty_posts);
+        tvEmptyTrips = findViewById(R.id.tv_empty_trips);
+
+        // Индикаторы и кнопки переключения
+        indicatorPosts = findViewById(R.id.indicator_posts);
+        indicatorTrips = findViewById(R.id.indicator_trips);
+        btnPosts = findViewById(R.id.btn_posts);
+        btnTrips = findViewById(R.id.btn_trips);
 
         // Кнопки действий
         btnBack = findViewById(R.id.btn_back);
         btnBell = findViewById(R.id.btn_bell);
-        AppCompatButton btnChange = findViewById(R.id.btn_change);
-        btnChange.setOnClickListener(v ->
-                startActivity(new Intent(this, ChangeDataActivityKs.class))
-        );
-        AppCompatButton btnTravelHistory = findViewById(R.id.btn_travel_history);
-        btnTravelHistory.setOnClickListener(v ->
-                startActivity(new Intent(this, TravelHistoryActivityKs.class))
-        );
-        ImageButton btnAddImage = findViewById(R.id.btn_add_image);
-        btnAddImage.setOnClickListener(v ->
-                startActivity(new Intent(this, CreatePublicationActivityKs.class))
-        );
-
-        // Переключение контента
-        rvPhotos = findViewById(R.id.rv_photos);
-        rvTrips = findViewById(R.id.rv_trips);
-        tvEmptyPhotos = findViewById(R.id.tv_empty);
-        tvEmptyTrips = findViewById(R.id.tv_empty_trips);
-        indicatorPhotos = findViewById(R.id.indicator_photos);
-        indicatorTrips = findViewById(R.id.indicator_trips);
-        bthPhotos = findViewById(R.id.bth_photos);
-        btnTrips = findViewById(R.id.btn_trips);
 
         // Нижняя навигация
         navHome = findViewById(R.id.nav_home);
@@ -105,79 +119,114 @@ public class MyProfileActivityKs extends AppCompatActivity {
         navProfile = findViewById(R.id.nav_profile);
     }
 
-    private void checkViews() {
-        // Проверка обязательных элементов
-        if (rvPhotos == null) {
-            throw new RuntimeException("rv_photos не найден! Проверь XML и setContentView");
-        }
-
-        if (rvTrips == null) {
-            throw new RuntimeException("rv_trips не найден!");
-        }
-
-        if (userName == null) {
-            throw new RuntimeException("user_name не найден!");
-        }
-
-        // Можно добавить проверку других важных элементов
-    }
-
     private void loadUserData() {
-        // Загрузка данных из SharedPreferences (пример)
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        ApiClient.api.getUserProfile(currentUserId).enqueue(new Callback<UserProfile>() {
+            @Override
+            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    UserProfile user = response.body();
+                    updateUserUI(user);
+                } else {
+                    Toast.makeText(MyProfileActivityKs.this,
+                            "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        String name = prefs.getString("name", "Имя");
-        String surname = prefs.getString("surname", "Фамилия");
-        String age = prefs.getString("age", "возраст");
-        String location = prefs.getString("cityCountry", "город, страна");
-        String tripType = prefs.getString("travelType", "вид путешествия");
-
-        // Установка данных
-        userName.setText(name + " " + surname);
-        userAge.setText(age);
-        userLocation.setText(location);
-        userTripType.setText(tripType);
-
-        // Загрузка примерных данных для фото и поездок
-        photoList = getSamplePhotoList();
-        tripList = getSampleTripList();
-
-        // Обновление статистики (можно брать из реальных данных)
-        updateStats();
+            @Override
+            public void onFailure(Call<UserProfile> call, Throwable t) {
+                Toast.makeText(MyProfileActivityKs.this,
+                        "Ошибка сети: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void updateStats() {
-        // Здесь можно обновить статистику из реальных данных
-        // Например, из базы данных или API
-        int publicationsCount = photoList.size();
-        int friendsCount = 433; // Примерное значение
+    private void loadUserPosts() {
+        ApiClient.api.getUserPosts(currentUserId).enqueue(new Callback<List<PostCard>>() {
+            @Override
+            public void onResponse(Call<List<PostCard>> call, Response<List<PostCard>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    postList.clear();
+                    postList.addAll(response.body());
+                    updatePostsUI();
 
-        numbOfPublications.setText(String.valueOf(publicationsCount));
-        numbOfFriends.setText(String.valueOf(friendsCount));
+                    // Обновляем количество публикаций
+                    numbOfPublications.setText(String.valueOf(postList.size()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PostCard>> call, Throwable t) {
+                Toast.makeText(MyProfileActivityKs.this,
+                        "Ошибка загрузки постов", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void setupAdapters() {
-        // Установка LayoutManager (один раз!)
-        rvPhotos.setLayoutManager(new GridLayoutManager(this, 3));
-        rvTrips.setLayoutManager(new GridLayoutManager(this, 1));
+    private void loadUserTrips() {
+        ApiClient.api.getUserTrips(currentUserId).enqueue(new Callback<List<TripCard>>() {
+            @Override
+            public void onResponse(Call<List<TripCard>> call, Response<List<TripCard>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    tripList.clear();
+                    tripList.addAll(response.body());
+                    tripsAdapter.updateData(tripList);
 
-        // Создание адаптеров
-        ImageGridAdapterKs photoAdapter = new ImageGridAdapterKs(this, photoList);
-        rvPhotos.setAdapter(photoAdapter);
+                    // Показать/скрыть текст "нет поездок"
+                    tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
+                }
+            }
 
-        TripsAdapterKs tripsAdapter = new TripsAdapterKs(this, tripList);
-        rvTrips.setAdapter(tripsAdapter);
+            @Override
+            public void onFailure(Call<List<TripCard>> call, Throwable t) {
+                Toast.makeText(MyProfileActivityKs.this,
+                        "Ошибка загрузки поездок", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateUserUI(UserProfile user) {
+        userName.setText(user.getFullName() != null ? user.getFullName() : "Пользователь");
+        userAge.setText(user.getAge() != null ? user.getAge() + " лет" : "—");
+        userLocation.setText(user.getLocation() != null ? user.getLocation() : "—");
+        userTripType.setText(user.getTravelType() != null ? user.getTravelType() : "—");
+
+        if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
+            Glide.with(MyProfileActivityKs.this)
+                    .load(user.getPhoto())
+                    .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                    .into(ivAvatar);
+        } else {
+            ivAvatar.setImageResource(R.drawable.pngtreecat_default_avatar_5416936);
+        }
+    }
+
+
+
+    private void updatePostsUI() {
+        postsContainer.removeAllViews();
+
+        if (postList.isEmpty()) {
+            tvEmptyPosts.setVisibility(View.VISIBLE);
+            return;
+        }
+        tvEmptyPosts.setVisibility(View.GONE);
+
+        for (PostCard post : postList) {
+            View postView = getLayoutInflater().inflate(R.layout.item_post, postsContainer, false);
+
+            bindPost(postView, post);
+
+            postsContainer.addView(postView);
+        }
     }
 
     private void setupClickListeners() {
         // Кнопка назад
         btnBack.setOnClickListener(v -> finish());
 
-        // Кнопка меню/колокольчик
-        btnBell.setOnClickListener(v -> {
-            // Показать меню или уведомления
-            Toast.makeText(this, "Меню", Toast.LENGTH_SHORT).show();
-        });
+        // Переключение между постами и поездками
+        btnPosts.setOnClickListener(v -> showPosts());
+        btnTrips.setOnClickListener(v -> showTrips());
 
         // Кнопка "Изменить"
         findViewById(R.id.btn_change).setOnClickListener(v ->
@@ -194,32 +243,135 @@ public class MyProfileActivityKs extends AppCompatActivity {
                 startActivity(new Intent(this, CreatePublicationActivityKs.class))
         );
 
-        // Переключение между фото и поездками
-        bthPhotos.setOnClickListener(v -> showPhotos());
-        btnTrips.setOnClickListener(v -> showTrips());
-
-        // Нижняя навигация
+        // Настройка нижней навигации
         setupBottomNavigation();
     }
 
+    private void showPosts() {
+        // Обновление индикаторов
+        indicatorPosts.setVisibility(View.VISIBLE);
+        indicatorTrips.setVisibility(View.GONE);
+
+        // Обновляем цвет кнопок
+        btnPosts.setColorFilter(getResources().getColor(R.color.primary));
+        btnTrips.setColorFilter(getResources().getColor(R.color.text_hint));
+
+        // Показать посты
+        postsContainer.setVisibility(View.VISIBLE);
+        tvEmptyPosts.setVisibility(postList.isEmpty() ? View.VISIBLE : View.GONE);
+
+        // Скрыть поездки
+        rvTrips.setVisibility(View.GONE);
+        tvEmptyTrips.setVisibility(View.GONE);
+    }
+
+    private void bindPost(View postView, PostCard post) {
+        TextView username = postView.findViewById(R.id.post_username);
+        TextView location = postView.findViewById(R.id.post_location);
+        ImageView image = postView.findViewById(R.id.post_image);
+        TextView description = postView.findViewById(R.id.post_description);
+        TextView likesCount = postView.findViewById(R.id.likes_count);
+        TextView postDate = postView.findViewById(R.id.post_date);
+        ImageView postAvatar = postView.findViewById(R.id.post_avatar);
+        ImageButton btnLike = postView.findViewById(R.id.btn_like);
+
+        // Данные
+        username.setText(post.getUserName() != null ? post.getUserName() : "Пользователь");
+        location.setText(post.getLocation() != null ? post.getLocation() : "");
+        description.setText(post.getDescription() != null ? post.getDescription() : "");
+        int likes = post.getLikesCount() != null ? post.getLikesCount() : 0;
+        likesCount.setText(String.valueOf(likes));
+
+        // Фото поста
+        if (post.getPhotoIt() != null && !post.getPhotoIt().isEmpty()) {
+            String photoUrl = post.getPhotoIt().replaceAll("\\s+", "%20").trim();
+            Glide.with(this)
+                    .load(photoUrl)
+                    .placeholder(R.drawable.sample_photo1)
+                    .into(image);
+        } else {
+            image.setImageResource(R.drawable.sample_photo1);
+        }
+
+        // Дата
+        if (post.getCreatedAt() != null && !post.getCreatedAt().isEmpty()) {
+            try {
+                String cleaned = post.getCreatedAt().replaceAll("\\s+", " ").trim();
+                SimpleDateFormat serverFormat = new SimpleDateFormat("MMM dd, yyyy, h:mm:ss a", Locale.ENGLISH);
+                SimpleDateFormat displayFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+                postDate.setText(displayFormat.format(serverFormat.parse(cleaned)));
+            } catch (Exception e) {
+                postDate.setText("Только что");
+            }
+        } else {
+            postDate.setText("Только что");
+        }
+
+        // Аватарка пользователя
+        if (post.getPhoto() != null && !post.getPhoto().isEmpty()) {
+            Glide.with(this)
+                    .load(post.getPhoto())
+                    .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                    .into(postAvatar);
+        } else {
+            postAvatar.setImageResource(R.drawable.pngtreecat_default_avatar_5416936);
+        }
+
+        // Инициализация лайка
+        updateLikeUI(post.isLiked(), btnLike);
+        btnLike.setOnClickListener(v -> {
+            if (!post.isLiked()) {
+                post.setLiked(true);
+                post.setLikesCount(likes + 1);
+            } else {
+                post.setLiked(false);
+                post.setLikesCount(likes);
+            }
+            likesCount.setText(String.valueOf(post.getLikesCount()));
+            updateLikeUI(post.isLiked(), btnLike);
+        });
+    }
+
+    private void updateLikeUI(boolean liked, ImageButton btnLike) {
+        if (liked) {
+            btnLike.setImageResource(R.drawable.icons8_aime_rempli_24);
+            btnLike.setColorFilter(getResources().getColor(R.color.error));
+        } else {
+            btnLike.setImageResource(R.drawable.icons8_aime_rempli_24);
+            btnLike.setColorFilter(getResources().getColor(R.color.text_primary));
+        }
+    }
+
+    private void showTrips() {
+        indicatorPosts.setVisibility(View.GONE);
+        indicatorTrips.setVisibility(View.VISIBLE);
+
+        btnPosts.setColorFilter(getResources().getColor(R.color.text_hint));
+        btnTrips.setColorFilter(getResources().getColor(R.color.primary));
+
+        rvTrips.setVisibility(View.VISIBLE);
+        postsContainer.setVisibility(View.GONE);
+
+        tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
+        tvEmptyPosts.setVisibility(View.GONE);
+    }
+
+
     private void setupBottomNavigation() {
         navHome.setOnClickListener(v -> {
-            // Переход на главную
-            Toast.makeText(this, "Главная", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
         });
 
         navChat.setOnClickListener(v -> {
-            // Переход в чаты
-            Toast.makeText(this, "Чаты", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Чат", Toast.LENGTH_SHORT).show();
         });
 
         navHeart.setOnClickListener(v -> {
-            // Переход в избранное
-            Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Свапы", Toast.LENGTH_SHORT).show();
         });
 
         navTranslate.setOnClickListener(v -> {
-            // Перевод
             Toast.makeText(this, "Перевод", Toast.LENGTH_SHORT).show();
         });
 
@@ -229,53 +381,12 @@ public class MyProfileActivityKs extends AppCompatActivity {
         });
     }
 
-    private void showPhotos() {
-        // Обновление индикаторов
-        indicatorPhotos.setVisibility(View.VISIBLE);
-        indicatorTrips.setVisibility(View.GONE);
-
-        // Показать фото
-        rvPhotos.setVisibility(View.VISIBLE);
-        tvEmptyPhotos.setVisibility(photoList.isEmpty() ? View.VISIBLE : View.GONE);
-
-        // Скрыть поездки
-        rvTrips.setVisibility(View.GONE);
-        tvEmptyTrips.setVisibility(View.GONE);
-    }
-
-    private void showTrips() {
-        // Обновление индикаторов
-        indicatorPhotos.setVisibility(View.GONE);
-        indicatorTrips.setVisibility(View.VISIBLE);
-
-        // Показать поездки
-        rvTrips.setVisibility(View.VISIBLE);
-        tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
-
-        // Скрыть фото
-        rvPhotos.setVisibility(View.GONE);
-        tvEmptyPhotos.setVisibility(View.GONE);
-    }
-
-    private List<Integer> getSamplePhotoList() {
-        List<Integer> list = new ArrayList<>();
-        // Добавьте реальные ресурсы изображений
-        // list.add(R.drawable.photo1);
-        // list.add(R.drawable.photo2);
-        return list;
-    }
-
-    private List<TripKs> getSampleTripList() {
-        List<TripKs> list = new ArrayList<>();
-        // Добавьте реальные данные о поездках
-        // list.add(new TripKs("Париж", "Май 2023", R.drawable.paris));
-        return list;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         // Обновить данные при возвращении на экран
         loadUserData();
+        loadUserPosts();
+        loadUserTrips();
     }
 }

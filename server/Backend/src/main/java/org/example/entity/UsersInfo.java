@@ -1,80 +1,86 @@
 package org.example.entity;
 
+
 import java.util.Date;
+
 
 public class UsersInfo {
     private Integer id;
-    private Integer user_id;
-    private Date date_of_birth;
+    private Integer userId;
+    private Date dateOfBirth;
     private String sex;
     private Integer age;
     private String interests;
     private String about;
+    private String city;
+    private String travelType;
+    private String photo;
+
 
     public UsersInfo() {}
 
-    public UsersInfo(Integer user_id, Date date_of_birth, String sex, Integer age, String interests, String about) {
-        this.user_id = user_id;
-        this.date_of_birth = date_of_birth;
+
+    public UsersInfo(Integer userId, Date dateOfBirth, String sex, Integer age, String interests, String about, String city, String travelType,String photo) {
+        this.userId = userId;
+        this.dateOfBirth = dateOfBirth;
         this.sex = sex;
         this.age = age;
         this.interests = interests;
         this.about = about;
+        this.city = city;
+        this.travelType = travelType;
+        this.photo = photo;
     }
 
-    public Integer getId() {
-        return id;
+
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+
+
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
+
+
+    public Date getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(Date dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+
+    public String getSex() { return sex; }
+    public void setSex(String sex) { this.sex = sex; }
+
+
+    public Integer getAge() { return age; }
+    public void setAge(Integer age) { this.age = age; }
+
+
+    public String getInterests() { return interests; }
+    public void setInterests(String interests) { this.interests = interests; }
+
+
+    public String getAbout() { return about; }
+    public void setAbout(String about) { this.about = about; }
+
+    public String getCity() {
+        return city;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public String getTravelType() {
+        return travelType;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setTravelType(String travelType) {
+        this.travelType = travelType;
     }
 
-    public Date getDate_of_birth() {
-        return date_of_birth;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setDate_of_birth(Date date_of_birth) {
-        this.date_of_birth = date_of_birth;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public String getInterests() {
-        return interests;
-    }
-
-    public void setInterests(String interests) {
-        this.interests = interests;
-    }
-
-    public String getAbout() {
-        return about;
-    }
-
-    public void setAbout(String about) {
-        this.about = about;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }
