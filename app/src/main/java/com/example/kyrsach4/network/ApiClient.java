@@ -17,11 +17,11 @@ public class ApiClient {
 
     private static final String BASE_URL = "http://10.0.2.2:8080/Backend/";
 
-    private static final Retrofit retrofit = new Retrofit.Builder()
+    public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
 
-    public static final ServerApi api = retrofit.create(ServerApi.class);
+    public static final AuthApi authApi = ApiClient.retrofit.create(AuthApi.class);
 }

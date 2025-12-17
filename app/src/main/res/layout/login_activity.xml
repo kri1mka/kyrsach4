@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
+    android:background="@android:color/white"
     android:fillViewport="true">
 
     <LinearLayout
@@ -18,13 +19,14 @@
             android:text="Вход"
             android:textSize="34sp"
             android:textStyle="bold"
+            android:textColor="#435986"
             android:paddingBottom="24dp" />
 
         <EditText
             android:id="@+id/email_phone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Телефон или адрес эл. почты"
+            android:hint="Адрес эл. почты"
             android:background="@drawable/rounded_text_fields"
             android:padding="12dp"
             android:inputType="textEmailAddress|phone"/>
@@ -44,17 +46,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Забыли пароль?"
-            android:textColor="#4A75E0"
+            android:textColor="#435986"
             android:layout_gravity="end"
             android:paddingTop="8dp"/>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
             android:text="Войти"
-            android:backgroundTint="#9CCBFF"
-            android:layout_marginTop="22dp"/>
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#435986"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/button_round"/>
 
         <TextView
             android:id="@+id/no_account"
@@ -62,7 +67,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="32dp"
             android:text="У вас нет аккаунта? Зарегистрироваться"
-            android:textColor="#4A75E0" />
+            android:textColor="#435986" />
 
     </LinearLayout>
 </ScrollView>

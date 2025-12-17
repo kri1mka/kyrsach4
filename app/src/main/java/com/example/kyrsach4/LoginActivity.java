@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         String pass = password.getText().toString().trim();
 
         if (TextUtils.isEmpty(login)) {
-            emailPhone.setError("Введите телефон или email");
+            emailPhone.setError("Введите email");
             return;
         }
 
@@ -54,8 +54,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        if (!login.contains("@") && !login.matches("\\d{10,}")) {
-            emailPhone.setError("Введите корректный email или номер телефона");
+        if (!login.contains("@")) {
+            emailPhone.setError("Введите корректный email");
             return;
         }
 

@@ -15,7 +15,12 @@
         android:theme="@style/Theme.Kyrsach4"
         tools:targetApi="31">
         <activity
-            android:name=".ProfileActivityKs"
+            android:name=".HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home"
+            android:theme="@style/Theme.Kyrsach4.NoActionBar" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,10 +32,8 @@
         <activity android:name=".HelpActivity" />
         <activity android:name=".PdfActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".ChangeDataActivityKs"/>
-        <activity android:name=".CreatePublicationActivityKs"/>
-
-
+        <activity android:name=".ChangeDataActivityKs" />
+        <activity android:name=".CreatePublicationActivityKs" />
     </application>
 
 </manifest>
