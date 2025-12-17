@@ -11,7 +11,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:scaleType="centerCrop"
-
+        android:contentDescription="Avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -21,35 +21,48 @@
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Антон Франко"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="#313B50"
-        app:layout_constraintStart_toEndOf="@id/avatar"
-        app:layout_constraintTop_toTopOf="@id/avatar"
-        app:layout_constraintEnd_toStartOf="@id/messageBtn"
-        android:layout_marginStart="12dp"/>
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text=""
+    app:layout_constraintStart_toEndOf="@id/avatar"
+    app:layout_constraintTop_toTopOf="@id/avatar"
+    app:layout_constraintEnd_toStartOf="@id/messageBtn"
+    android:layout_marginStart="12dp"/>
 
     <!-- Страна -->
     <TextView
         android:id="@+id/country"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Беларусь"
         android:textSize="14sp"
         android:textColor="#748FA5"
-        app:layout_constraintStart_toStartOf="@id/name"
-        app:layout_constraintTop_toBottomOf="@id/name"/>
+        android:text=""
+    app:layout_constraintStart_toStartOf="@id/name"
+    app:layout_constraintTop_toBottomOf="@id/name"/>
 
-    <!-- Кнопка   android:background="@drawable/bg_message_btn" -->
-    <Button
-        android:id="@+id/messageBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:text="Сообщение"
-        android:textAllCaps="false"
+    <!-- Кнопка -->
 
+
+    <androidx.appcompat.widget.AppCompatButton
+    android:id="@+id/messageBtn"
+    style="@style/ButtonKsStyle"
+    android:layout_width="0dp"
+    android:layout_height="35dp"
+    android:layout_weight="1"
+    android:layout_marginStart="8dp"
+    android:background="@drawable/button_ks"
+    android:text="Сообщение"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAllCaps="false"
+        android:backgroundTint="#435986"/>
+
+        />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

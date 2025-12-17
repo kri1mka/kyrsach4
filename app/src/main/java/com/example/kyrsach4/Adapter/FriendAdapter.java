@@ -1,18 +1,25 @@
 package com.example.kyrsach4.Adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.load.engine.GlideException;
+import com.example.kyrsach4.R;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.kyrsach4.R;
 import com.example.kyrsach4.entity.Friend;
 
 import java.util.List;
@@ -39,15 +46,34 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
     public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
         Friend friend = friends.get(position);
 
+        // Устанавливаем текст
         holder.name.setText(friend.getFirstName() + " " + friend.getLastName());
         holder.country.setText(friend.getCountry());
 
-        // Загружаем картинку через Glide
-        String avatarUrl = "http://<ваш-сервер>/Backend/avatar?file=" + friend.getAvatarUrl();
+        // Формируем URL аватара из базы данных
+        String avatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + friend.getAvatarUrl();
+
+        // Загружаем картинку с Glide
         Glide.with(context)
                 .load(avatarUrl)
+
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.e("GLIDE", "Ошибка загрузки: " + e);
+                        return false; // false позволяет Glide показать error-картинку
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d("GLIDE", "Картинка загружена");
+                        return false; // false позволяет Glide установить Drawable в ImageView
+                    }
+                })
                 .into(holder.avatar);
     }
+
+
 
     @Override
     public int getItemCount() {

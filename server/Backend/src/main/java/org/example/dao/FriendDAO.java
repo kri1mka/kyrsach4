@@ -14,7 +14,7 @@ public class FriendDAO {
     public List<Friend> findAll() {
         List<Friend> friends = new ArrayList<>();
 
-        String sql = "SELECT id, first_name, last_name, country, avatar_url FROM friends";
+        String sql = "SELECT id, firstName, lastName, country, avatarUrl FROM friends";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -23,10 +23,10 @@ public class FriendDAO {
             while (rs.next()) {
                 Friend friend = new Friend(
                         rs.getInt("id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
                         rs.getString("country"),
-                        rs.getString("avatar_url")
+                        rs.getString("avatarUrl")
                 );
                 friends.add(friend);
             }

@@ -2,6 +2,7 @@ package com.example.kyrsach4;
 
 import android.os.Bundle;
 import android.widget.Toast;
+import android.util.Log; // ← ОБЯЗАТЕЛЬНО добавить
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +29,9 @@ public class FriendsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends); // ваш layout с RecyclerView
+        setContentView(R.layout.activity_friends);
+
+        Log.e("FRIENDS", "onCreate FriendsActivity");
 
         recyclerView = findViewById(R.id.friendsRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -39,7 +42,7 @@ public class FriendsActivity extends AppCompatActivity {
     private void loadFriendsFromServer() {
         new Thread(() -> {
             try {
-                URL url = new URL("http://10.0.2.2:8080/Backend/friends"); // 10.0.2.2 для эмулятора
+                URL url = new URL("http://10.0.2.2:8080/Backend/friends");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
 
@@ -47,6 +50,8 @@ public class FriendsActivity extends AppCompatActivity {
                 String json = new BufferedReader(new InputStreamReader(is))
                         .lines()
                         .collect(Collectors.joining("\n"));
+
+                Log.d("FRIENDS", json);
 
                 Gson gson = new Gson();
                 Friend[] friendArray = gson.fromJson(json, Friend[].class);
@@ -59,7 +64,9 @@ public class FriendsActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Ошибка загрузки друзей", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Ошибка загрузки друзей", Toast.LENGTH_SHORT).show()
+                );
             }
         }).start();
     }
