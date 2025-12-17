@@ -11,6 +11,7 @@ import java.util.List;
 
 
 public class UserDAO {
+    private final Connection conn;
 
 
     private static final String INSERT = "INSERT INTO Users (name, surname, email, phone_number, password) VALUES (?, ?, ?, ?, ?)";
