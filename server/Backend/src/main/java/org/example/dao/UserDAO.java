@@ -8,12 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
+    private final Connection conn;
 
+    public UserDAO(Connection conn) {
+        this.conn = conn;
+    }
     private static final String INSERT = "INSERT INTO Users (email, password, name, surname, phone_number) VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT * FROM Users WHERE id = ?";
     private static final String FIND_ALL = "SELECT * FROM Users";
     private static final String UPDATE = "UPDATE Users SET email=?, password=?, name=?, surname=?, phone_number=? WHERE id=?";
     private static final String DELETE = "DELETE FROM Users WHERE id=?";
+
 
     public void save(User user) {
         try (Connection conn = DBConnection.getConnection();
@@ -115,4 +120,29 @@ public class UserDAO {
             throw new RuntimeException("Ошибка удаления пользователя", e);
         }
     }
+
+    public User findByEmail(String email) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE email = ?")) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+                u.setName(rs.getString("name"));
+                u.setSurname(rs.getString("surname"));
+                u.setPhone_number(rs.getString("phone_number"));
+                return u;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка поиска пользователя по email", e);
+        }
+        return null;
+    }
+
 }
