@@ -1,0 +1,37 @@
+package org.example.entity;
+
+import java.sql.Timestamp;
+
+public class Message {
+    private int id;
+    private int fromUserId;
+    private int toUserId;
+    private String message;
+    private Timestamp createdAt;
+
+    private String firstName; // имя отправителя
+    private String lastName;  // фамилия отправителя
+    private String avatarUrl;
+
+    public Message(int id, int fromUserId, int toUserId, String message, Timestamp createdAt,
+                   String firstName, String lastName,  String avatarUrl) {
+        this.id = id;
+        this.fromUserId = fromUserId;
+        this.toUserId = toUserId;
+        this.message = message;
+        this.createdAt = createdAt;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.avatarUrl = avatarUrl;
+
+    }
+
+    public int getId() { return id; }
+    public int getFromUserId() { return fromUserId; }
+    public int getToUserId() { return toUserId; }
+    public String getMessage() { return message; }
+    public Timestamp getCreatedAt() { return createdAt; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public String getAvatarUrl() { return avatarUrl; }
+}
