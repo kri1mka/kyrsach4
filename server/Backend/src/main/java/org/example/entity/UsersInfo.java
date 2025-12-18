@@ -13,12 +13,12 @@ public class UsersInfo {
 
     public UsersInfo() {}
 
-    public UsersInfo(int id, int user_id, Date date_of_birth, String sex, int age, String interests, String about) {
+    public UsersInfo(int id, int userId, Date dateOfBirth, String sex, int age, String interests, String about) {
         this.id = id;
-        this.userId = user_id;
+        this.userId = userId;
         this.sex = sex;
         this.age = age;
-        this.dateOfBirth = date_of_birth;
+        this.dateOfBirth = dateOfBirth;
         this.about = about;
         this.interests = interests;
     }
@@ -35,16 +35,16 @@ public class UsersInfo {
         return userId;
     }
 
-    public void setUserId(Integer user_id) {
-        this.userId = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public java.sql.Date getDateOfBirth() {
         return (java.sql.Date) dateOfBirth;
     }
 
-    public void setDateOfBirth(Date date_of_birth) {
-        this.dateOfBirth = date_of_birth;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getSex() {

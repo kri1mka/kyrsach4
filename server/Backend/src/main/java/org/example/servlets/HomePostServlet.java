@@ -10,8 +10,9 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+
 @WebServlet("/posts")
-public class PostServlet extends HttpServlet {
+public class HomePostServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
