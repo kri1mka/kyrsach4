@@ -13,6 +13,9 @@ import java.util.List;
 public class UserDAO {
     private final Connection conn;
 
+    public UserDAO() {
+        this.conn = DBConnection.getConnection();
+    }
 
     private static final String INSERT = "INSERT INTO Users (name, surname, email, phone_number, password) VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT id, name, surname, email, phone_number FROM Users WHERE id = ?";

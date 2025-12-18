@@ -76,11 +76,11 @@ public class UsersInfo {
         this.travelType = travelType;
     }
 
-    public String getPhoto() {
+    public String getAvatarUrl() {
         return  avatarUrl;
     }
 
-    public void setPhoto(String photo) {
-        this. avatarUrl = photo;
+    public void setAvatarUrl(String avatarUrl) {
+        this. avatarUrl = avatarUrl;
     }
 }
