@@ -28,6 +28,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private Context context;
     private List<Message> messages;
 
+    // Интерфейс для клика
+    public interface OnItemClickListener {
+        void onItemClick(Message message);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     public MessageAdapter(Context context, List<Message> messages) {
         this.context = context;
         this.messages = messages;
@@ -56,24 +67,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         // Загружаем картинку с Glide
         Glide.with(context)
                 .load(avatarUrl)
-
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         Log.e("GLIDE", "Ошибка загрузки: " + e);
-                        return false; // false позволяет Glide показать error-картинку
+                        return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         Log.d("GLIDE", "Картинка загружена");
-                        return false; // false позволяет Glide установить Drawable в ImageView
+                        return false;
                     }
                 })
                 .into(holder.avatar);
+
+        // Обработчик клика
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(message);
+            }
+        });
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -90,10 +105,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             nameText = itemView.findViewById(R.id.nameText);
             timeText = itemView.findViewById(R.id.timeText);
             avatar = itemView.findViewById(R.id.avatar);
-
         }
     }
-
 
     public void updateList(List<Message> newList) {
         messages = newList;

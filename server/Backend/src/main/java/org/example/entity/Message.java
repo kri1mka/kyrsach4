@@ -27,11 +27,21 @@ public class Message {
     }
 
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
     public int getFromUserId() { return fromUserId; }
+    public void setFromUserId(int fromUserId) { this.fromUserId = fromUserId; }
     public int getToUserId() { return toUserId; }
+    public void setToUserId(int toUserId) { this.toUserId = toUserId; }
     public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
     public Timestamp getCreatedAt() { return createdAt; }
+
     public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
     public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
     public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
+
 }

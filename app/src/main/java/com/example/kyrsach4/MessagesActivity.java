@@ -1,5 +1,6 @@
 package com.example.kyrsach4;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -37,6 +38,9 @@ public class MessagesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_messages);
 
         recyclerView = findViewById(R.id.friendsRecycler);
@@ -79,6 +83,15 @@ public class MessagesActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     adapter = new MessageAdapter(this, allMessages);
                     recyclerView.setAdapter(adapter);
+
+                    // Обработка клика на сообщение
+                    adapter.setOnItemClickListener(message -> {
+                        Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
+                        intent.putExtra("firstName", message.getFirstName());
+                        intent.putExtra("lastName", message.getLastName());
+                        intent.putExtra("avatarUrl", message.getAvatarUrl());
+                        startActivity(intent);
+                    });
                 });
 
             } catch (Exception e) {
@@ -97,7 +110,6 @@ public class MessagesActivity extends AppCompatActivity {
         List<Message> filtered = new ArrayList<>();
 
         for (Message message : allMessages) {
-
             String firstName = message.getFirstName();
             String lastName = message.getLastName();
 
@@ -109,5 +121,4 @@ public class MessagesActivity extends AppCompatActivity {
 
         adapter.updateList(filtered);
     }
-
 }
