@@ -35,7 +35,8 @@
         <activity android:name=".ChangeDataActivityKs"/>
         <activity android:name=".CreatePublicationActivityKs"/>
         <activity android:name=".CreateTripActivityKs"/>
-
+        <activity android:name=".TripsActivity2" />
+        <activity android:name=".CreatePostDetailsActivityKs" />
 
     </application>
 

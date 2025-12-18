@@ -11,9 +11,9 @@ import java.sql.*;
 public class UsersInfoDAO {
 
 
-    private static final String INSERT = "INSERT INTO UsersInfo (user_id, date_of_birth, sex, age, interests, about, city, travel_type, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ? , ?)";
+    private static final String INSERT = "INSERT INTO UsersInfo (user_id, date_of_birth, sex, age, interests, about, city, travel_type, avatarUrl) VALUES (?, ?, ?, ?, ?, ?, ?, ? , ?)";
     private static final String FIND_BY_USER_ID = "SELECT * FROM UsersInfo WHERE user_id = ?";
-    private static final String UPDATE = "UPDATE UsersInfo SET date_of_birth=?, sex=?, age=?, interests=?, about=?, city=?, travel_type=?, photo=? WHERE id=?";
+    private static final String UPDATE = "UPDATE UsersInfo SET date_of_birth=?, sex=?, age=?, interests=?, about=?, city=?, travel_type=?, avatarUrl=? WHERE id=?";
 
 
     public UsersInfo findByUserId(int userId) {
@@ -85,7 +85,7 @@ public class UsersInfoDAO {
         info.setAbout(rs.getString("about"));
         info.setCity(rs.getString("city"));
         info.setTravelType(rs.getString("travel_type"));
-        info.setPhoto(rs.getString("photo"));
+        info.setPhoto(rs.getString("avatarUrl"));
         return info;
     }
 }

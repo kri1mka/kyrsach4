@@ -8,7 +8,6 @@ public class PostCard {
 
     private Integer id;
 
-    @SerializedName("user_id")
     private Integer userId;
 
     private String description;

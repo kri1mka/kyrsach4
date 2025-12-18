@@ -73,6 +73,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
         rvTrips.setLayoutManager(new LinearLayoutManager(this));
         rvTrips.setAdapter(tripsAdapter);
 
+
         // Загрузка данных
         loadUserData();
         loadUserPosts();
@@ -163,26 +164,45 @@ public class MyProfileActivityKs extends AppCompatActivity {
     }
 
     private void loadUserTrips() {
-        ApiClient.api.getUserTrips(currentUserId).enqueue(new Callback<List<TripCard>>() {
-            @Override
-            public void onResponse(Call<List<TripCard>> call, Response<List<TripCard>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    tripList.clear();
-                    tripList.addAll(response.body());
-                    tripsAdapter.updateData(tripList);
+        ApiClient.api.getUserTrips(currentUserId)
+                .enqueue(new Callback<List<TripCard>>() {
+                    @Override
+                    public void onResponse(Call<List<TripCard>> call, Response<List<TripCard>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
 
-                    // Показать/скрыть текст "нет поездок"
-                    tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
-                }
-            }
+                            tripList.clear();
 
-            @Override
-            public void onFailure(Call<List<TripCard>> call, Throwable t) {
-                Toast.makeText(MyProfileActivityKs.this,
-                        "Ошибка загрузки поездок", Toast.LENGTH_SHORT).show();
-            }
-        });
+                            long now = System.currentTimeMillis();
+
+                            for (TripCard trip : response.body()) {
+                                if (isFutureTrip(trip, now)) {
+                                    tripList.add(trip);
+                                }
+                            }
+
+                            tripsAdapter.updateData(tripList);
+                            tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<TripCard>> call, Throwable t) {
+                        Toast.makeText(MyProfileActivityKs.this,
+                                "Ошибка загрузки поездок", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+    private boolean isFutureTrip(TripCard trip, long now) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            long start = sdf.parse(trip.getStartDate()).getTime();
+            return start > now;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 
     private void updateUserUI(UserProfile user) {
         userName.setText(user.getFullName() != null ? user.getFullName() : "Пользователь");
@@ -235,7 +255,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
 
         // Кнопка "История поездок"
         findViewById(R.id.btn_travel_history).setOnClickListener(v ->
-                startActivity(new Intent(this, TravelHistoryActivityKs.class))
+                startActivity(new Intent(this, TripsActivity2.class))
         );
 
         // Кнопка добавления фото

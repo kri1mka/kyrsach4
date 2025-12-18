@@ -14,13 +14,13 @@ public class UsersInfo {
     private String about;
     private String city;
     private String travelType;
-    private String photo;
+    private String  avatarUrl;
 
 
     public UsersInfo() {}
 
 
-    public UsersInfo(Integer userId, Date dateOfBirth, String sex, Integer age, String interests, String about, String city, String travelType,String photo) {
+    public UsersInfo(Integer userId, Date dateOfBirth, String sex, Integer age, String interests, String about, String city, String travelType,String avatarUrl) {
         this.userId = userId;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
@@ -29,7 +29,7 @@ public class UsersInfo {
         this.about = about;
         this.city = city;
         this.travelType = travelType;
-        this.photo = photo;
+        this. avatarUrl =  avatarUrl;
     }
 
 
@@ -77,10 +77,10 @@ public class UsersInfo {
     }
 
     public String getPhoto() {
-        return photo;
+        return  avatarUrl;
     }
 
     public void setPhoto(String photo) {
-        this.photo = photo;
+        this. avatarUrl = photo;
     }
 }

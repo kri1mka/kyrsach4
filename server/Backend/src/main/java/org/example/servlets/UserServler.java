@@ -76,11 +76,11 @@ public class UserServler extends HttpServlet {
 
                 if (info.getPhoto() != null && !info.getPhoto().isEmpty()) {
                     result.put(
-                            "photo",
+                            "avatarUrl",
                             "http://10.0.2.2:8080/Backend/images/" + info.getPhoto()
                     );
                 } else {
-                    result.put("photo", null);
+                    result.put("avatarUrl", null);
                 }
             }
 
