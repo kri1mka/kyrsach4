@@ -6,6 +6,7 @@ import org.example.util.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +27,15 @@ public class MessageDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
+                Timestamp createdAt = rs.getTimestamp("created_at");
+
+
                 Message msg = new Message(
                         rs.getInt("id"),
                         rs.getInt("from_user_id"),
                         rs.getInt("to_user_id"),
                         rs.getString("message"),
-                        rs.getTimestamp("created_at"),
+                        createdAt,
                         rs.getString("firstName"),
                         rs.getString("lastName"),
                         rs.getString("avatarUrl") // теперь берём из UsersInfo

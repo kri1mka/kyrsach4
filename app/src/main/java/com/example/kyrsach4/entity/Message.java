@@ -1,6 +1,6 @@
 package com.example.kyrsach4.entity;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class Message {
     private int id;
@@ -57,9 +57,7 @@ public class Message {
         this.message = message;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
+
 
     public String getFirstName() {
         return firstName;
@@ -84,4 +82,9 @@ public class Message {
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
+
+    public String getCreatedAt() {
+        return createdAt.toString(); // вывод полной даты и времени
+    }
+
 }

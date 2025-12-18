@@ -9,6 +9,8 @@ public class Message {
     private String message;
     private Timestamp createdAt;
 
+    
+
     private String firstName; // имя отправителя
     private String lastName;  // фамилия отправителя
     private String avatarUrl;

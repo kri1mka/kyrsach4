@@ -24,6 +24,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Intent;
+
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -48,7 +50,10 @@ public class ChatActivity extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btn_back);
 
         btnBack.setOnClickListener(v -> {
-            finish(); // ← возвращает на MessageActivity
+            Intent intent = new Intent(ChatActivity.this, MessagesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
         });
 
         hideKeyboard();

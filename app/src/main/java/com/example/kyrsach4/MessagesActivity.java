@@ -24,7 +24,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MessagesActivity extends AppCompatActivity {
@@ -32,7 +34,7 @@ public class MessagesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessageAdapter adapter;
     private EditText searchEditText;
-
+    private int currentUserId = 1;
     private List<Message> allMessages = new ArrayList<>();
 
     @Override
@@ -80,17 +82,42 @@ public class MessagesActivity extends AppCompatActivity {
                 Message[] messagesArray = gson.fromJson(json, Message[].class);
                 allMessages = Arrays.asList(messagesArray);
 
+// Убираем дубликаты по имени
+                List<Message> uniqueMessages = new ArrayList<>();
+                Set<String> seenNames = new HashSet<>();
+
+                for (Message message : allMessages) {
+                    String fullName = message.getFirstName() + " " + message.getLastName();
+                    if (!seenNames.contains(fullName)) {
+                        uniqueMessages.add(message);
+                        seenNames.add(fullName);
+                    }
+                }
+
+// Сортировка по времени: новые сообщения вверху
+                uniqueMessages.sort((m1, m2) -> m2.getCreatedAt().compareTo(m1.getCreatedAt()));
+
+                allMessages = uniqueMessages;
+
+// Устанавливаем адаптер
                 runOnUiThread(() -> {
-                    adapter = new MessageAdapter(this, allMessages);
+                    adapter = new MessageAdapter(this, uniqueMessages);
                     recyclerView.setAdapter(adapter);
 
-                    // Обработка клика на сообщение
                     adapter.setOnItemClickListener(message -> {
+
+                        int otherUserId =
+                                message.getFromUserId() == currentUserId
+                                        ? message.getToUserId()
+                                        : message.getFromUserId();
+
                         Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
                         intent.putExtra("firstName", message.getFirstName());
                         intent.putExtra("lastName", message.getLastName());
                         intent.putExtra("avatarUrl", message.getAvatarUrl());
+                        intent.putExtra("otherUserId", otherUserId);
                         startActivity(intent);
+
                     });
                 });
 
@@ -108,17 +135,23 @@ public class MessagesActivity extends AppCompatActivity {
 
         String lowerQuery = query.toLowerCase();
         List<Message> filtered = new ArrayList<>();
+        Set<String> seenUsers = new HashSet<>(); // для уникальности
 
         for (Message message : allMessages) {
-            String firstName = message.getFirstName();
-            String lastName = message.getLastName();
+            String fullName = message.getFirstName() + " " + message.getLastName();
 
-            if ((firstName != null && firstName.toLowerCase().startsWith(lowerQuery)) ||
-                    (lastName != null && lastName.toLowerCase().startsWith(lowerQuery))) {
-                filtered.add(message);
+            if ((message.getFirstName() != null && message.getFirstName().toLowerCase().startsWith(lowerQuery)) ||
+                    (message.getLastName() != null && message.getLastName().toLowerCase().startsWith(lowerQuery))) {
+
+                // проверяем, выводился ли этот пользователь ранее
+                if (!seenUsers.contains(fullName)) {
+                    filtered.add(message);
+                    seenUsers.add(fullName);
+                }
             }
         }
 
         adapter.updateList(filtered);
     }
+
 }

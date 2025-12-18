@@ -14,11 +14,12 @@ public class FriendDAO {
     public List<Friend> findAll() {
         List<Friend> friends = new ArrayList<>();
 
-        // Теперь берем данные прямо из Friends
-        String sql = "SELECT f.id AS friend_id, f.user_id, f.country, f.avatarUrl, " +
-                "u.name AS firstName, u.surname AS lastName " +
+        // Берем данные из Friends + UsersInfo (имя/фамилия и avatarUrl)
+        String sql = "SELECT f.id AS friend_id, f.user_id, f.country, " +
+                "u.firstName, u.lastName, ui.avatarUrl " +
                 "FROM Friends f " +
-                "JOIN Users u ON f.user_id = u.id";
+                "JOIN Users u ON f.user_id = u.id " +
+                "JOIN UsersInfo ui ON f.user_id = ui.user_id";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -26,11 +27,11 @@ public class FriendDAO {
 
             while (rs.next()) {
                 Friend friend = new Friend(
-                        rs.getInt("friend_id"),           // id в таблице Friends
-                        rs.getString("firstName"),        // имя пользователя из Users
-                        rs.getString("lastName"),         // фамилия пользователя из Users
-                        rs.getString("country"),          // страна из Friends
-                        rs.getString("avatarUrl")         // аватар из Friends
+                        rs.getInt("friend_id"),         // id в таблице Friends
+                        rs.getString("firstName"),      // имя пользователя из Users
+                        rs.getString("lastName"),       // фамилия пользователя из Users
+                        rs.getString("country"),        // страна из Friends
+                        rs.getString("avatarUrl")       // аватар из UsersInfo
                 );
                 friends.add(friend);
             }

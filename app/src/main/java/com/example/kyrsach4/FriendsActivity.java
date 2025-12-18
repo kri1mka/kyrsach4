@@ -1,5 +1,6 @@
 package com.example.kyrsach4;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -48,17 +49,13 @@ public class FriendsActivity extends AppCompatActivity {
         // Добавляем TextWatcher для фильтрации
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filterFriends(s.toString());
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         loadFriendsFromServer();
@@ -82,11 +79,22 @@ public class FriendsActivity extends AppCompatActivity {
                 Friend[] friendArray = gson.fromJson(json, Friend[].class);
                 List<Friend> friendList = Arrays.asList(friendArray);
 
-                // Сохраняем полный список и ставим адаптер
                 runOnUiThread(() -> {
-                    allFriends = new ArrayList<>(friendList);  // сохраняем полный список
+                    allFriends = new ArrayList<>(friendList);
                     adapter = new FriendAdapter(this, new ArrayList<>(allFriends));
                     recyclerView.setAdapter(adapter);
+
+                    adapter.setOnItemClickListener(friend -> {
+                        Intent intent = new Intent(FriendsActivity.this, ChatActivity.class);
+
+                        intent.putExtra("firstName", friend.getFirstName());
+                        intent.putExtra("lastName", friend.getLastName());
+                        intent.putExtra("avatarUrl", friend.getAvatarUrl()); // если есть
+                        intent.putExtra("otherUserId", friend.getId());
+
+                        startActivity(intent);
+                    });
+
                 });
 
             } catch (Exception e) {
@@ -98,7 +106,6 @@ public class FriendsActivity extends AppCompatActivity {
         }).start();
     }
 
-    // Метод фильтрации по имени и фамилии (по началу слова)
     private void filterFriends(String query) {
         if (adapter == null) return;
 

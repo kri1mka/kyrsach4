@@ -8,10 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.sql.Timestamp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -22,6 +28,7 @@ import com.example.kyrsach4.R;
 import com.example.kyrsach4.entity.Message;
 
 import java.util.List;
+import java.util.Locale;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -58,13 +65,47 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         // Имя и фамилия
         holder.nameText.setText(message.getFirstName() + " " + message.getLastName());
 
-        // Дата/время
-        holder.timeText.setText(message.getCreatedAt().toString());
+        SimpleDateFormat input =
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+        SimpleDateFormat output =
+                new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        try {
+            Date messageDate = input.parse(message.getCreatedAt());
+
+            // Сегодняшняя дата (без времени)
+            SimpleDateFormat dayFormat =
+                    new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+
+            String messageDay = dayFormat.format(messageDate);
+            String todayDay = dayFormat.format(new Date());
+
+            // Вчера
+            Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+            String yesterdayDay = dayFormat.format(yesterday);
+
+            if (messageDay.equals(todayDay)) {
+                // сегодня → часы:минуты
+                holder.timeText.setText(output.format(messageDate));
+            } else if (messageDay.equals(yesterdayDay)) {
+                // вчера
+                holder.timeText.setText("вчера");
+            } else {
+                // старые сообщения — дата (по желанию)
+                SimpleDateFormat dateOnly =
+                        new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+                holder.timeText.setText(dateOnly.format(messageDate));
+            }
+
+        } catch (ParseException e) {
+            holder.timeText.setText("");
+        }
+
+
 
         // Аватар
         String avatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + message.getAvatarUrl();
-
-        // Загружаем картинку с Glide
         Glide.with(context)
                 .load(avatarUrl)
                 .listener(new RequestListener<Drawable>() {
