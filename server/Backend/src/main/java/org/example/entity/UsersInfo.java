@@ -3,23 +3,24 @@ package org.example.entity;
 import java.util.Date;
 
 public class UsersInfo {
-    private Integer id;
-    private Integer user_id;
-    private Date date_of_birth;
+    private int id;
+    private int userId;
+    private int age;
+    private Date dateOfBirth;
     private String sex;
-    private Integer age;
-    private String interests;
     private String about;
+    private String interests;
 
     public UsersInfo() {}
 
-    public UsersInfo(Integer user_id, Date date_of_birth, String sex, Integer age, String interests, String about) {
-        this.user_id = user_id;
-        this.date_of_birth = date_of_birth;
+    public UsersInfo(int id, int user_id, Date date_of_birth, String sex, int age, String interests, String about) {
+        this.id = id;
+        this.userId = user_id;
         this.sex = sex;
         this.age = age;
-        this.interests = interests;
+        this.dateOfBirth = date_of_birth;
         this.about = about;
+        this.interests = interests;
     }
 
     public Integer getId() {
@@ -30,20 +31,20 @@ public class UsersInfo {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer user_id) {
+        this.userId = user_id;
     }
 
-    public Date getDate_of_birth() {
-        return date_of_birth;
+    public java.sql.Date getDateOfBirth() {
+        return (java.sql.Date) dateOfBirth;
     }
 
-    public void setDate_of_birth(Date date_of_birth) {
-        this.date_of_birth = date_of_birth;
+    public void setDateOfBirth(Date date_of_birth) {
+        this.dateOfBirth = date_of_birth;
     }
 
     public String getSex() {

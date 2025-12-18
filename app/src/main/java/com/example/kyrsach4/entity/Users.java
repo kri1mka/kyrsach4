@@ -1,7 +1,10 @@
 package com.example.kyrsach4.entity;
 
 public class Users {
-    public Integer id;
+    public int id;
     public String name;
-    public String coach;
+    public String surname;
+    public String email;
+    public String password;
+    public String phone_number;
 }

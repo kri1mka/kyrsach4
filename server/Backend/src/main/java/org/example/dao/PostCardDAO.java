@@ -1,7 +1,7 @@
 package org.example.dao;
 
+import org.example.dto.PostDto;
 import org.example.entity.PostCard;
-import org.example.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,20 +9,38 @@ import java.util.List;
 
 public class PostCardDAO {
 
+    private final Connection conn;
+
+    public PostCardDAO(Connection conn) {
+        this.conn = conn;
+    }
+
     private static final String INSERT =
             "INSERT INTO PostCard (user_id, description, location, photo_it) VALUES (?, ?, ?, ?)";
 
-    private static final String FIND_BY_ID = "SELECT * FROM PostCard WHERE id = ?";
-    private static final String FIND_BY_USER = "SELECT * FROM PostCard WHERE user_id = ?";
-    private static final String FIND_LATEST = "SELECT * FROM PostCard ORDER BY created_at DESC LIMIT ?";
-    private static final String FIND_ALL = "SELECT * FROM PostCard";
+    private static final String FIND_BY_ID =
+            "SELECT * FROM PostCard WHERE id = ?";
+
+    private static final String FIND_BY_USER =
+            "SELECT * FROM PostCard WHERE user_id = ?";
+
+    private static final String FIND_LATEST =
+            "SELECT * FROM PostCard ORDER BY created_at DESC LIMIT ?";
+
+    private static final String FIND_ALL =
+            "SELECT * FROM PostCard ORDER BY created_at DESC";
+
     private static final String UPDATE =
             "UPDATE PostCard SET description=?, location=?, photo_it=? WHERE id=?";
-    private static final String DELETE = "DELETE FROM PostCard WHERE id=?";
+
+    private static final String DELETE =
+            "DELETE FROM PostCard WHERE id=?";
+
+    // ======================= CRUD =======================
 
     public void save(PostCard card) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, card.getUser_id());
             stmt.setString(2, card.getDescription());
@@ -31,8 +49,11 @@ public class PostCardDAO {
 
             stmt.executeUpdate();
 
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) card.setId(rs.getInt(1));
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    card.setId(rs.getInt(1));
+                }
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка сохранения PostCard", e);
@@ -40,13 +61,12 @@ public class PostCardDAO {
     }
 
     public PostCard findById(int id) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_BY_ID)) {
+        try (PreparedStatement stmt = conn.prepareStatement(FIND_BY_ID)) {
 
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) return map(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return map(rs);
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка поиска PostCard", e);
@@ -57,13 +77,12 @@ public class PostCardDAO {
     public List<PostCard> findByUserId(int userId) {
         List<PostCard> list = new ArrayList<>();
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_BY_USER)) {
+        try (PreparedStatement stmt = conn.prepareStatement(FIND_BY_USER)) {
 
             stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) list.add(map(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка поиска постов по user_id", e);
@@ -74,13 +93,12 @@ public class PostCardDAO {
     public List<PostCard> findLatest(int limit) {
         List<PostCard> list = new ArrayList<>();
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_LATEST)) {
+        try (PreparedStatement stmt = conn.prepareStatement(FIND_LATEST)) {
 
             stmt.setInt(1, limit);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) list.add(map(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка поиска последних постов", e);
@@ -91,8 +109,7 @@ public class PostCardDAO {
     public List<PostCard> findAll() {
         List<PostCard> list = new ArrayList<>();
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_ALL);
+        try (PreparedStatement stmt = conn.prepareStatement(FIND_ALL);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) list.add(map(rs));
@@ -104,8 +121,7 @@ public class PostCardDAO {
     }
 
     public void update(PostCard card) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
+        try (PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
 
             stmt.setString(1, card.getDescription());
             stmt.setString(2, card.getLocation());
@@ -120,8 +136,7 @@ public class PostCardDAO {
     }
 
     public void delete(int id) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(DELETE)) {
+        try (PreparedStatement stmt = conn.prepareStatement(DELETE)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -130,6 +145,48 @@ public class PostCardDAO {
             throw new RuntimeException("Ошибка удаления PostCard", e);
         }
     }
+
+    // ======================= FEED =======================
+
+    public List<PostDto> getFeed() {
+        List<PostDto> list = new ArrayList<>();
+
+        String sql = """
+            SELECT 
+                p.id,
+                p.description,
+                p.location,
+                p.created_at,
+                ph.photo_url AS photo_url,
+                CONCAT(u.name, ' ', u.surname) AS user_name
+            FROM PostCard p
+            JOIN Users u ON p.user_id = u.id
+            LEFT JOIN Photo ph ON p.photo_id = ph.id
+            ORDER BY p.created_at DESC
+        """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                PostDto dto = new PostDto();
+                dto.id = rs.getInt("id");
+                dto.description = rs.getString("description");
+                dto.location = rs.getString("location");
+                dto.createdAt = rs.getTimestamp("created_at").toString();
+                dto.photoUrl = rs.getString("photo_url");
+                dto.userName = rs.getString("user_name");
+                list.add(dto);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка загрузки ленты", e);
+        }
+
+        return list;
+    }
+
+    // ======================= MAPPER =======================
 
     private PostCard map(ResultSet rs) throws SQLException {
         PostCard card = new PostCard();

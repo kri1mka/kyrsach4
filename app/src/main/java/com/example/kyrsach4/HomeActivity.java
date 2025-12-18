@@ -1,42 +1,85 @@
 package com.example.kyrsach4;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
+import com.example.kyrsach4.Adapter.PostsAdapter;
+import com.example.kyrsach4.entity.Post;
+import com.example.kyrsach4.network.ApiClient;
 
-import com.example.kyrsach4.databinding.ActivityHomeBinding;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private ActivityHomeBinding binding;
+    private RecyclerView postsRecycler;
+    private PostsAdapter adapter;
+    private final List<Post> postList = new ArrayList<>();
+
+    ImageButton navHome, navChat, navHeart, navTranslate, navProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
 
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        initViews();
+        setupRecycler();
+        setupBottomNav();
+        loadPosts(); // 🔹 ЗАГРУЗКА С СЕРВЕРА
+    }
 
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
-        CollapsingToolbarLayout toolBarLayout = binding.toolbarLayout;
-        toolBarLayout.setTitle(getTitle());
+    private void initViews() {
+        postsRecycler = findViewById(R.id.postsRecycler);
 
-        FloatingActionButton fab = binding.fab;
-        fab.setOnClickListener(new View.OnClickListener() {
+        navHome = findViewById(R.id.nav_home);
+        navChat = findViewById(R.id.nav_chat);
+        navHeart = findViewById(R.id.nav_heart);
+        navTranslate = findViewById(R.id.nav_translate);
+        navProfile = findViewById(R.id.nav_profile);
+    }
+
+    private void setupRecycler() {
+        postsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PostsAdapter(this, postList);
+        postsRecycler.setAdapter(adapter);
+    }
+
+    private void loadPosts() {
+        ApiClient.serverApi.getPosts().enqueue(new Callback<List<Post>>() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show();
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    postList.clear();
+                    postList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(HomeActivity.this,
+                            "Ошибка загрузки постов", Toast.LENGTH_SHORT).show();
+                }
             }
+
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                Toast.makeText(HomeActivity.this,
+                        "Ошибка сети: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setupBottomNav() {
+        navTranslate.setOnClickListener(v -> {
+            startActivity(new Intent(this, TranslatorActivity.class));
         });
     }
 }

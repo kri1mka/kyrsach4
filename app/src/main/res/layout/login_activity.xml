@@ -29,7 +29,7 @@
             android:hint="Адрес эл. почты"
             android:background="@drawable/rounded_text_fields"
             android:padding="12dp"
-            android:inputType="textEmailAddress|phone"/>
+            android:inputType="textEmailAddress"/>
 
         <EditText
             android:id="@+id/password"

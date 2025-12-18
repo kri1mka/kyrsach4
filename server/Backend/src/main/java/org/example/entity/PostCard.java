@@ -66,4 +66,6 @@ public class PostCard {
     public void setPhoto_it(String photo_it) {
         this.photo_it = photo_it;
     }
+
+
 }

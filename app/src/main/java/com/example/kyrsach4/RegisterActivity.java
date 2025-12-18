@@ -3,20 +3,18 @@ package com.example.kyrsach4;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kyrsach4.network.ApiClient;
-import com.example.kyrsach4.network.AuthApi;
+import com.example.kyrsach4.network.AuthResponse;
+import com.example.kyrsach4.reqresp.RegisterRequest;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,82 +42,55 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void register() {
+        String emailStr = email.getText().toString().trim();
+        String nameStr = name.getText().toString().trim();
+        String surnameStr = surname.getText().toString().trim();
+        String passwordStr = password.getText().toString().trim();
+        String sexStr = gender.getText().toString().trim();
+        String aboutStr = about.getText().toString().trim();
 
-        String n = name.getText().toString().trim();
-        String s = surname.getText().toString().trim();
-        String e = email.getText().toString().trim();
-        String p = password.getText().toString().trim();
-        String g = gender.getText().toString().trim().toLowerCase();
-        String b = birthdate.getText().toString().trim();
-
-        // --- Проверка обязательных полей ---
-        if (n.isEmpty() || s.isEmpty() || e.isEmpty() || p.isEmpty()) {
+        if (nameStr.isEmpty() || surnameStr.isEmpty() || emailStr.isEmpty() || passwordStr.isEmpty()) {
             toast("Заполните обязательные поля");
             return;
         }
 
-        // --- Проверка email ---
-        if (!Patterns.EMAIL_ADDRESS.matcher(e).matches()) {
-            toast("Неверный формат почты");
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
+            toast("Неверный формат email");
             return;
         }
 
-        // --- Проверка пола ---
-        if (!(g.equals("woman") || g.equals("man"))) {
-            toast("Пол: муж или жен");
+        String birthInput = birthdate.getText().toString().trim();
+        String birthFormatted;
+        try {
+            Date date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(birthInput);
+            birthFormatted = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
+        } catch (Exception e) {
+            toast("Неверный формат даты: дд.MM.гггг");
             return;
         }
 
-        // --- Проверка даты ---
-        if (!isValidDate(b)) {
-            toast("Дата в формате дд.ММ.гггг");
-            return;
-        }
 
-        // --- Запрос к серверу ---
-        AuthApi api = ApiClient.retrofit.create(AuthApi.class);
-
-        api.register("register", n, s, e, null, p)
-                .enqueue(new Callback<Map<String, Object>>() {
-
+        ApiClient.serverApi.register(new RegisterRequest(nameStr, surnameStr, emailStr, passwordStr, sexStr, birthFormatted, aboutStr))
+                .enqueue(new Callback<AuthResponse>() {
                     @Override
-                    public void onResponse(Call<Map<String, Object>> call,
-                                           Response<Map<String, Object>> response) {
-
+                    public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                         if (response.isSuccessful()) {
-                            toast("Регистрация успешна");
-
-                            // 🔁 Переход на экран логина
-                            startActivity(new Intent(
-                                    RegisterActivity.this,
-                                    LoginActivity.class
-                            ));
-                            finish();
+                            Toast.makeText(RegisterActivity.this, "Registered", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                finish();
                         } else {
-                            toast("Пользователь с такой почтой уже существует");
+                            Toast.makeText(RegisterActivity.this, "Register failed: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<Map<String, Object>> call, Throwable t) {
-                        toast("Ошибка соединения с сервером");
+                    public void onFailure(Call<AuthResponse> call, Throwable t) {
+                        Toast.makeText(RegisterActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                });
+        });
     }
 
-    private boolean isValidDate(String date) {
-        SimpleDateFormat sdf =
-                new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        sdf.setLenient(false);
-        try {
-            sdf.parse(date);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    private void toast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    private void toast(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }
