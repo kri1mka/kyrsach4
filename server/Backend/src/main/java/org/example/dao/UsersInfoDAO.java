@@ -36,17 +36,15 @@ public class UsersInfoDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
 
-            // Порядок соответствует твоему stmt.set... при вставке
             stmt.setInt(1, info.getUserId());
             stmt.setDate(2, info.getDateOfBirth() != null ? new Date(info.getDateOfBirth().getTime()) : null);
             stmt.setString(3, info.getSex());
             stmt.setString(4, info.getCity());
             stmt.setString(5, info.getTravelType());
-            stmt.setString(6, info.getAvatarUrl()); // avatarUrl
+            stmt.setString(6, info.getAvatarUrl());
             stmt.setInt(7, info.getAge());
             stmt.setString(8, info.getInterests());
             stmt.setString(9, info.getAbout());
-            stmt.setInt(10, info.getId()); // assuming UPDATE по id
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -65,7 +63,7 @@ public class UsersInfoDAO {
         info.setAbout(rs.getString("about"));
         info.setCity(rs.getString("city"));
         info.setTravelType(rs.getString("travel_type"));
-        info.setAvatarUrl(rs.getString("avatarUrl")); // правильно связываем avatarUrl с полем photo
+        info.setAvatarUrl(rs.getString("avatarUrl"));
         return info;
     }
 
