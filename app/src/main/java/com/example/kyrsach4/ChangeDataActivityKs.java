@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,21 +13,30 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.bumptech.glide.Glide;
+import com.example.kyrsach4.dto.UpdateProfileRequest;
+import com.example.kyrsach4.entity.UserProfile;
+import com.example.kyrsach4.network.ApiClient;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import retrofit2.Call;
+
 public class ChangeDataActivityKs extends AppCompatActivity {
 
-    private ImageView buttonBack;
-    private ImageView imageProfilePhoto, imageProfileAvatar;
+    private ImageView buttonBack, imageProfilePhoto;
     private TextView textChangePhoto;
     private EditText editName, editSurname, editBirthday, editCityCountry, editTravelType;
     private AppCompatButton buttonSave, buttonCancel;
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
-    private ImageView selectedImageView;
+    private Uri selectedImageUri;
     private Calendar selectedDate;
+
+    private String originalName, originalSurname, originalLocation, originalTravelType, originalPhoto;
+    private Integer originalAge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +46,7 @@ public class ChangeDataActivityKs extends AppCompatActivity {
         // Инициализация элементов
         buttonBack = findViewById(R.id.buttonBack);
         imageProfilePhoto = findViewById(R.id.imageProfilePhoto);
-        imageProfileAvatar = findViewById(R.id.imageProfileAvatar);
+        textChangePhoto = findViewById(R.id.textChangePhoto);
         editName = findViewById(R.id.editName);
         editSurname = findViewById(R.id.editSurname);
         editBirthday = findViewById(R.id.editBirthday);
@@ -47,16 +55,10 @@ public class ChangeDataActivityKs extends AppCompatActivity {
         buttonSave = findViewById(R.id.buttonSave);
         buttonCancel = findViewById(R.id.buttonCancel);
 
-        // Инициализация календаря
         selectedDate = Calendar.getInstance();
 
-        // Настройка лаунчера для выбора фото
         setupImagePicker();
-
-        // Установка обработчиков событий
         setupClickListeners();
-
-        // Загрузка текущих данных пользователя (если есть)
         loadUserData();
     }
 
@@ -66,10 +68,9 @@ public class ChangeDataActivityKs extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
-                        if (selectedImageView != null && imageUri != null) {
-                            selectedImageView.setImageURI(imageUri);
-
-                            // Можно добавить обработку загрузки на сервер
+                        if (imageUri != null) {
+                            selectedImageUri = imageUri;
+                            imageProfilePhoto.setImageURI(imageUri);
                             Toast.makeText(this, "Фото изменено", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -78,35 +79,14 @@ public class ChangeDataActivityKs extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        // Кнопка назад
         buttonBack.setOnClickListener(v -> finish());
 
-        // Выбор фото профиля
-        imageProfilePhoto.setOnClickListener(v -> {
-            selectedImageView = imageProfilePhoto;
-            pickImage();
-        });
+        imageProfilePhoto.setOnClickListener(v -> pickImage());
+        textChangePhoto.setOnClickListener(v -> pickImage());
 
-        // Выбор аватара
-        imageProfileAvatar.setOnClickListener(v -> {
-            selectedImageView = imageProfileAvatar;
-            pickImage();
-        });
-
-        // Текст "Изменить фото или аватар"
-        textChangePhoto.setOnClickListener(v -> {
-            // Можно открыть диалог выбора что изменить
-            selectedImageView = imageProfilePhoto; // По умолчанию меняем основное фото
-            pickImage();
-        });
-
-        // Выбор даты рождения
         editBirthday.setOnClickListener(v -> showDatePicker());
 
-        // Кнопка Сохранить
         buttonSave.setOnClickListener(v -> saveData());
-
-        // Кнопка Отмена
         buttonCancel.setOnClickListener(v -> finish());
     }
 
@@ -126,148 +106,142 @@ public class ChangeDataActivityKs extends AppCompatActivity {
                 this,
                 (view, year1, month1, dayOfMonth) -> {
                     selectedDate.set(year1, month1, dayOfMonth);
-                    updateBirthdayText();
+                    int age = calculateAge(selectedDate);
+                    editBirthday.setText(age + " лет");
                 },
                 year, month, day
         );
 
-        // Установка максимальной даты (нельзя выбрать будущую дату)
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
 
-    private void updateBirthdayText() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        editBirthday.setText(sdf.format(selectedDate.getTime()));
+    private int calculateAge(Calendar birthDate) {
+        Calendar today = Calendar.getInstance();
+        int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+        if (today.get(Calendar.DAY_OF_YEAR) < birthDate.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+        return age;
     }
 
     private void saveData() {
-        // Получение данных из полей
+        UpdateProfileRequest request = new UpdateProfileRequest();
+        boolean hasAnyChanges = false;
+
         String name = editName.getText().toString().trim();
         String surname = editSurname.getText().toString().trim();
-        String birthday = editBirthday.getText().toString().trim();
-        String cityCountry = editCityCountry.getText().toString().trim();
+        String location = editCityCountry.getText().toString().trim();
         String travelType = editTravelType.getText().toString().trim();
 
-        // Валидация данных
-        if (name.isEmpty() || surname.isEmpty()) {
-            Toast.makeText(this, "Заполните имя и фамилию", Toast.LENGTH_SHORT).show();
+        if (!equalsSafe(name, originalName)) {
+            request.setName(name);
+            hasAnyChanges = true;
+        }
+        if (!equalsSafe(surname, originalSurname)) {
+            request.setSurname(surname);
+            hasAnyChanges = true;
+        }
+        if (!equalsSafe(location, originalLocation)) {
+            request.setLocation(location);
+            hasAnyChanges = true;
+        }
+        if (!equalsSafe(travelType, originalTravelType)) {
+            request.setTravelType(travelType);
+            hasAnyChanges = true;
+        }
+        if (selectedImageUri != null) {
+            request.setPhoto(selectedImageUri.toString());
+            hasAnyChanges = true;
+        }
+        if (selectedDate != null) {
+            int age = calculateAge(selectedDate);
+            if (originalAge == null || age != originalAge) {
+                request.setAge(String.valueOf(age));
+                hasAnyChanges = true;
+            }
+        }
+
+        if (!hasAnyChanges) {
+            Toast.makeText(this, "Вы ничего не изменили", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (birthday.isEmpty()) {
-            Toast.makeText(this, "Выберите дату рождения", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        int userId = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                .getInt("userId", 1);
 
-        // Здесь можно добавить сохранение данных:
-        // 1. В SharedPreferences для локального хранения
-        saveToSharedPreferences(name, surname, birthday, cityCountry, travelType);
+        ApiClient.api.updateProfile(userId, request).enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ChangeDataActivityKs.this, "Изменения сохранены", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(ChangeDataActivityKs.this, "Ошибка сервера: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
 
-        // 2. Отправка на сервер (если есть бэкенд)
-        // sendToServer(name, surname, birthday, cityCountry, travelType);
-
-        // Показать сообщение об успехе
-        Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show();
-
-        // Возвращаем результат (если нужно)
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("name", name);
-        resultIntent.putExtra("surname", surname);
-        setResult(RESULT_OK, resultIntent);
-
-        // Закрыть активность
-        finish();
-    }
-
-    private void saveToSharedPreferences(String name, String surname, String birthday,
-                                         String cityCountry, String travelType) {
-        // Пример сохранения в SharedPreferences
-        getSharedPreferences("UserPrefs", MODE_PRIVATE)
-                .edit()
-                .putString("name", name)
-                .putString("surname", surname)
-                .putString("birthday", birthday)
-                .putString("cityCountry", cityCountry)
-                .putString("travelType", travelType)
-                .apply();
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(ChangeDataActivityKs.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadUserData() {
-        // Загрузка сохраненных данных из SharedPreferences
-        String name = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("name", "");
-        String surname = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("surname", "");
-        String birthday = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("birthday", "");
-        String cityCountry = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("cityCountry", "");
-        String travelType = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("travelType", "");
+        int userId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getInt("userId", 1);
 
-        // Установка значений в поля
-        editName.setText(name);
-        editSurname.setText(surname);
-        editBirthday.setText(birthday);
-        editCityCountry.setText(cityCountry);
-        editTravelType.setText(travelType);
+        ApiClient.api.getUserProfile(userId).enqueue(new retrofit2.Callback<UserProfile>() {
+            @Override
+            public void onResponse(Call<UserProfile> call, retrofit2.Response<UserProfile> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    UserProfile user = response.body();
 
-        // Парсинг даты если она есть
-        if (!birthday.isEmpty()) {
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                selectedDate.setTime(sdf.parse(birthday));
-            } catch (Exception e) {
-                e.printStackTrace();
+                    originalName = user.getName();
+                    originalSurname = user.getSurname();
+                    originalLocation = user.getLocation();
+                    originalTravelType = user.getTravelType();
+                    originalPhoto = user.getPhoto();
+                    originalAge = user.getAge();
+
+                    editName.setText(originalName);
+                    editSurname.setText(originalSurname);
+                    editCityCountry.setText(originalLocation);
+                    editTravelType.setText(originalTravelType);
+                    if (originalAge != null) {
+                        editBirthday.setText(originalAge + " лет");
+                        selectedDate = Calendar.getInstance();
+                        selectedDate.add(Calendar.YEAR, -originalAge); // приближение
+                    }
+
+                    if (originalPhoto != null && !originalPhoto.isEmpty()) {
+                        Glide.with(ChangeDataActivityKs.this)
+                                .load(originalPhoto)
+                                .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                                .into(imageProfilePhoto);
+                    }
+                }
             }
-        }
+
+            @Override
+            public void onFailure(Call<UserProfile> call, Throwable t) {
+                Toast.makeText(ChangeDataActivityKs.this, "Ошибка загрузки профиля", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    // Дополнительные методы для работы с сервером
-    /*
-    private void sendToServer(String name, String surname, String birthday,
-                              String cityCountry, String travelType) {
-        // Создание объекта пользователя
-        UserData userData = new UserData(name, surname, birthday, cityCountry, travelType);
-
-        // Отправка на сервер через Retrofit/Volley
-        // ...
-    }
-
-    private class UserData {
-        private String name;
-        private String surname;
-        private String birthday;
-        private String cityCountry;
-        private String travelType;
-
-        public UserData(String name, String surname, String birthday,
-                       String cityCountry, String travelType) {
-            this.name = name;
-            this.surname = surname;
-            this.birthday = birthday;
-            this.cityCountry = cityCountry;
-            this.travelType = travelType;
-        }
-
-        // Getters and setters
-    }
-    */
-
-    @Override
-    public void onBackPressed() {
-        // Можно добавить проверку на изменения
-        if (hasChanges()) {
-            // Показать диалог подтверждения выхода
-            // ...
-        } else {
-            super.onBackPressed();
-        }
+    private boolean equalsSafe(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equals(b);
     }
 
     private boolean hasChanges() {
-        // Проверка, были ли изменения в полях
-        String currentName = editName.getText().toString().trim();
-        String currentSurname = editSurname.getText().toString().trim();
-        // ... и т.д.
-
-        // Сравнение с исходными данными
-        return !currentName.isEmpty() || !currentSurname.isEmpty();
+        return !equalsSafe(editName.getText().toString().trim(), originalName)
+                || !equalsSafe(editSurname.getText().toString().trim(), originalSurname)
+                || !equalsSafe(editCityCountry.getText().toString().trim(), originalLocation)
+                || !equalsSafe(editTravelType.getText().toString().trim(), originalTravelType)
+                || selectedImageUri != null
+                || (selectedDate != null && originalAge != null && calculateAge(selectedDate) != originalAge);
     }
 }

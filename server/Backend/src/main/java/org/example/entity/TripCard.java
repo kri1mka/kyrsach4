@@ -1,31 +1,40 @@
 package org.example.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TripCard {
+
     private Integer id;
-    private Integer user_id;
+    private Integer userId;
     private String location;
-    private Date start_date;
-    private Date end_date;
-    private Double price;
+    private Date startDate;
+    private Date endDate;
+    private BigDecimal price;
     private String type;
     private String description;
-    private Date created_at;
-    private String photo_it;
+    private Date createdAt;
+    private String photoIt;
 
-    public TripCard() {}
+    public TripCard() {
+    }
 
-    public TripCard(Integer user_id, String location, Date start_date, Date end_date, Double price,
-                    String type, String description, String photo_it) {
-        this.user_id = user_id;
+    public TripCard(Integer userId,
+                    String location,
+                    Date startDate,
+                    Date endDate,
+                    BigDecimal price,
+                    String type,
+                    String description,
+                    String photoIt) {
+        this.userId = userId;
         this.location = location;
-        this.start_date = start_date;
-        this.end_date = end_date;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.price = price;
         this.type = type;
         this.description = description;
-        this.photo_it = photo_it;
+        this.photoIt = photoIt;
     }
 
     public Integer getId() {
@@ -36,12 +45,12 @@ public class TripCard {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getLocation() {
@@ -52,27 +61,27 @@ public class TripCard {
         this.location = location;
     }
 
-    public Date getStart_date() {
-        return start_date;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(Date start_date) {
-        this.start_date = start_date;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getEnd_date() {
-        return end_date;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setEnd_date(Date end_date) {
-        this.end_date = end_date;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -92,19 +101,35 @@ public class TripCard {
         this.description = description;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getPhoto_it() {
-        return photo_it;
+    public String getPhotoIt() {
+        return photoIt;
     }
 
-    public void setPhoto_it(String photo_it) {
-        this.photo_it = photo_it;
+    public void setPhotoIt(String photoIt) {
+        this.photoIt = photoIt;
+    }
+
+    @Override
+    public String toString() {
+        return "TripCard{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", location='" + location + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", price=" + price +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", photoIt='" + photoIt + '\'' +
+                '}';
     }
 }

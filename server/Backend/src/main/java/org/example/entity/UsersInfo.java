@@ -10,6 +10,10 @@ public class UsersInfo {
     private String sex;
     private String about;
     private String interests;
+    private String city;
+    private String travelType;
+    private String avatarUrl;
+
 
     public UsersInfo() {}
 
@@ -77,5 +81,27 @@ public class UsersInfo {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+}
+
+    public void getAvatarUrl() {
+        return avatarUrl;
+    }
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public void getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void getTravelType() {
+        return travelType;
+    }
+    public void setTravelType(String travelType) {
+        this.travelType = travelType;
     }
 }

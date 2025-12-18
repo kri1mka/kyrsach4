@@ -4,9 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+
     <application
-        android:allowBackup="true"
         android:usesCleartextTraffic="true"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -33,9 +37,10 @@
         <activity android:name=".HelpActivity" />
         <activity android:name=".PdfActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".ChangeDataActivityKs" />
+        <activity android:name=".ChangeDataActivityKs"/>
+        <activity android:name=".CreatePublicationActivityKs"/>
+        <activity android:name=".CreateTripActivityKs"/>
         <activity android:name=".TranslatorActivity" />
-        <activity android:name=".CreatePublicationActivityKs" />
     </application>
 
 </manifest>

@@ -9,7 +9,6 @@ public class PostCard {
     private String location;
     private Date createdAt;
     private String photoIt;
-
     public PostCard() {}
 
     public PostCard(Integer user_id, String description, String location, String photo_it) {
@@ -18,11 +17,11 @@ public class PostCard {
         this.location = location;
         this.photoIt = photo_it;
     }
+    // Новое поле для полного имени пользователя
+    private String userName;
+    private Integer likesCount;
 
-    public Integer getId() {
-        return id;
-    }
-
+    public Integer getId() { return id; }
     public void setId(Integer id) {
         this.id = id;
     }
@@ -58,6 +57,13 @@ public class PostCard {
     public void setCreatedAt(Date created_at) {
         this.createdAt = created_at;
     }
+    // Геттер и сеттер для полного имени пользователя
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
+
+    public Integer getLikesCount() { return likesCount; }
+    public void setLikesCount(Integer likesCount) { this.likesCount = likesCount; }
 
     public String getPhotoIt() {
         return photoIt;
