@@ -6,52 +6,52 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.load.engine.GlideException;
-import com.example.kyrsach4.R;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.kyrsach4.entity.Friend;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.example.kyrsach4.R;
+import com.example.kyrsach4.entity.Message;
 
 import java.util.List;
 
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
-public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendViewHolder> {
-
-    private List<Friend> friends;
     private Context context;
+    private List<Message> messages;
 
-    public FriendAdapter(Context context, List<Friend> friends) {
+    public MessageAdapter(Context context, List<Message> messages) {
         this.context = context;
-        this.friends = friends;
+        this.messages = messages;
     }
 
     @NonNull
     @Override
-    public FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_friend, parent, false);
-        return new FriendViewHolder(view);
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_message, parent, false);
+        return new MessageViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
-        Friend friend = friends.get(position);
+    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+        Message message = messages.get(position);
 
-        // Устанавливаем текст
-        holder.name.setText(friend.getFirstName() + " " + friend.getLastName());
-        holder.country.setText(friend.getCountry());
+        // Имя и фамилия
+        holder.nameText.setText(message.getFirstName() + " " + message.getLastName());
 
-        // Формируем URL аватара из базы данных
-        String avatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + friend.getAvatarUrl();
+        // Дата/время
+        holder.timeText.setText(message.getCreatedAt().toString());
+
+        // Аватар
+        String avatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + message.getAvatarUrl();
 
         // Загружаем картинку с Glide
         Glide.with(context)
@@ -77,27 +77,26 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
 
     @Override
     public int getItemCount() {
-        return friends.size();
+        return messages.size();
     }
 
-    static class FriendViewHolder extends RecyclerView.ViewHolder {
+    public static class MessageViewHolder extends RecyclerView.ViewHolder {
+        TextView nameText;
+        TextView timeText;
         ImageView avatar;
-        TextView name, country;
-        Button messageBtn;
 
-        public FriendViewHolder(@NonNull View itemView) {
+        public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
+            nameText = itemView.findViewById(R.id.nameText);
+            timeText = itemView.findViewById(R.id.timeText);
             avatar = itemView.findViewById(R.id.avatar);
-            name = itemView.findViewById(R.id.name);
-            country = itemView.findViewById(R.id.country);
-            messageBtn = itemView.findViewById(R.id.messageBtn);
+
         }
     }
 
-    public void updateList(List<Friend> newList) {
-        friends.clear();
-        friends.addAll(newList);
+
+    public void updateList(List<Message> newList) {
+        messages = newList;
         notifyDataSetChanged();
     }
-
 }

@@ -1,19 +1,19 @@
 package com.example.kyrsach4;
 
 import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.Toast;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.kyrsach4.Adapter.FriendAdapter;
-import com.example.kyrsach4.entity.Friend;
+import com.example.kyrsach4.Adapter.MessageAdapter;
+import com.example.kyrsach4.entity.Message;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -26,48 +26,42 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FriendsActivity extends AppCompatActivity {
+public class MessagesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private List<Friend> allFriends = new ArrayList<>(); // полный список
-    private FriendAdapter adapter;
+    private MessageAdapter adapter;
     private EditText searchEditText;
+
+    private List<Message> allMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
-
-        Log.e("FRIENDS", "onCreate FriendsActivity");
+        setContentView(R.layout.activity_messages);
 
         recyclerView = findViewById(R.id.friendsRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         searchEditText = findViewById(R.id.searchEditText);
 
-        // Добавляем TextWatcher для фильтрации
         searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterFriends(s.toString());
+                filterMessages(s.toString());
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
+            @Override public void afterTextChanged(Editable s) {}
         });
 
-        loadFriendsFromServer();
+        loadMessagesFromServer();
     }
 
-    private void loadFriendsFromServer() {
+    private void loadMessagesFromServer() {
         new Thread(() -> {
             try {
-                URL url = new URL("http://10.0.2.2:8080/Backend/friends");
+                URL url = new URL("http://10.0.2.2:8080/Backend/messages");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
 
@@ -76,42 +70,44 @@ public class FriendsActivity extends AppCompatActivity {
                         .lines()
                         .collect(Collectors.joining("\n"));
 
-                Log.d("FRIENDS", json);
+                Log.d("MESSAGES", json);
 
                 Gson gson = new Gson();
-                Friend[] friendArray = gson.fromJson(json, Friend[].class);
-                List<Friend> friendList = Arrays.asList(friendArray);
+                Message[] messagesArray = gson.fromJson(json, Message[].class);
+                allMessages = Arrays.asList(messagesArray);
 
-                // Сохраняем полный список и ставим адаптер
                 runOnUiThread(() -> {
-                    allFriends = new ArrayList<>(friendList);  // сохраняем полный список
-                    adapter = new FriendAdapter(this, new ArrayList<>(allFriends));
+                    adapter = new MessageAdapter(this, allMessages);
                     recyclerView.setAdapter(adapter);
                 });
 
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() ->
-                        Toast.makeText(this, "Ошибка загрузки друзей", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Ошибка загрузки сообщений", Toast.LENGTH_SHORT).show()
                 );
             }
         }).start();
     }
 
-    // Метод фильтрации по имени и фамилии (по началу слова)
-    private void filterFriends(String query) {
+    private void filterMessages(String query) {
         if (adapter == null) return;
 
-        List<Friend> filteredList = new ArrayList<>();
         String lowerQuery = query.toLowerCase();
+        List<Message> filtered = new ArrayList<>();
 
-        for (Friend friend : allFriends) {
-            if (friend.getFirstName().toLowerCase().startsWith(lowerQuery) ||
-                    friend.getLastName().toLowerCase().startsWith(lowerQuery)) {
-                filteredList.add(friend);
+        for (Message message : allMessages) {
+
+            String firstName = message.getFirstName();
+            String lastName = message.getLastName();
+
+            if ((firstName != null && firstName.toLowerCase().startsWith(lowerQuery)) ||
+                    (lastName != null && lastName.toLowerCase().startsWith(lowerQuery))) {
+                filtered.add(message);
             }
         }
 
-        adapter.updateList(filteredList);
+        adapter.updateList(filtered);
     }
+
 }
