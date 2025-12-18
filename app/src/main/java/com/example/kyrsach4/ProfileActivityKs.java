@@ -23,6 +23,7 @@ import com.example.kyrsach4.entity.UserProfile;
 import com.example.kyrsach4.network.ApiClient;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -269,8 +270,27 @@ public class ProfileActivityKs extends AppCompatActivity {
             public void onResponse(Call<List<TripCard>> call, Response<List<TripCard>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<TripCard> trips = response.body();
-                    if (trips.isEmpty()) tvEmptyTrips.setVisibility(View.VISIBLE);
-                    tripsAdapter.updateData(trips);
+
+                    // Фильтруем поездки: оставляем только те, у которых endDate >= текущая дата
+                    long now = System.currentTimeMillis();
+                    List<TripCard> futureTrips = new ArrayList<>();
+                    for (TripCard trip : trips) {
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                            Date tripEnd = sdf.parse(trip.getEndDate());
+                            if (tripEnd != null && tripEnd.getTime() >= now) {
+                                futureTrips.add(trip);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (futureTrips.isEmpty()) {
+                        tvEmptyTrips.setVisibility(View.VISIBLE);
+                    }
+
+                    tripsAdapter.updateData(futureTrips);
                 }
             }
 
@@ -280,6 +300,7 @@ public class ProfileActivityKs extends AppCompatActivity {
             }
         });
     }
+
 
 
     private void loadUserProfile() {

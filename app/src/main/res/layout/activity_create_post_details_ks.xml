@@ -54,12 +54,12 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_publish"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_ks"
             android:text="Опубликовать"
-            android:textStyle="bold"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:background="@drawable/button_ks"
-            android:layout_marginTop="16dp"/>
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
