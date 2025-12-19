@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+
 
     <application
         android:usesCleartextTraffic="true"
@@ -20,16 +21,12 @@
         android:theme="@style/Theme.Kyrsach4"
         tools:targetApi="31">
         <activity
-<<<<<<< HEAD
             android:name=".HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.Kyrsach4.NoActionBar" />
         <activity
             android:name=".MainActivity"
-=======
-            android:name=".SwipeActivity"
->>>>>>> diana
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +42,9 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ChangeDataActivityKs"/>
         <activity android:name=".CreatePublicationActivityKs"/>
-        <activity android:name=".FriendsActivity"/>
+        <activity android:name=".CreatePostDetailsActivityKs"/>
+        <activity android:name=".CreateTripActivityKs"/>
+
         <activity
             android:name=".ChatActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>

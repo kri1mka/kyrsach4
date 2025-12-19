@@ -1,6 +1,7 @@
 package com.example.kyrsach4;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,8 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.kyrsach4.entity.PostCard;
 import com.example.kyrsach4.network.ApiClient;
+import com.example.kyrsach4.network.SessionStorage;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import okhttp3.MediaType;
@@ -29,8 +34,8 @@ public class CreatePostDetailsActivityKs extends AppCompatActivity {
     private EditText etLocation, etDescription;
     private Button btnPublish;
 
-    private String imagePath;
-    private int userId = 1; // потом брать из сессии
+    private Uri imageUri;
+    private Integer userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,57 +47,77 @@ public class CreatePostDetailsActivityKs extends AppCompatActivity {
         etDescription = findViewById(R.id.et_description);
         btnPublish = findViewById(R.id.btn_publish);
 
-        imagePath = getIntent().getStringExtra("image_path");
-
-        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-        if (imagePath == null) {
+        userId = SessionStorage.userId;
+        if (userId == null) {
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
-        // Показываем превью фото
-        Glide.with(this)
-                .load(new File(imagePath))
-                .into(ivPreview);
+        // Получаем выбранное фото
+        String imageUriString = getIntent().getStringExtra("image_uri");
+        if (imageUriString != null) {
+            imageUri = Uri.parse(imageUriString);
+            Glide.with(this)
+                    .load(imageUri)
+                    .into(ivPreview);
+        }
+
+        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         btnPublish.setOnClickListener(v -> uploadPhotoAndCreatePost());
     }
 
     private void uploadPhotoAndCreatePost() {
-        File file = new File(imagePath);
-
-        if (!file.exists()) {
+        if (imageUri == null) {
             Toast.makeText(this, "Файл не найден", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        RequestBody requestFile = RequestBody.create(file, MediaType.parse("image/*"));
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+        try {
+            File file = createTempFileFromUri(imageUri);
+            RequestBody requestFile = RequestBody.create(file, MediaType.parse("image/*"));
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-        // Загружаем фото на сервер
-        ApiClient.serverApi.uploadPostImage(body).enqueue(new Callback<Map<String, String>>() {
-            @Override
-            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    // Сервер возвращает только имя файла
-                    String fileName = response.body().get("fileName");
-                    if (fileName != null && !fileName.isEmpty()) {
-                        // Формируем полный URL
-                        String imageUrl = "http://10.0.2.2:8080/Backend/uploads/posts/" + fileName;
-                        createPost(imageUrl);
+            ApiClient.serverApi.uploadPostImage(body).enqueue(new Callback<Map<String, String>>() {
+                @Override
+                public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String fileName = response.body().get("fileName");
+                        if (fileName != null && !fileName.isEmpty()) {
+                            String imageUrl = fileName;
+                            createPost(imageUrl);
+                        } else {
+                            Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка загрузки фото", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка загрузки фото", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка сервера при загрузке фото", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка сервера при загрузке фото", Toast.LENGTH_SHORT).show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Map<String, String>> call, Throwable t) {
-                Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка сети: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                    Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка сети: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch (IOException e) {
+            Toast.makeText(this, "Ошибка чтения файла: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private File createTempFileFromUri(Uri uri) throws IOException {
+        InputStream is = getContentResolver().openInputStream(uri);
+        File tempFile = File.createTempFile("upload", ".jpg", getCacheDir());
+        try (FileOutputStream os = new FileOutputStream(tempFile)) {
+            byte[] buffer = new byte[4096];
+            int read;
+            while ((read = is.read(buffer)) != -1) {
+                os.write(buffer, 0, read);
             }
-        });
+        }
+        if (is != null) is.close();
+        return tempFile;
     }
 
     private void createPost(String imageUrl) {
@@ -108,8 +133,8 @@ public class CreatePostDetailsActivityKs extends AppCompatActivity {
         post.setUserId(userId);
         post.setLocation(location);
         post.setDescription(description);
-        post.setPhotoIt(imageUrl); // полный URL
-        // Создаем пост на сервере
+        post.setPhotoIt(imageUrl);
+
         ApiClient.serverApi.createPost(post).enqueue(new Callback<PostCard>() {
             @Override
             public void onResponse(Call<PostCard> call, Response<PostCard> response) {

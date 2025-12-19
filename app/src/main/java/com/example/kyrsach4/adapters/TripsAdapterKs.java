@@ -83,7 +83,6 @@ public class TripsAdapterKs extends RecyclerView.Adapter<TripsAdapterKs.ViewHold
             holder.tvDates.setText("Даты не указаны");
         }
 
-        // ✅ ФОТО
         if (trip.getPhotoIt() != null && !trip.getPhotoIt().isEmpty()) {
 
             Glide.with(holder.itemView.getContext())

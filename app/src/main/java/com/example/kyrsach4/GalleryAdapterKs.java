@@ -5,22 +5,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.io.File;
+
 import java.util.List;
 
 public class GalleryAdapterKs extends RecyclerView.Adapter<GalleryAdapterKs.ViewHolder> {
 
-    private final List<String> imagePaths;
+    private final List<String> imageUris;
     private final OnImageClickListener listener;
 
     public interface OnImageClickListener {
-        void onImageClick(String imagePath);
+        void onImageClick(String imageUri);
     }
 
-    public GalleryAdapterKs(List<String> imagePaths, OnImageClickListener listener) {
-        this.imagePaths = imagePaths;
+    public GalleryAdapterKs(List<String> imageUris, OnImageClickListener listener) {
+        this.imageUris = imageUris;
         this.listener = listener;
     }
 
@@ -34,19 +35,19 @@ public class GalleryAdapterKs extends RecyclerView.Adapter<GalleryAdapterKs.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String imagePath = imagePaths.get(position);
-        holder.imageView.setImageURI(Uri.fromFile(new File(imagePath)));
+        String imageUri = imageUris.get(position);
+        holder.imageView.setImageURI(Uri.parse(imageUri));
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onImageClick(imagePath);
+                listener.onImageClick(imageUri);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return imagePaths.size();
+        return imageUris.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

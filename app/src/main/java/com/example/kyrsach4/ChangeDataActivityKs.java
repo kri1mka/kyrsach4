@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.kyrsach4.dto.UpdateProfileRequest;
 import com.example.kyrsach4.entity.UserProfile;
 import com.example.kyrsach4.network.ApiClient;
+import com.example.kyrsach4.network.SessionStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,13 +38,27 @@ public class ChangeDataActivityKs extends AppCompatActivity {
 
     private String originalName, originalSurname, originalLocation, originalTravelType, originalPhoto;
     private Integer originalAge;
+    private Integer userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_data_ks);
 
-        // Инициализация элементов
+        userId = SessionStorage.userId;
+
+        if (userId == null) {
+            userId = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                    .getInt("userId", -1);
+
+            if (userId == -1) {
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return;
+            }
+
+            SessionStorage.userId = userId;
+        }
         buttonBack = findViewById(R.id.buttonBack);
         imageProfilePhoto = findViewById(R.id.imageProfilePhoto);
         textChangePhoto = findViewById(R.id.textChangePhoto);
@@ -166,8 +181,14 @@ public class ChangeDataActivityKs extends AppCompatActivity {
             return;
         }
 
-        int userId = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-                .getInt("userId", 1);
+        Integer userId = SessionStorage.userId;
+
+        if (userId == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
 
         ApiClient.serverApi.updateProfile(userId, request).enqueue(new retrofit2.Callback<Void>() {
             @Override
@@ -176,7 +197,7 @@ public class ChangeDataActivityKs extends AppCompatActivity {
                     Toast.makeText(ChangeDataActivityKs.this, "Изменения сохранены", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(ChangeDataActivityKs.this, "Ошибка сервера: " + response.code(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChangeDataActivityKs.this, " " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -188,10 +209,9 @@ public class ChangeDataActivityKs extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        int userId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getInt("userId", 1);
-
-        ApiClient.serverApi.getUserProfile(userId).enqueue(new retrofit2.Callback<UserProfile>() {
-            @Override
+        ApiClient.serverApi.getUserProfile(userId)
+                .enqueue(new retrofit2.Callback<UserProfile>(){
+        @Override
             public void onResponse(Call<UserProfile> call, retrofit2.Response<UserProfile> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     UserProfile user = response.body();

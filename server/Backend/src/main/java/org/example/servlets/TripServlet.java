@@ -51,7 +51,7 @@ public class TripServlet extends HttpServlet {
     // GET /api/users/trips/{userId} — получить все поездки пользователя
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getPathInfo(); // "/{userId}"
+        String pathInfo = req.getPathInfo(); //
         if (pathInfo == null || pathInfo.equals("/")) {
             writeJson(resp, 400, Map.of("error", "User ID is required"));
             return;
@@ -67,8 +67,6 @@ public class TripServlet extends HttpServlet {
 
         try {
             List<TripCard> trips = tripDAO.findByUserId(userId);
-
-            // Формируем URL фото только если photoIt не начинается с http
             for (TripCard trip : trips) {
                 if (trip.getPhotoIt() != null && !trip.getPhotoIt().isEmpty()) {
                     String photo = trip.getPhotoIt();
@@ -91,12 +89,11 @@ public class TripServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            // --- Получаем файл ---
             Part filePart = req.getPart("file");
             String originalName = null;
             if (filePart != null && filePart.getSize() > 0) {
                 originalName = filePart.getSubmittedFileName();
-                File uploadDir = new File("uploads/trips/");
+                File uploadDir = new File("images/");
                 if (!uploadDir.exists()) uploadDir.mkdirs();
                 File file = new File(uploadDir, originalName);
                 try (InputStream in = filePart.getInputStream()) {
@@ -104,7 +101,6 @@ public class TripServlet extends HttpServlet {
                 }
             }
 
-            // --- Получаем остальные параметры ---
             int userId = Integer.parseInt(req.getParameter("user_id"));
             String location = req.getParameter("location");
             java.sql.Date startDate = java.sql.Date.valueOf(req.getParameter("startDate"));
@@ -113,7 +109,7 @@ public class TripServlet extends HttpServlet {
             BigDecimal price = new BigDecimal(req.getParameter("price"));
             String description = req.getParameter("description");
 
-            // --- Создаём TripCard и сохраняем ---
+
             TripCard trip = new TripCard();
             trip.setUserId(userId);
             trip.setLocation(location);
@@ -122,11 +118,11 @@ public class TripServlet extends HttpServlet {
             trip.setType(type);
             trip.setPrice(price);
             trip.setDescription(description);
-            trip.setPhotoIt(originalName); // только имя файла
+            trip.setPhotoIt(originalName);
 
             tripDAO.save(trip);
 
-            // --- Формируем JSON для ответа ---
+            // Формируем JSON для ответа
             Map<String, Object> result = Map.of(
                     "id", trip.getId(),
                     "userId", trip.getUserId(),
