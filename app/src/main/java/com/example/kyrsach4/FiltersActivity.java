@@ -5,15 +5,13 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class FiltersActivity extends AppCompatActivity {
 
-    private RadioGroup radioGender;
-    private Spinner spinnerCountry, spinnerDirection, spinnerTripType;
+    private Spinner spinnerGender, spinnerCountry, spinnerDirection, spinnerTripType;
     private EditText editAgeFrom, editAgeTo;
     private Button btnApply;
 
@@ -22,7 +20,7 @@ public class FiltersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filters);
 
-        radioGender = findViewById(R.id.radioGender);
+        spinnerGender = findViewById(R.id.spinnerGender);
         spinnerCountry = findViewById(R.id.spinnerCountry);
         spinnerDirection = findViewById(R.id.spinnerDirection);
         spinnerTripType = findViewById(R.id.spinnerTripType);
@@ -30,6 +28,13 @@ public class FiltersActivity extends AppCompatActivity {
         editAgeTo = findViewById(R.id.editAgeTo);
         btnApply = findViewById(R.id.btnApplyFilters);
 
+        // Пол как Spinner
+        String[] genders = {"Любой", "Мужской", "Женский"};
+        ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genders);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGender.setAdapter(genderAdapter);
+
+        // Остальные Spinner
         String[] countries = {"Любая", "France", "Japan", "Italy"};
         String[] directions = {"Любое", "Romantic", "Adventure", "Business"};
         String[] tripTypes = {"Любой", "Tour", "Cruise", "Excursion"};
@@ -42,13 +47,10 @@ public class FiltersActivity extends AppCompatActivity {
     }
 
     private void applyFilters() {
-        // Пол (может быть пустым)
-        String gender = "";
-        int checkedId = radioGender.getCheckedRadioButtonId();
-        if (checkedId == R.id.radioMale) {
-            gender = "Man";
-        } else if (checkedId == R.id.radioFemale) {
-            gender = "Woman";
+        // Получаем выбранный пол
+        String gender = spinnerGender.getSelectedItem().toString();
+        if (gender.equals("Любой")) {
+            gender = "";
         }
 
         String country = spinnerCountry.getSelectedItem().toString();

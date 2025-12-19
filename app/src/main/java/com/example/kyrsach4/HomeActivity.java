@@ -32,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
     Integer userId = SessionStorage.userId;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +59,21 @@ public class HomeActivity extends AppCompatActivity {
         navProfile = findViewById(R.id.nav_profile);
 
         btnHelp = findViewById(R.id.btnHelp);
+
+        navChat.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, MessagesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish(); // чтобы закрыть HomeActivity, если нужно
+        });
+
+        navHeart.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, SwipeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish(); // чтобы закрыть HomeActivity, если нужно
+        });
+
     }
 
 

@@ -3,6 +3,7 @@ package com.example.kyrsach4;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -45,7 +46,14 @@ public class FriendsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         searchEditText = findViewById(R.id.searchEditText);
+        ImageButton btnBack = findViewById(R.id.btn_back);
 
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(FriendsActivity.this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
         // Добавляем TextWatcher для фильтрации
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
