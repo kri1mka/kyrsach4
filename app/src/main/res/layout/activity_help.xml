@@ -1,32 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#FFFFFF"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F4F6F9">
 
-    <!-- Кнопка назад -->
-    <ImageButton
-        android:id="@+id/backBtn"
-        android:layout_width="wrap_content"
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_revert"
-        android:contentDescription="Назад"/>
+        android:background="#435986"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="Назад"
+            app:tint="@android:color/white" />
+
+        <TextView
+            android:layout_marginStart="12dp"
+            android:text="Безопасность"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- Подзаголовок -->
     <TextView
-        android:text="Безопасность и защита данных"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:text="Часто задаваемые вопросы о защите данных"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <!-- Список вопросов -->
     <ListView
         android:id="@+id/helpList"
-        android:dividerHeight="12dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:clipToPadding="false"/>
 </LinearLayout>

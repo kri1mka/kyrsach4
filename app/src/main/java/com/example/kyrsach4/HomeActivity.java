@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         initViews();
         setupRecycler();
         setupBottomNav();
-        loadPosts(); // 🔹 ЗАГРУЗКА С СЕРВЕРА
+        loadPosts();
     }
 
     private void initViews() {
