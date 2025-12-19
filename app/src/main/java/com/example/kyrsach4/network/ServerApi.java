@@ -85,7 +85,6 @@ public interface ServerApi {
     @POST("api/users/trips/images")
     Call<Map<String, String>> uploadTripImage(@Part MultipartBody.Part file);
 
-    // Создание поездки через multipart
     @Multipart
     @POST("api/users/trips")
     Call<TripCard> createTripMultipart(

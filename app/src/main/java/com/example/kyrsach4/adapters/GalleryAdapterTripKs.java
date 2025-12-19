@@ -21,7 +21,7 @@ public class GalleryAdapterTripKs extends RecyclerView.Adapter<GalleryAdapterTri
         void onImageClick(String pathOrUrl);
     }
 
-    private final List<String> images; // локальные пути или URL
+    private final List<String> images;
     private final OnImageClickListener listener;
     private final Context context;
 
@@ -43,7 +43,6 @@ public class GalleryAdapterTripKs extends RecyclerView.Adapter<GalleryAdapterTri
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String pathOrUrl = images.get(position);
 
-        // Если путь начинается с http, грузим напрямую
         if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
             Glide.with(context)
                     .load(pathOrUrl)

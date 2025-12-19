@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+
+
 
     <application
         android:usesCleartextTraffic="true"
@@ -37,6 +42,9 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ChangeDataActivityKs"/>
         <activity android:name=".CreatePublicationActivityKs"/>
+        <activity android:name=".CreatePostDetailsActivityKs"/>
+        <activity android:name=".CreateTripActivityKs"/>
+
         <activity
             android:name=".ChatActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>

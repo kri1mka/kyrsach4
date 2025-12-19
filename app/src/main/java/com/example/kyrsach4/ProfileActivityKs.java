@@ -55,7 +55,7 @@ public class ProfileActivityKs extends AppCompatActivity {
     private boolean isFriend = false;
     private int followersCount = 120;
 
-    private int userId = 1; // TODO: передавать реальный userId через Intent
+    private int userId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +99,6 @@ public class ProfileActivityKs extends AppCompatActivity {
         tvFollowersCount.setText(String.valueOf(followersCount));
         updateSubscribeButton();
 
-        // Нижняя навигация
         navHome = findViewById(R.id.nav_home);
         navChat = findViewById(R.id.nav_chat);
         navHeart = findViewById(R.id.nav_heart);
@@ -170,19 +169,14 @@ public class ProfileActivityKs extends AppCompatActivity {
 
         ImageButton btnLike = postView.findViewById(R.id.btn_like);
 
-        // Имя пользователя
         username.setText(post.getUserName() != null ? post.getUserName() : "Пользователь");
 
-        // Локация
         location.setText(post.getLocation() != null ? post.getLocation() : "");
 
-        // Описание
         description.setText(post.getDescription() != null ? post.getDescription() : "");
 
-        // Лайки
         likesCount.setText(String.valueOf(post.getLikesCount() != null ? post.getLikesCount() : 0));
 
-        // Фото
         if (post.getPhotoIt() != null && !post.getPhotoIt().isEmpty()) {
             String photoUrl = post.getPhotoIt().replaceAll("\\s+", "%20").trim();
             Glide.with(this)
@@ -192,7 +186,6 @@ public class ProfileActivityKs extends AppCompatActivity {
         } else {
             image.setImageResource(R.drawable.sample_photo1);
         }
-        // Дата
         if (post.getCreatedAt() != null && !post.getCreatedAt().isEmpty()) {
             try {
                 String cleaned = post.getCreatedAt().replaceAll("\\s+", " ").trim();
@@ -218,18 +211,15 @@ public class ProfileActivityKs extends AppCompatActivity {
         int likes = post.getLikesCount() != null ? post.getLikesCount() : 0;
         likesCount.setText(String.valueOf(likes));
 
-// начальное состояние иконки
         updateLikeUI(post.isLiked(), btnLike);
 
         btnLike.setOnClickListener(v -> {
             boolean liked = post.isLiked();
 
             if (!liked) {
-                // лайк
                 post.setLiked(true);
                 post.setLikesCount(likes + 1);
             } else {
-                // анлайк
                 post.setLiked(false);
                 post.setLikesCount(likes);
                 post.setLikesCount(post.getLikesCount());
@@ -269,7 +259,6 @@ public class ProfileActivityKs extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     List<TripCard> trips = response.body();
 
-                    // Фильтруем поездки: оставляем только те, у которых endDate >= текущая дата
                     long now = System.currentTimeMillis();
                     List<TripCard> futureTrips = new ArrayList<>();
                     for (TripCard trip : trips) {

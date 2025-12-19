@@ -51,7 +51,7 @@ public class PostServlet extends HttpServlet {
     // Получить все посты пользователя
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getPathInfo(); // "/{userId}"
+        String pathInfo = req.getPathInfo(); //
         if (pathInfo == null || pathInfo.equals("/")) {
             writeJson(resp, 400, Map.of("error", "User ID is required"));
             return;
@@ -68,16 +68,12 @@ public class PostServlet extends HttpServlet {
         try {
             List<PostCard> posts = postDAO.findByUserId(userId);
 
-            // Формируем корректные URL фото и имя пользователя
             for (PostCard post : posts) {
-                // Фотография
                 if (post.getPhotoIt() != null && !post.getPhotoIt().isEmpty()) {
                     post.setPhotoIt("http://10.0.2.2:8080/Backend/images/" + post.getPhotoIt());
                 }
 
-                // Имя пользователя (если DAO его возвращает)
                 if (post.getUserName() == null || post.getUserName().isEmpty()) {
-                    // Если DAO возвращает только userId, можно запросить имя из базы
                     String fullName = postDAO.getUserFullName(post.getUserId());
                     post.setUserName(fullName != null ? fullName : "Пользователь");
                 }
@@ -97,7 +93,6 @@ public class PostServlet extends HttpServlet {
         if (contentType != null && contentType.startsWith("multipart/form-data")) {
             handleUpload(req, resp);
         } else {
-            // Обычный JSON POST
             PostCard post = gson.fromJson(req.getReader(), PostCard.class);
             if (post.getUserId() == null) {
                 writeJson(resp, 400, Map.of("error", "userId is required"));
@@ -113,7 +108,6 @@ public class PostServlet extends HttpServlet {
         }
     }
 
-    // Загрузка изображения
     private void handleUpload(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         Part filePart = req.getPart("file");
         if (filePart == null || filePart.getSize() == 0) {
@@ -133,7 +127,6 @@ public class PostServlet extends HttpServlet {
         writeJson(resp, 200, Map.of("fileName", fileName));
     }
 
-    // Обновить существующий пост
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PostCard post = gson.fromJson(req.getReader(), PostCard.class);
@@ -163,7 +156,6 @@ public class PostServlet extends HttpServlet {
         }
     }
 
-    // Удалить пост
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo(); // "/{postId}"
