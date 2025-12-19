@@ -5,7 +5,7 @@ public class Friend {
     private String firstName;
     private String lastName;
     private String country;
-    private String avatarUrl; // имя файла, например "avatar1.png"
+    private String avatarUrl; // имя файла, например "1.png"
 
     // Геттеры
     public int getId() { return id; }

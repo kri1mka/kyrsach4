@@ -41,8 +41,13 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ChangeDataActivityKs"/>
         <activity android:name=".CreatePublicationActivityKs"/>
-        <activity android:name=".CreateTripActivityKs"/>
-        <activity android:name=".TranslatorActivity" />
+        <activity
+            android:name=".ChatActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+        <activity android:name=".MessagesActivity"/>
+
+
+
     </application>
 
 </manifest>
