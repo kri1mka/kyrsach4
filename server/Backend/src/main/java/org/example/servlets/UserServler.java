@@ -74,10 +74,10 @@ public class UserServler extends HttpServlet {
                 result.put("location", info.getCity());
                 result.put("travelType", info.getTravelType());
 
-                if (info.getPhoto() != null && !info.getPhoto().isEmpty()) {
+                if (info.getAvatarUrl() != null && !info.getAvatarUrl().isEmpty()) {
                     result.put(
                             "avatarUrl",
-                            "http://10.0.2.2:8080/Backend/images/" + info.getPhoto()
+                            "http://10.0.2.2:8080/Backend/images/" + info.getAvatarUrl()
                     );
                 } else {
                     result.put("avatarUrl", null);
@@ -126,7 +126,7 @@ public class UserServler extends HttpServlet {
             if (request.getAge() != null) info.setAge(Integer.parseInt(request.getAge()));
             if (request.getLocation() != null) info.setCity(request.getLocation());
             if (request.getTravelType() != null) info.setTravelType(request.getTravelType());
-            if (request.getPhoto() != null) info.setPhoto(request.getPhoto());
+            if (request.getPhoto() != null) info.setAvatarUrl(request.getPhoto());
 
             // При необходимости можно сохранять имя/фамилию в Users таблице
             User user = userDAO.findById(userId);
