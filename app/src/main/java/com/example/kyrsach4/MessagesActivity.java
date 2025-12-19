@@ -87,7 +87,7 @@ public class MessagesActivity extends AppCompatActivity {
                 Set<String> seenNames = new HashSet<>();
 
                 for (Message message : allMessages) {
-                    String fullName = message.getFirstName() + " " + message.getLastName();
+                    String fullName = message.getName() + " " + message.getSurname();
                     if (!seenNames.contains(fullName)) {
                         uniqueMessages.add(message);
                         seenNames.add(fullName);
@@ -112,8 +112,8 @@ public class MessagesActivity extends AppCompatActivity {
                                         : message.getFromUserId();
 
                         Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
-                        intent.putExtra("firstName", message.getFirstName());
-                        intent.putExtra("lastName", message.getLastName());
+                        intent.putExtra("name", message.getName());
+                        intent.putExtra("surname", message.getSurname());
                         intent.putExtra("avatarUrl", message.getAvatarUrl());
                         intent.putExtra("otherUserId", otherUserId);
                         startActivity(intent);
@@ -138,10 +138,10 @@ public class MessagesActivity extends AppCompatActivity {
         Set<String> seenUsers = new HashSet<>(); // для уникальности
 
         for (Message message : allMessages) {
-            String fullName = message.getFirstName() + " " + message.getLastName();
+            String fullName = message.getName() + " " + message.getSurname();
 
-            if ((message.getFirstName() != null && message.getFirstName().toLowerCase().startsWith(lowerQuery)) ||
-                    (message.getLastName() != null && message.getLastName().toLowerCase().startsWith(lowerQuery))) {
+            if ((message.getName() != null && message.getName().toLowerCase().startsWith(lowerQuery)) ||
+                    (message.getSurname() != null && message.getSurname().toLowerCase().startsWith(lowerQuery))) {
 
                 // проверяем, выводился ли этот пользователь ранее
                 if (!seenUsers.contains(fullName)) {
