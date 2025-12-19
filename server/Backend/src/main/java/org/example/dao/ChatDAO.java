@@ -13,7 +13,7 @@ public class ChatDAO {
         List<Message> messages = new ArrayList<>();
 
         String sql = "SELECT m.id, m.from_user_id, m.to_user_id, m.message, m.created_at, " +
-                "u.name AS firstName, u.surname AS lastName, f.avatarUrl " +
+                "u.name AS name, u.surname AS surname, f.avatarUrl " +
                 "FROM Messages m " +
                 "JOIN Users u ON m.from_user_id = u.id " +
                 "LEFT JOIN Friends f ON u.id = f.user_id " +
@@ -37,8 +37,8 @@ public class ChatDAO {
                             rs.getInt("to_user_id"),
                             rs.getString("message"),
                             rs.getTimestamp("created_at"),
-                            rs.getString("firstName"),
-                            rs.getString("lastName"),
+                            rs.getString("name"),
+                            rs.getString("surname"),
                             rs.getString("avatarUrl")
                     ));
                 }

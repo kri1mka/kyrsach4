@@ -43,7 +43,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         Message msg = messages.get(position);
         holder.text.setText(msg.getMessage());
         if (holder.userName != null)
-            holder.userName.setText(msg.getFirstName() + " " + msg.getLastName());
+            holder.userName.setText(msg.getName() + " " + msg.getSurname());
 
         if (holder.avatar != null && msg.getAvatarUrl() != null) {
             Glide.with(holder.avatar.getContext())

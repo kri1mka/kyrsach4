@@ -50,11 +50,13 @@ public class ChatActivity extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btn_back);
 
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(ChatActivity.this, MessagesActivity.class);
+            Intent intent = new Intent(ChatActivity.this, FriendsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
         });
+
+
 
         hideKeyboard();
 
@@ -66,12 +68,12 @@ public class ChatActivity extends AppCompatActivity {
         ImageView avatarImage = findViewById(R.id.avatarImage);
 
         // Получаем данные о выбранном пользователе из Intent
-        String firstName = getIntent().getStringExtra("firstName");
-        String lastName = getIntent().getStringExtra("lastName");
+        String name = getIntent().getStringExtra("name");
+        String surname = getIntent().getStringExtra("surname");
         String avatarUrl = getIntent().getStringExtra("avatarUrl");
         otherUserId = getIntent().getIntExtra("otherUserId", 2);
 
-        userName.setText(firstName + " " + lastName);
+        userName.setText(name + " " + surname);
 
         // Загружаем аватар через Glide с круговой маской
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
