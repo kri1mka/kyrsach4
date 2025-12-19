@@ -7,69 +7,123 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        >
 
-        <!-- Заголовок -->
         <TextView
-            android:gravity="center"
-            android:textAlignment="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Фильтры поиска"
-            android:textSize="24sp"
-            android:textColor="#2E3A4D"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
-        <!-- Пол -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Пол"
-            android:textStyle="bold"/>
-        <RadioGroup
-            android:id="@+id/radioGender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RadioButton android:id="@+id/radioMale" android:text="Мужской" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-            <RadioButton android:id="@+id/radioFemale" android:text="Женский" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        </RadioGroup>
-
-        <!-- Страна -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Страна"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
-        <Spinner
-            android:id="@+id/spinnerCountry"
+            android:id="@+id/title_reg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Фильтры поиска"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:textColor="#435986"
+        android:paddingBottom="24dp"
+        android:gravity="center"
+        android:textAlignment="center"/>
 
-        <!-- Направление -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Направление"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
-        <Spinner
-            android:id="@+id/spinnerDirection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
-        <!-- Вид поездки -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Вид поездки"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
-        <Spinner
-            android:id="@+id/spinnerTripType"
+
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Пол"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerGender"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_text_fields"
+                android:padding="10dp"
+                android:spinnerMode="dropdown"
+                android:hint="Имя"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+           >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Страна"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerCountry"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_text_fields"
+                android:padding="10dp"
+                android:spinnerMode="dropdown"
+                android:hint="Имя"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Направление"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerDirection"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_text_fields"
+                android:padding="10dp"
+                android:spinnerMode="dropdown"
+                android:hint="Имя"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Вид поездки"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerTripType"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_text_fields"
+                android:padding="10dp"
+                android:spinnerMode="dropdown"
+                android:hint="Имя"/>
+
+        </LinearLayout>
+
+
 
         <!-- Возраст -->
         <TextView
@@ -92,7 +146,7 @@
                 android:layout_weight="1"
                 android:hint="От"
                 android:inputType="number"
-                android:background="@android:drawable/edit_text"
+                android:background="@drawable/rounded_text_fields"
                 android:padding="8dp"/>
 
             <TextView
@@ -109,12 +163,12 @@
                 android:layout_weight="1"
                 android:hint="До"
                 android:inputType="number"
-                android:background="@android:drawable/edit_text"
+                android:background="@drawable/rounded_text_fields"
                 android:padding="8dp"/>
         </LinearLayout>
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnApplyFilters"
             style="@style/ButtonKsStyle"
             android:layout_width="300dp"

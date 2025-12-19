@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -62,6 +63,15 @@ public class MessagesActivity extends AppCompatActivity {
         });
 
         loadMessagesFromServer();
+
+        ImageButton btnBack = findViewById(R.id.btn_back);
+
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(MessagesActivity.this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void loadMessagesFromServer() {
