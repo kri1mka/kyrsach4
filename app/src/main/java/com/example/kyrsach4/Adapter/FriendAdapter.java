@@ -9,26 +9,35 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.load.engine.GlideException;
-import com.example.kyrsach4.R;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.example.kyrsach4.R;
 import com.example.kyrsach4.entity.Friend;
 
 import java.util.List;
-
 
 public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendViewHolder> {
 
     private List<Friend> friends;
     private Context context;
+
+    public interface OnItemClickListener {
+        void onItemClick(Friend friend);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public FriendAdapter(Context context, List<Friend> friends) {
         this.context = context;
@@ -46,34 +55,49 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
     public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
         Friend friend = friends.get(position);
 
-        // Устанавливаем текст
+        // Текст
         holder.name.setText(friend.getFirstName() + " " + friend.getLastName());
         holder.country.setText(friend.getCountry());
 
-        // Формируем URL аватара из базы данных
+        // Аватар
         String avatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + friend.getAvatarUrl();
-
-        // Загружаем картинку с Glide
         Glide.with(context)
                 .load(avatarUrl)
-
                 .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        Log.e("GLIDE", "Ошибка загрузки: " + e);
-                        return false; // false позволяет Glide показать error-картинку
+                    public boolean onLoadFailed(
+                            @Nullable GlideException e,
+                            Object model,
+                            Target<Drawable> target,
+                            boolean isFirstResource
+                    ) {
+                        Log.e("GLIDE", "Ошибка загрузки", e);
+                        return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.d("GLIDE", "Картинка загружена");
-                        return false; // false позволяет Glide установить Drawable в ImageView
+                    public boolean onResourceReady(
+                            Drawable resource,
+                            Object model,
+                            Target<Drawable> target,
+                            DataSource dataSource,
+                            boolean isFirstResource
+                    ) {
+                        return false;
                     }
                 })
                 .into(holder.avatar);
+
+        // ❌ УБРАЛИ клик со всего itemView
+        // holder.itemView.setOnClickListener(...);
+
+        // ✅ КЛИК ТОЛЬКО НА КНОПКЕ
+        holder.messageBtn.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(friend);
+            }
+        });
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -92,5 +116,11 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
             country = itemView.findViewById(R.id.country);
             messageBtn = itemView.findViewById(R.id.messageBtn);
         }
+    }
+
+    public void updateList(List<Friend> newList) {
+        friends.clear();
+        friends.addAll(newList);
+        notifyDataSetChanged();
     }
 }
