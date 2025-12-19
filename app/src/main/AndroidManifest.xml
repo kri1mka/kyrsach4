@@ -37,6 +37,7 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".TripsActivity2" />
+        <activity android:name=".TranslatorActivity" />
         <activity android:name=".HelpActivity" />
         <activity android:name=".PdfActivity" />
         <activity android:name=".MyProfileActivityKs" />

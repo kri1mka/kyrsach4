@@ -16,7 +16,7 @@ public class PostCardDAO {
     }
 
     private static final String INSERT =
-            "INSERT INTO postcard (user_id, description, location, created_at, photo_it) VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO postcard (user_id, description, location, created_at, photo_id) VALUES (?, ?, ?, ?, ?)";
 
     private static final String FIND_BY_ID = "SELECT * FROM postcard WHERE id = ?";
     private static final String FIND_BY_USER =
@@ -29,7 +29,7 @@ public class PostCardDAO {
     private static final String FIND_LATEST = "SELECT * FROM postcard ORDER BY created_at DESC LIMIT ?";
     private static final String FIND_ALL = "SELECT * FROM postcard";
     private static final String UPDATE =
-            "UPDATE postcard SET description=?, location=?, photo_it=? WHERE id=?";
+            "UPDATE postcard SET description=?, location=?, photo_id=? WHERE id=?";
     private static final String DELETE = "DELETE FROM postcard WHERE id=?";
     private static final String IMAGE_BASE_URL =
             "http://10.0.2.2:8080/Backend/images/";
@@ -44,7 +44,7 @@ public class PostCardDAO {
                 p.description,
                 p.location,
                 p.created_at,
-                p.photo_it AS photo_url,
+                p.photo_id AS photo_url,
                 CONCAT(u.name, ' ', u.surname) AS user_name
             FROM PostCard p
             JOIN Users u ON p.user_id = u.id
@@ -158,7 +158,7 @@ public class PostCardDAO {
         card.setDescription(rs.getString("description"));
         card.setLocation(rs.getString("location"));
         card.setCreatedAt(rs.getTimestamp("created_at"));
-        card.setPhotoIt(rs.getString("photo_it"));
+        card.setPhotoIt(rs.getString("photo_id"));
         card.setUserName(rs.getString("user_name"));
         return card;
     }
