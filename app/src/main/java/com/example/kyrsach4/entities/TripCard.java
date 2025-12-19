@@ -9,8 +9,8 @@ public class TripCard {
     private String type;
     private String description;
     private double price;
-    private String startDate;  // проще строкой для JSON
-    private String endDate;    // иначе нужна Gson конвертация для java.util.Date
+    private String startDate;
+    private String endDate;
     private User user;
     private Photo photo;
 

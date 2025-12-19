@@ -54,7 +54,7 @@ public class TranslatorActivity extends AppCompatActivity {
 
         nav_chat.setOnClickListener(v -> {
             // Возвращаемся на ChatActivity !!!!!!!!! вставить когда добавим
-            Intent intent = new Intent(TranslatorActivity.this, TranslatorActivity.class);
+            Intent intent = new Intent(TranslatorActivity.this, MessagesActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
@@ -62,7 +62,7 @@ public class TranslatorActivity extends AppCompatActivity {
 
         nav_heart.setOnClickListener(v -> {
             // Возвращаемся на HeartActivity !!!!!!!!! вставить когда добавим
-            Intent intent = new Intent(TranslatorActivity.this, TranslatorActivity.class);
+            Intent intent = new Intent(TranslatorActivity.this, SwipeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
