@@ -64,7 +64,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         if (card.getPhoto() != null && card.getPhoto().getPhotoUrl() != null) {
             Glide.with(context)
                     .load(card.getPhoto().getPhotoUrl())
-                    .circleCrop() // делаем полукруглую рамку
                     .into(holder.image);
         }
     }

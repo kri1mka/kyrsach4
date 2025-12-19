@@ -50,7 +50,7 @@ public class ChatActivity extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btn_back);
 
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(ChatActivity.this, FriendsActivity.class);
+            Intent intent = new Intent(ChatActivity.this, MessagesActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();

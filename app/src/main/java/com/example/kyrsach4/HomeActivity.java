@@ -46,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
         initViews();
         setupRecycler();
         setupBottomNav();
-        loadPosts(); // 🔹 ЗАГРУЗКА С СЕРВЕРА
+        loadPosts();
     }
 
     private void initViews() {
@@ -64,14 +64,14 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, MessagesActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            finish(); // чтобы закрыть HomeActivity, если нужно
+            finish();
         });
 
         navHeart.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, SwipeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            finish(); // чтобы закрыть HomeActivity, если нужно
+            finish();
         });
 
     }

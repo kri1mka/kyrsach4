@@ -394,11 +394,13 @@ public class MyProfileActivityKs extends AppCompatActivity {
         });
 
         navChat.setOnClickListener(v -> {
-            Toast.makeText(this, "Чат", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MessagesActivity.class));
+            finish();
         });
 
         navHeart.setOnClickListener(v -> {
-            Toast.makeText(this, "Свапы", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, SwipeActivity.class));
+            finish();
         });
 
         navTranslate.setOnClickListener(v -> {
