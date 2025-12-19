@@ -1,6 +1,11 @@
 package org.example.servlets;
 
 import com.google.gson.Gson;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.example.dao.PostCardDAO;
 import org.example.entity.PostCard;
 import org.example.util.DBConnection;
@@ -11,12 +16,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
 @WebServlet("/api/posts/*")
+@MultipartConfig
 public class PostServlet extends HttpServlet {
 
     private PostCardDAO postDAO;
@@ -41,7 +51,7 @@ public class PostServlet extends HttpServlet {
     // Получить все посты пользователя
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getPathInfo(); // "/{userId}"
+        String pathInfo = req.getPathInfo(); //
         if (pathInfo == null || pathInfo.equals("/")) {
             writeJson(resp, 400, Map.of("error", "User ID is required"));
             return;
@@ -58,16 +68,12 @@ public class PostServlet extends HttpServlet {
         try {
             List<PostCard> posts = postDAO.findByUserId(userId);
 
-            // Формируем корректные URL фото и имя пользователя
             for (PostCard post : posts) {
-                // Фотография
                 if (post.getPhotoIt() != null && !post.getPhotoIt().isEmpty()) {
                     post.setPhotoIt("http://10.0.2.2:8080/Backend/images/" + post.getPhotoIt());
                 }
 
-                // Имя пользователя (если DAO его возвращает)
                 if (post.getUserName() == null || post.getUserName().isEmpty()) {
-                    // Если DAO возвращает только userId, можно запросить имя из базы
                     String fullName = postDAO.getUserFullName(post.getUserId());
                     post.setUserName(fullName != null ? fullName : "Пользователь");
                 }
@@ -81,22 +87,46 @@ public class PostServlet extends HttpServlet {
 
     // Создать новый пост
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        PostCard post = gson.fromJson(req.getReader(), PostCard.class);
-        if (post.getUserId() == null) {
-            writeJson(resp, 400, Map.of("error", "userId is required"));
-            return;
-        }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String contentType = req.getContentType();
 
-        try {
-            postDAO.save(post);
-            writeJson(resp, 201, post);
-        } catch (RuntimeException e) {
-            writeJson(resp, 500, Map.of("error", e.getMessage()));
+        if (contentType != null && contentType.startsWith("multipart/form-data")) {
+            handleUpload(req, resp);
+        } else {
+            PostCard post = gson.fromJson(req.getReader(), PostCard.class);
+            if (post.getUserId() == null) {
+                writeJson(resp, 400, Map.of("error", "userId is required"));
+                return;
+            }
+
+            try {
+                postDAO.save(post);
+                writeJson(resp, 201, post);
+            } catch (RuntimeException e) {
+                writeJson(resp, 500, Map.of("error", e.getMessage()));
+            }
         }
     }
 
-    // Обновить существующий пост
+    private void handleUpload(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Part filePart = req.getPart("file");
+        if (filePart == null || filePart.getSize() == 0) {
+            writeJson(resp, 400, Map.of("error", "File not found in request"));
+            return;
+        }
+
+        String fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
+        File uploadDir = new File("images/");
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+
+        File file = new File(uploadDir, fileName);
+        try (InputStream in = filePart.getInputStream()) {
+            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        writeJson(resp, 200, Map.of("fileName", fileName));
+    }
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PostCard post = gson.fromJson(req.getReader(), PostCard.class);
@@ -126,7 +156,6 @@ public class PostServlet extends HttpServlet {
         }
     }
 
-    // Удалить пост
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo(); // "/{postId}"

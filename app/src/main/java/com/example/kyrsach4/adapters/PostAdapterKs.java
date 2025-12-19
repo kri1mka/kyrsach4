@@ -45,7 +45,6 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PostCard post = postList.get(position);
 
-        // Имя пользователя
         holder.tvUserName.setText(
                 post.getUserName() != null ? post.getUserName() : "Пользователь"
         );
@@ -62,7 +61,6 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
                 String.valueOf(post.getLikesCount() != null ? post.getLikesCount() : 0)
         );
 
-        // ✅ ДАТА (БЕЗ parse!)
         if (post.getCreatedAt() != null) {
             SimpleDateFormat displayFormat =
                     new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
@@ -71,7 +69,6 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
             holder.tvDate.setText("Только что");
         }
 
-        // ✅ ФОТО (ПОЛНЫЙ URL)
         if (post.getPhotoIt() != null && !post.getPhotoIt().isEmpty()) {
 
 

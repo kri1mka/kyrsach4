@@ -267,9 +267,12 @@ public class MyProfileActivityKs extends AppCompatActivity {
         );
 
         // Кнопка добавления фото
-        findViewById(R.id.btn_add_image).setOnClickListener(v ->
-                startActivity(new Intent(this, CreatePublicationActivityKs.class))
-        );
+        findViewById(R.id.btn_add_image).setOnClickListener(v -> {
+            Intent intent = new Intent(this, CreatePublicationActivityKs.class);
+            intent.putExtra("userId", SessionStorage.userId);
+            startActivity(intent);
+        });
+
 
         // Настройка нижней навигации
         setupBottomNavigation();

@@ -26,7 +26,6 @@ public class PostCardDAO {
                     "WHERE p.user_id = ? " +
                     "ORDER BY p.created_at DESC";
 
-
     private static final String FIND_LATEST = "SELECT * FROM postcard ORDER BY created_at DESC LIMIT ?";
     private static final String FIND_ALL = "SELECT * FROM postcard";
     private static final String UPDATE =

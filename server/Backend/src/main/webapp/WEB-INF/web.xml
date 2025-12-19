@@ -8,4 +8,8 @@
     <servlet-name>main</servlet-name>
     <servlet-class>org.example.servlets.MainServlet</servlet-class>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/uploads/*</url-pattern>
+  </servlet-mapping>
 </web-app>
