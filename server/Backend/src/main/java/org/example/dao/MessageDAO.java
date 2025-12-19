@@ -16,10 +16,10 @@ public class MessageDAO {
         List<Message> messages = new ArrayList<>();
 
         String sql = "SELECT m.id, m.from_user_id, m.to_user_id, m.message, m.created_at, " +
-                "u.name AS firstName, u.surname AS lastName, ui.avatarUrl " +
+                "u.name AS name, u.surname AS surname, ui.avatarUrl " +
                 "FROM Messages m " +
                 "JOIN Users u ON m.from_user_id = u.id " +
-                "LEFT JOIN UsersInfo ui ON u.id = ui.user_id " +  // присоединяем UsersInfo для аватара
+                "LEFT JOIN UsersInfo ui ON u.id = ui.user_id " +
                 "ORDER BY m.created_at DESC";
 
         try (Connection conn = DBConnection.getConnection();
@@ -29,16 +29,15 @@ public class MessageDAO {
             while (rs.next()) {
                 Timestamp createdAt = rs.getTimestamp("created_at");
 
-
                 Message msg = new Message(
                         rs.getInt("id"),
                         rs.getInt("from_user_id"),
                         rs.getInt("to_user_id"),
                         rs.getString("message"),
                         createdAt,
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("avatarUrl") // теперь берём из UsersInfo
+                        rs.getString("name"),      // вместо firstName
+                        rs.getString("surname"),   // вместо lastName
+                        rs.getString("avatarUrl")
                 );
                 messages.add(msg);
             }

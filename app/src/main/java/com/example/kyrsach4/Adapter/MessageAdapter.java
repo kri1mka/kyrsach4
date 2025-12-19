@@ -63,7 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Message message = messages.get(position);
 
         // Имя и фамилия
-        holder.nameText.setText(message.getFirstName() + " " + message.getLastName());
+        holder.nameText.setText(message.getName() + " " + message.getSurname());
 
         SimpleDateFormat input =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());

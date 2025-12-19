@@ -49,6 +49,7 @@
             android:name=".ChatActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity android:name=".MessagesActivity"/>
+        <activity android:name=".FiltersActivity"/>
 
 
 

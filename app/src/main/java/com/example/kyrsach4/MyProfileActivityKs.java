@@ -42,6 +42,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
     private TextView tvEmptyPosts, tvEmptyTrips;
     private View indicatorPosts, indicatorTrips;
     private ImageButton btnPosts, btnTrips;
+    private TextView tvFriends;
 
     // Навигация
     private ImageButton btnBack, btnBell;
@@ -56,10 +57,16 @@ public class MyProfileActivityKs extends AppCompatActivity {
 
     private Integer currentUserId;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pfofile_ks);
+        tvFriends = findViewById(R.id.tvFriends);
+        tvFriends.setOnClickListener(v -> {
+            Intent intent = new Intent(MyProfileActivityKs.this, FriendsActivity.class);
+            startActivity(intent);
+        });
 
         currentUserId = SessionStorage.userId;
 

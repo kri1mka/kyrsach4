@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -62,6 +63,15 @@ public class MessagesActivity extends AppCompatActivity {
         });
 
         loadMessagesFromServer();
+
+        ImageButton btnBack = findViewById(R.id.btn_back);
+
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(MessagesActivity.this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void loadMessagesFromServer() {
@@ -87,7 +97,7 @@ public class MessagesActivity extends AppCompatActivity {
                 Set<String> seenNames = new HashSet<>();
 
                 for (Message message : allMessages) {
-                    String fullName = message.getFirstName() + " " + message.getLastName();
+                    String fullName = message.getName() + " " + message.getSurname();
                     if (!seenNames.contains(fullName)) {
                         uniqueMessages.add(message);
                         seenNames.add(fullName);
@@ -112,8 +122,8 @@ public class MessagesActivity extends AppCompatActivity {
                                         : message.getFromUserId();
 
                         Intent intent = new Intent(MessagesActivity.this, ChatActivity.class);
-                        intent.putExtra("firstName", message.getFirstName());
-                        intent.putExtra("lastName", message.getLastName());
+                        intent.putExtra("name", message.getName());
+                        intent.putExtra("surname", message.getSurname());
                         intent.putExtra("avatarUrl", message.getAvatarUrl());
                         intent.putExtra("otherUserId", otherUserId);
                         startActivity(intent);
@@ -138,10 +148,10 @@ public class MessagesActivity extends AppCompatActivity {
         Set<String> seenUsers = new HashSet<>(); // для уникальности
 
         for (Message message : allMessages) {
-            String fullName = message.getFirstName() + " " + message.getLastName();
+            String fullName = message.getName() + " " + message.getSurname();
 
-            if ((message.getFirstName() != null && message.getFirstName().toLowerCase().startsWith(lowerQuery)) ||
-                    (message.getLastName() != null && message.getLastName().toLowerCase().startsWith(lowerQuery))) {
+            if ((message.getName() != null && message.getName().toLowerCase().startsWith(lowerQuery)) ||
+                    (message.getSurname() != null && message.getSurname().toLowerCase().startsWith(lowerQuery))) {
 
                 // проверяем, выводился ли этот пользователь ранее
                 if (!seenUsers.contains(fullName)) {
