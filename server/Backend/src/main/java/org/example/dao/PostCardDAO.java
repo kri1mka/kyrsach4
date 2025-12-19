@@ -11,6 +11,9 @@ import java.util.List;
 public class PostCardDAO {
 
     private final Connection connection;
+    public PostCardDAO(Connection connection) {
+        this.connection = connection;
+    }
 
     private static final String INSERT =
             "INSERT INTO postcard (user_id, description, location, created_at, photo_it) VALUES (?, ?, ?, ?, ?)";
@@ -29,10 +32,9 @@ public class PostCardDAO {
     private static final String UPDATE =
             "UPDATE postcard SET description=?, location=?, photo_it=? WHERE id=?";
     private static final String DELETE = "DELETE FROM postcard WHERE id=?";
+    private static final String IMAGE_BASE_URL =
+            "http://10.0.2.2:8080/Backend/images/";
 
-    public PostCardDAO(Connection connection) {
-        this.connection = connection;
-    }
 
     public List<PostDto> getFeed() {
         List<PostDto> list = new ArrayList<>();
@@ -43,11 +45,10 @@ public class PostCardDAO {
                 p.description,
                 p.location,
                 p.created_at,
-                ph.photo_url AS photo_url,
+                p.photo_it AS photo_url,
                 CONCAT(u.name, ' ', u.surname) AS user_name
             FROM PostCard p
             JOIN Users u ON p.user_id = u.id
-            LEFT JOIN Photo ph ON p.photo_id = ph.id
             ORDER BY p.created_at DESC
         """;
 
@@ -60,7 +61,8 @@ public class PostCardDAO {
                 dto.description = rs.getString("description");
                 dto.location = rs.getString("location");
                 dto.createdAt = rs.getTimestamp("created_at").toString();
-                dto.photoUrl = rs.getString("photo_url");
+                String fileName = rs.getString("photo_url");
+                dto.photoUrl = IMAGE_BASE_URL + fileName;
                 dto.userName = rs.getString("user_name");
                 list.add(dto);
             }
@@ -72,19 +74,7 @@ public class PostCardDAO {
         return list;
     }
 
-
-    private PostCard map(ResultSet rs) throws SQLException {
-        PostCard card = new PostCard();
-        card.setId(rs.getInt("id"));
-        card.setUserId(rs.getInt("user_id"));
-        card.setDescription(rs.getString("description"));
-        card.setLocation(rs.getString("location"));
-        card.setCreatedAt(rs.getTimestamp("created_at"));
-        card.setPhotoIt(rs.getString("photo_it"));
-        return card;
-    }
-
-    ublic void save(PostCard card) {
+    public void save(PostCard card) {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -119,7 +109,6 @@ public class PostCardDAO {
         }
         return null;
     }
-
     public List<PostCard> findByUserId(int userId) {
         List<PostCard> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
@@ -135,37 +124,6 @@ public class PostCardDAO {
         }
         return list;
     }
-
-    public List<PostCard> findLatest(int limit) {
-        List<PostCard> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_LATEST)) {
-
-            stmt.setInt(1, limit);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) list.add(map(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка поиска последних постов", e);
-        }
-        return list;
-    }
-
-    public List<PostCard> findAll() {
-        List<PostCard> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_ALL);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) list.add(map(rs));
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка получения всех PostCard", e);
-        }
-        return list;
-    }
-
     public void update(PostCard card) {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE)) {

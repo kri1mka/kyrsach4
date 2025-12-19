@@ -33,6 +33,22 @@ public class UsersInfoDAO {
         }
     }
 
+    public UsersInfo findByUserId(int userId) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(FIND_BY_USER_ID)) {
+
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+
+            if (rs.next()) return map(rs);
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка поиска UsersInfo", e);
+        }
+        return null;
+    }
+
     public void update(UsersInfo info) {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
@@ -66,22 +82,6 @@ public class UsersInfoDAO {
         info.setTravelType(rs.getString("travel_type"));
         info.setAvatarUrl(rs.getString("avatarUrl"));
         return info;
-    }
-
-    public UsersInfo findByUserId(int userId) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_BY_USER_ID)) {
-
-
-            stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-
-
-            if (rs.next()) return map(rs);
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка поиска UsersInfo", e);
-        }
-        return null;
     }
 }
 

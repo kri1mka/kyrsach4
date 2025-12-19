@@ -11,8 +11,10 @@ import java.util.List;
 
 
 public class UserDAO {
-    private final Connection conn;
-
+    private final Connection connection;
+    public UserDAO(Connection connection) {
+        this.connection = connection;
+    }
 
     private static final String INSERT = "INSERT INTO Users (name, surname, email, phone_number, password) VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT id, name, surname, email, phone_number FROM Users WHERE id = ?";
@@ -92,6 +94,29 @@ public class UserDAO {
         return list;
     }
 
+    public User findByEmail(String email) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE email = ?")) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+                u.setName(rs.getString("name"));
+                u.setSurname(rs.getString("surname"));
+                u.setPhoneNumber(rs.getString("phone_number"));
+                return u;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка поиска пользователя по email", e);
+        }
+        return null;
+    }
 
     public void update(User user) {
         try (Connection conn = DBConnection.getConnection();

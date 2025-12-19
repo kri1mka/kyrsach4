@@ -6,10 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Кнопка назад -->
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_revert"
+        android:contentDescription="Назад"/>
+
     <TextView
-        android:text="Популярные вопросы"
+        android:text="Безопасность и защита данных"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -18,5 +28,5 @@
         android:id="@+id/helpList"
         android:dividerHeight="12dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>

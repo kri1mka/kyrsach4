@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kyrsach4.Adapter.PostsAdapter;
 import com.example.kyrsach4.entity.Post;
 import com.example.kyrsach4.network.ApiClient;
+import com.example.kyrsach4.network.SessionStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +28,19 @@ public class HomeActivity extends AppCompatActivity {
     private final List<Post> postList = new ArrayList<>();
 
     ImageButton navHome, navChat, navHeart, navTranslate, navProfile;
+    ImageButton btnHelp;
+    Integer userId = SessionStorage.userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        if (userId == null) {
+            finish(); // пользователь не авторизован
+            return;
+        }
 
         initViews();
         setupRecycler();
@@ -47,7 +56,10 @@ public class HomeActivity extends AppCompatActivity {
         navHeart = findViewById(R.id.nav_heart);
         navTranslate = findViewById(R.id.nav_translate);
         navProfile = findViewById(R.id.nav_profile);
+
+        btnHelp = findViewById(R.id.btnHelp);
     }
+
 
     private void setupRecycler() {
         postsRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -81,5 +93,15 @@ public class HomeActivity extends AppCompatActivity {
         navTranslate.setOnClickListener(v -> {
             startActivity(new Intent(this, TranslatorActivity.class));
         });
+
+        navProfile.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, MyProfileActivityKs.class));
+        });
+
+        btnHelp.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, HelpActivity.class));
+        });
+
     }
+
 }

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kyrsach4.network.ApiClient;
 import com.example.kyrsach4.network.AuthResponse;
+import com.example.kyrsach4.network.SessionStorage;
 import com.example.kyrsach4.reqresp.LoginRequest;
 import com.example.kyrsach4.reqresp.RegisterRequest;
 
@@ -66,10 +67,14 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
 
                             if ("ok".equals(response.body().status)) {
+
+                                SessionStorage.userId = response.body().userId;
                                 Toast.makeText(LoginActivity.this, "Вход выполнен", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                 finish();
-                            } else {
+                            }
+
+                            else {
                                 Toast.makeText(
                                         LoginActivity.this,
                                         response.body().error,

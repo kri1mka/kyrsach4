@@ -2,6 +2,8 @@ package org.example.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
 import org.example.dao.TripCardDAO;
 import org.example.entity.TripCard;
 
@@ -11,13 +13,18 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/users/trips/*") // userId в конце URL
+@WebServlet("/api/users/trips/*")
+@MultipartConfig
 public class TripServlet extends HttpServlet {
 
     private TripCardDAO tripDAO;
@@ -61,10 +68,13 @@ public class TripServlet extends HttpServlet {
         try {
             List<TripCard> trips = tripDAO.findByUserId(userId);
 
-            // Формируем URL фото и передаём даты
+            // Формируем URL фото только если photoIt не начинается с http
             for (TripCard trip : trips) {
                 if (trip.getPhotoIt() != null && !trip.getPhotoIt().isEmpty()) {
-                    trip.setPhotoIt("http://10.0.2.2:8080/Backend/images/" + trip.getPhotoIt());
+                    String photo = trip.getPhotoIt();
+                    if (!photo.startsWith("http")) {
+                        trip.setPhotoIt("http://10.0.2.2:8080/Backend/images/" + photo);
+                    }
                 }
             }
 
@@ -74,20 +84,68 @@ public class TripServlet extends HttpServlet {
         }
     }
 
+
     // POST /api/users/trips — создать новую поездку
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        TripCard trip = gson.fromJson(req.getReader(), TripCard.class);
-        if (trip.getUserId() == null) {
-            writeJson(resp, 400, Map.of("error", "userId is required"));
-            return;
-        }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         try {
+            // --- Получаем файл ---
+            Part filePart = req.getPart("file");
+            String originalName = null;
+            if (filePart != null && filePart.getSize() > 0) {
+                originalName = filePart.getSubmittedFileName();
+                File uploadDir = new File("uploads/trips/");
+                if (!uploadDir.exists()) uploadDir.mkdirs();
+                File file = new File(uploadDir, originalName);
+                try (InputStream in = filePart.getInputStream()) {
+                    Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+
+            // --- Получаем остальные параметры ---
+            int userId = Integer.parseInt(req.getParameter("user_id"));
+            String location = req.getParameter("location");
+            java.sql.Date startDate = java.sql.Date.valueOf(req.getParameter("startDate"));
+            java.sql.Date endDate = java.sql.Date.valueOf(req.getParameter("endDate"));
+            String type = req.getParameter("type");
+            BigDecimal price = new BigDecimal(req.getParameter("price"));
+            String description = req.getParameter("description");
+
+            // --- Создаём TripCard и сохраняем ---
+            TripCard trip = new TripCard();
+            trip.setUserId(userId);
+            trip.setLocation(location);
+            trip.setStartDate(new java.util.Date(startDate.getTime()));
+            trip.setEndDate(new java.util.Date(endDate.getTime()));
+            trip.setType(type);
+            trip.setPrice(price);
+            trip.setDescription(description);
+            trip.setPhotoIt(originalName); // только имя файла
+
             tripDAO.save(trip);
-            writeJson(resp, 201, trip);
-        } catch (RuntimeException e) {
-            writeJson(resp, 500, Map.of("error", e.getMessage()));
+
+            // --- Формируем JSON для ответа ---
+            Map<String, Object> result = Map.of(
+                    "id", trip.getId(),
+                    "userId", trip.getUserId(),
+                    "location", trip.getLocation(),
+                    "startDate", trip.getStartDate(),
+                    "endDate", trip.getEndDate(),
+                    "type", trip.getType(),
+                    "price", trip.getPrice(),
+                    "description", trip.getDescription(),
+                    "photoIt", "http://10.0.2.2:8080/Backend/images/" + originalName
+            );
+
+            resp.setContentType("application/json; charset=UTF-8");
+            resp.getWriter().write(new Gson().toJson(result));
+
+        } catch (Exception e) {
+            resp.setStatus(500);
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+            e.printStackTrace();
         }
     }
 
@@ -164,7 +222,6 @@ public class TripServlet extends HttpServlet {
             writeJson(resp, 500, Map.of("error", e.getMessage()));
         }
     }
-
     // Фильтры по параметрам
     private List<TripCard> applyFilters(List<TripCard> trips, Map<String, String[]> params) {
         return trips.stream().filter(trip -> {
@@ -172,14 +229,14 @@ public class TripServlet extends HttpServlet {
                 String filter = params.get("type")[0];
                 if (filter != null && !filter.isEmpty() &&
                         (trip.getType() == null || !trip.getType().toLowerCase().contains(filter.toLowerCase())))
-                    return false;
+                return false;
             }
 
             if (params.containsKey("location")) {
                 String filter = params.get("location")[0];
                 if (filter != null && !filter.isEmpty() &&
                         (trip.getLocation() == null || !trip.getLocation().toLowerCase().contains(filter.toLowerCase())))
-                    return false;
+                return false;
             }
 
             if (params.containsKey("minPrice")) {

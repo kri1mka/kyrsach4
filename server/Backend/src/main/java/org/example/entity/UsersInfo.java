@@ -82,26 +82,28 @@ public class UsersInfo {
     public void setAbout(String about) {
         this.about = about;
     }
-}
 
-    public void getAvatarUrl() {
-        return avatarUrl;
-    }
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public void getCity() {
+    public String getCity() {
         return city;
     }
+
     public void setCity(String city) {
         this.city = city;
     }
 
-    public void getTravelType() {
+    public String getTravelType() {
         return travelType;
     }
+
     public void setTravelType(String travelType) {
         this.travelType = travelType;
+    }
+
+    public String getAvatarUrl() {
+        return  avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this. avatarUrl = avatarUrl;
     }
 }
