@@ -2,6 +2,9 @@ package org.example.servlets;
 
 
 import com.google.gson.Gson;
+import jakarta.servlet.ServletException;
+import org.example.dao.PostCardDAO;
+import org.example.dao.TripCardDAO;
 import org.example.dao.UserDAO;
 import org.example.dao.UsersInfoDAO;
 import org.example.dto.UpdateProfileRequest;
@@ -11,7 +14,10 @@ import org.example.entity.UsersInfo;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import org.example.util.DBConnection;
+
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,8 +25,17 @@ import java.util.Map;
 @WebServlet("/api/users/*")
 public class UserServler extends HttpServlet {
 
+    private UserDAO userDao;
+    @Override
+    public void init() throws ServletException {
+        try {
+            Connection connection = DBConnection.getConnection();
+            userDao = new UserDAO(connection);
+        } catch (RuntimeException e) {
+            throw new ServletException("Cannot initialize DAO: " + e.getMessage(), e);
+        }
+    }
 
-    private final UserDAO userDAO = new UserDAO();
     private final UsersInfoDAO usersInfoDAO = new UsersInfoDAO();
     private final Gson gson = new Gson();
 
@@ -48,7 +63,7 @@ public class UserServler extends HttpServlet {
             int userId = Integer.parseInt(pathInfo.substring(1));
 
 
-            User user = userDAO.findById(userId);
+            User user = userDao.findById(userId);
             if (user == null) {
                 resp.setStatus(404);
                 result.put("error", "User not found");
@@ -76,11 +91,11 @@ public class UserServler extends HttpServlet {
 
                 if (info.getAvatarUrl() != null && !info.getAvatarUrl().isEmpty()) {
                     result.put(
-                            "avatarUrl",
+                            "photo",
                             "http://10.0.2.2:8080/Backend/images/" + info.getAvatarUrl()
                     );
                 } else {
-                    result.put("avatarUrl", null);
+                    result.put("photo", null);
                 }
             }
 
@@ -129,11 +144,11 @@ public class UserServler extends HttpServlet {
             if (request.getPhoto() != null) info.setAvatarUrl(request.getPhoto());
 
             // При необходимости можно сохранять имя/фамилию в Users таблице
-            User user = userDAO.findById(userId);
+            User user = userDao.findById(userId);
             if (user != null) {
                 if (request.getName() != null) user.setName(request.getName());
                 if (request.getSurname() != null) user.setSurname(request.getSurname());
-                userDAO.update(user);
+                userDao.update(user);
             }
 
             usersInfoDAO.update(info);

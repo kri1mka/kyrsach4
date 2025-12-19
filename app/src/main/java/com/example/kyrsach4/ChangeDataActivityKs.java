@@ -101,7 +101,6 @@ public class ChangeDataActivityKs extends AppCompatActivity {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 (view, year1, month1, dayOfMonth) -> {
@@ -170,7 +169,7 @@ public class ChangeDataActivityKs extends AppCompatActivity {
         int userId = getSharedPreferences("UserPrefs", MODE_PRIVATE)
                 .getInt("userId", 1);
 
-        ApiClient.api.updateProfile(userId, request).enqueue(new retrofit2.Callback<Void>() {
+        ApiClient.serverApi.updateProfile(userId, request).enqueue(new retrofit2.Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -191,7 +190,7 @@ public class ChangeDataActivityKs extends AppCompatActivity {
     private void loadUserData() {
         int userId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getInt("userId", 1);
 
-        ApiClient.api.getUserProfile(userId).enqueue(new retrofit2.Callback<UserProfile>() {
+        ApiClient.serverApi.getUserProfile(userId).enqueue(new retrofit2.Callback<UserProfile>() {
             @Override
             public void onResponse(Call<UserProfile> call, retrofit2.Response<UserProfile> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -205,6 +204,7 @@ public class ChangeDataActivityKs extends AppCompatActivity {
                     originalAge = user.getAge();
 
                     editName.setText(originalName);
+                    ;
                     editSurname.setText(originalSurname);
                     editCityCountry.setText(originalLocation);
                     editTravelType.setText(originalTravelType);
@@ -237,11 +237,11 @@ public class ChangeDataActivityKs extends AppCompatActivity {
     }
 
     private boolean hasChanges() {
-        return !equalsSafe(editName.getText().toString().trim(), originalName)
-                || !equalsSafe(editSurname.getText().toString().trim(), originalSurname)
-                || !equalsSafe(editCityCountry.getText().toString().trim(), originalLocation)
-                || !equalsSafe(editTravelType.getText().toString().trim(), originalTravelType)
-                || selectedImageUri != null
+        return !equalsSafe(editName.getText().toString().trim(), originalName) ||
+        !equalsSafe(editSurname.getText().toString().trim(), originalSurname) ||
+        !equalsSafe(editCityCountry.getText().toString().trim(), originalLocation) ||
+        !equalsSafe(editTravelType.getText().toString().trim(), originalTravelType) ||
+        selectedImageUri != null
                 || (selectedDate != null && originalAge != null && calculateAge(selectedDate) != originalAge);
     }
 }

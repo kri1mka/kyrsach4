@@ -107,7 +107,6 @@ public class ProfileActivityKs extends AppCompatActivity {
         navProfile = findViewById(R.id.nav_profile);
 
     }
-
     private void setupListeners() {
         btnPosts.setOnClickListener(v -> showPosts());
         btnTrips.setOnClickListener(v -> showTrips());
@@ -132,7 +131,7 @@ public class ProfileActivityKs extends AppCompatActivity {
         btnPosts.setColorFilter(getResources().getColor(R.color.primary));
         btnTrips.setColorFilter(getResources().getColor(R.color.text_hint));
 
-        ApiClient.api.getUserPosts(userId).enqueue(new Callback<List<PostCard>>() {
+        ApiClient.serverApi.getUserPosts(userId).enqueue(new Callback<List<PostCard>>() {
             @Override
             public void onResponse(Call<List<PostCard>> call, Response<List<PostCard>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -146,7 +145,7 @@ public class ProfileActivityKs extends AppCompatActivity {
                     }
 
                     for (PostCard post : posts) {
-                        View postView = getLayoutInflater().inflate(R.layout.item_post, postsContainer, false);
+                        View postView = getLayoutInflater().inflate(R.layout.item_post_ks, postsContainer, false);
                         bindPost(postView, post);
                         postsContainer.addView(postView);
                     }
@@ -193,7 +192,6 @@ public class ProfileActivityKs extends AppCompatActivity {
         } else {
             image.setImageResource(R.drawable.sample_photo1);
         }
-
         // Дата
         if (post.getCreatedAt() != null && !post.getCreatedAt().isEmpty()) {
             try {
@@ -265,7 +263,7 @@ public class ProfileActivityKs extends AppCompatActivity {
         btnPosts.setColorFilter(getResources().getColor(R.color.text_hint));
         btnTrips.setColorFilter(getResources().getColor(R.color.primary));
 
-        ApiClient.api.getUserTrips(userId).enqueue(new Callback<List<TripCard>>() {
+        ApiClient.serverApi.getUserTrips(userId).enqueue(new Callback<List<TripCard>>() {
             @Override
             public void onResponse(Call<List<TripCard>> call, Response<List<TripCard>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -289,7 +287,6 @@ public class ProfileActivityKs extends AppCompatActivity {
                     if (futureTrips.isEmpty()) {
                         tvEmptyTrips.setVisibility(View.VISIBLE);
                     }
-
                     tripsAdapter.updateData(futureTrips);
                 }
             }
@@ -304,7 +301,7 @@ public class ProfileActivityKs extends AppCompatActivity {
 
 
     private void loadUserProfile() {
-        ApiClient.api.getUserProfile(userId).enqueue(new Callback<UserProfile>() {
+        ApiClient.serverApi.getUserProfile(userId).enqueue(new Callback<UserProfile>() {
             @Override
             public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -388,7 +385,6 @@ public class ProfileActivityKs extends AppCompatActivity {
         navChat.setOnClickListener(v -> {
             Toast.makeText(this, "Чат", Toast.LENGTH_SHORT).show();
         });
-
         navHeart.setOnClickListener(v -> {
             Toast.makeText(this, "Свапы", Toast.LENGTH_SHORT).show();
         });

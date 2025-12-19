@@ -54,7 +54,6 @@ public class UserProfile {
     public String getPhoto() {
         return avatarUrl;
     }
-
     public void setPhoto(String photo) {
         this.avatarUrl = photo;
     }

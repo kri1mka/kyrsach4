@@ -28,5 +28,5 @@ public class ApiClient {
             .client(client)
             .build();
 
-    public static final ServerApi api = retrofit.create(ServerApi.class);
+    public static final ServerApi serverApi = retrofit.create(ServerApi.class);
 }

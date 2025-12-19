@@ -99,7 +99,6 @@
             android:focusable="false"
             android:clickable="true"
             android:layout_marginBottom="8dp"/>
-
         <EditText
             android:id="@+id/et_when2"
             android:layout_width="match_parent"
@@ -197,7 +196,6 @@
             android:textAllCaps="false"
             android:textSize="14sp"
             android:textStyle="bold" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_trip"
             android:layout_width="0dp"

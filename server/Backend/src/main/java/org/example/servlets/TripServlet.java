@@ -222,7 +222,6 @@ public class TripServlet extends HttpServlet {
             writeJson(resp, 500, Map.of("error", e.getMessage()));
         }
     }
-
     // Фильтры по параметрам
     private List<TripCard> applyFilters(List<TripCard> trips, Map<String, String[]> params) {
         return trips.stream().filter(trip -> {
@@ -230,14 +229,14 @@ public class TripServlet extends HttpServlet {
                 String filter = params.get("type")[0];
                 if (filter != null && !filter.isEmpty() &&
                         (trip.getType() == null || !trip.getType().toLowerCase().contains(filter.toLowerCase())))
-                    return false;
+                return false;
             }
 
             if (params.containsKey("location")) {
                 String filter = params.get("location")[0];
                 if (filter != null && !filter.isEmpty() &&
                         (trip.getLocation() == null || !trip.getLocation().toLowerCase().contains(filter.toLowerCase())))
-                    return false;
+                return false;
             }
 
             if (params.containsKey("minPrice")) {

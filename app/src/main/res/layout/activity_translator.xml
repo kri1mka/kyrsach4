@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:padding="16dp">
 
     <ImageView
@@ -29,6 +30,7 @@
             android:layout_height="wrap_content"
             android:text="РУССКИЙ"
             android:textSize="16sp"
+            android:textColor="@color/white"
             android:textStyle="bold"/>
 
         <ImageView
@@ -45,12 +47,14 @@
             android:layout_height="wrap_content"
             android:text="АНГЛИЙСКИЙ"
             android:textSize="16sp"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
     </LinearLayout>
 
     <!-- Поле ввода -->
     <EditText
+        android:inputType="text"
         android:id="@+id/inputText"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -75,13 +79,18 @@
         android:gravity="top" />
 
     <!-- Кнопка -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnTranslate"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:text="Перевести"
-        android:layout_centerHorizontal="true"
+        android:layout_width="300dp"
+        android:layout_height="45dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:backgroundTint="#D6D0D0" />
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/button_round"
+        android:backgroundTint="#435986"
+        android:text="Перевести"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
 </RelativeLayout>

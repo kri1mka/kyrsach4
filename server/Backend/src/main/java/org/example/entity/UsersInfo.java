@@ -1,64 +1,87 @@
 package org.example.entity;
 
-
 import java.util.Date;
 
-
 public class UsersInfo {
-    private Integer id;
-    private Integer userId;
+    private int id;
+    private int userId;
+    private int age;
     private Date dateOfBirth;
     private String sex;
-    private Integer age;
-    private String interests;
     private String about;
+    private String interests;
     private String city;
     private String travelType;
-    private String  avatarUrl;
+    private String avatarUrl;
 
 
     public UsersInfo() {}
 
-
-    public UsersInfo(Integer userId, Date dateOfBirth, String sex, Integer age, String interests, String about, String city, String travelType,String avatarUrl) {
+    public UsersInfo(int id, int userId, Date dateOfBirth, String sex, int age, String interests, String about) {
+        this.id = id;
         this.userId = userId;
-        this.dateOfBirth = dateOfBirth;
         this.sex = sex;
         this.age = age;
-        this.interests = interests;
+        this.dateOfBirth = dateOfBirth;
         this.about = about;
-        this.city = city;
-        this.travelType = travelType;
-        this. avatarUrl =  avatarUrl;
+        this.interests = interests;
     }
 
+    public Integer getId() {
+        return id;
+    }
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
+    public Integer getUserId() {
+        return userId;
+    }
 
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
+    public java.sql.Date getDateOfBirth() {
+        return (java.sql.Date) dateOfBirth;
+    }
 
-    public Date getDateOfBirth() { return dateOfBirth; }
-    public void setDateOfBirth(Date dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
 
+    public String getSex() {
+        return sex;
+    }
 
-    public String getSex() { return sex; }
-    public void setSex(String sex) { this.sex = sex; }
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
+    public Integer getAge() {
+        return age;
+    }
 
-    public Integer getAge() { return age; }
-    public void setAge(Integer age) { this.age = age; }
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 
+    public String getInterests() {
+        return interests;
+    }
 
-    public String getInterests() { return interests; }
-    public void setInterests(String interests) { this.interests = interests; }
+    public void setInterests(String interests) {
+        this.interests = interests;
+    }
 
+    public String getAbout() {
+        return about;
+    }
 
-    public String getAbout() { return about; }
-    public void setAbout(String about) { this.about = about; }
+    public void setAbout(String about) {
+        this.about = about;
+    }
 
     public String getCity() {
         return city;

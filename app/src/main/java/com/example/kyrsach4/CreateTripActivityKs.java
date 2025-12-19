@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -43,6 +44,7 @@ public class CreateTripActivityKs extends AppCompatActivity {
     private List<String> galleryImages = new ArrayList<>();
     private Uri selectedImageUri;
     private Uri lastSelectedImageUri;
+    private ImageView buttonBack;
 
     private int userId = 1; // по умолчанию, брать из SharedPreferences
 
@@ -62,6 +64,13 @@ public class CreateTripActivityKs extends AppCompatActivity {
         etPrice = findViewById(R.id.et_price);
         etDescription = findViewById(R.id.et_description);
         rvThumbnails = findViewById(R.id.rv_thumbnails);
+        buttonBack = findViewById(R.id.btn_back);
+        buttonBack.setOnClickListener(v -> finish());
+
+        findViewById(R.id.btn_publication).setOnClickListener(v -> {
+            startActivity(new Intent(this, CreatePublicationActivityKs.class));
+            finish();
+        });
 
         rvThumbnails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
@@ -87,7 +96,6 @@ public class CreateTripActivityKs extends AppCompatActivity {
         etWhen2.setFocusable(false);
         etWhen2.setClickable(true);
         etWhen2.setOnClickListener(v -> showDatePicker(etWhen2, false));
-
         findViewById(R.id.btn_primary).setOnClickListener(v -> {
             if (lastSelectedImageUri != null || selectedImageUri != null) {
                 createTripWithImage(lastSelectedImageUri != null ? lastSelectedImageUri : selectedImageUri);
@@ -127,7 +135,7 @@ public class CreateTripActivityKs extends AppCompatActivity {
             if (files != null) {
                 for (File f : files) {
                     if (f.getName().toLowerCase().endsWith(".jpg") ||
-                            f.getName().toLowerCase().endsWith(".jpeg") ||
+                    f.getName().toLowerCase().endsWith(".jpeg") ||
                             f.getName().toLowerCase().endsWith(".png")) {
                         galleryImages.add(f.getAbsolutePath());
                     }
@@ -175,8 +183,6 @@ public class CreateTripActivityKs extends AppCompatActivity {
                     fileName,
                     RequestBody.create(bytes, MediaType.parse("image/*"))
             );
-
-
             RequestBody location = RequestBody.create(etWhere.getText().toString(), MediaType.parse("text/plain"));
             RequestBody startDateBody = RequestBody.create(etWhen.getText().toString(), MediaType.parse("text/plain"));
             RequestBody endDateBody = RequestBody.create(etWhen2.getText().toString(), MediaType.parse("text/plain"));
@@ -185,7 +191,7 @@ public class CreateTripActivityKs extends AppCompatActivity {
             RequestBody description = RequestBody.create(etDescription.getText().toString(), MediaType.parse("text/plain"));
             RequestBody userIdBody = RequestBody.create(String.valueOf(userId), MediaType.parse("text/plain"));
 
-            ApiClient.api.createTripMultipart(
+            ApiClient.serverApi.createTripMultipart(
                     userIdBody, location, startDateBody, endDateBody, type, price, description, imagePart
             ).enqueue(new Callback<TripCard>() {
                 @Override

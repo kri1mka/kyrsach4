@@ -1,7 +1,5 @@
 package org.example.entity;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
 
 public class PostCard {
@@ -11,37 +9,69 @@ public class PostCard {
     private String location;
     private Date createdAt;
     private String photoIt;
+    public PostCard() {}
 
+    public PostCard(Integer user_id, String description, String location, String photo_it) {
+        this.userId = user_id;
+        this.description = description;
+        this.location = location;
+        this.photoIt = photo_it;
+    }
     // Новое поле для полного имени пользователя
     private String userName;
-
     private Integer likesCount;
 
-
-    // Геттеры и сеттеры
     public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
+    public Integer getUserId() {
+        return userId;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setUserId(Integer user_id) {
+        this.userId = user_id;
+    }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getPhotoIt() { return photoIt; }
-    public void setPhotoIt(String photoIt) { this.photoIt = photoIt; }
+    public String getLocation() {
+        return location;
+    }
 
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date created_at) {
+        this.createdAt = created_at;
+    }
     // Геттер и сеттер для полного имени пользователя
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
 
+
     public Integer getLikesCount() { return likesCount; }
     public void setLikesCount(Integer likesCount) { this.likesCount = likesCount; }
+
+    public String getPhotoIt() {
+        return photoIt;
+    }
+
+    public void setPhotoIt(String photo_it) {
+        this.photoIt = photo_it;
+    }
+
 
 }

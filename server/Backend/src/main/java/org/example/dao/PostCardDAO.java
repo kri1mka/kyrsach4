@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.dto.PostDto;
 import org.example.entity.PostCard;
 import org.example.util.DBConnection;
 
@@ -10,6 +11,10 @@ import java.util.List;
 public class PostCardDAO {
 
     private final Connection connection;
+    public PostCardDAO(Connection connection) {
+        this.connection = connection;
+    }
+
     private static final String INSERT =
             "INSERT INTO postcard (user_id, description, location, created_at, photo_it) VALUES (?, ?, ?, ?, ?)";
 
@@ -27,10 +32,48 @@ public class PostCardDAO {
     private static final String UPDATE =
             "UPDATE postcard SET description=?, location=?, photo_it=? WHERE id=?";
     private static final String DELETE = "DELETE FROM postcard WHERE id=?";
+    private static final String IMAGE_BASE_URL =
+            "http://10.0.2.2:8080/Backend/images/";
 
-    public PostCardDAO(Connection connection) {
-        this.connection = connection;
+
+    public List<PostDto> getFeed() {
+        List<PostDto> list = new ArrayList<>();
+
+        String sql = """
+            SELECT 
+                p.id,
+                p.description,
+                p.location,
+                p.created_at,
+                p.photo_it AS photo_url,
+                CONCAT(u.name, ' ', u.surname) AS user_name
+            FROM PostCard p
+            JOIN Users u ON p.user_id = u.id
+            ORDER BY p.created_at DESC
+        """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                PostDto dto = new PostDto();
+                dto.id = rs.getInt("id");
+                dto.description = rs.getString("description");
+                dto.location = rs.getString("location");
+                dto.createdAt = rs.getTimestamp("created_at").toString();
+                String fileName = rs.getString("photo_url");
+                dto.photoUrl = IMAGE_BASE_URL + fileName;
+                dto.userName = rs.getString("user_name");
+                list.add(dto);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка загрузки ленты", e);
+        }
+
+        return list;
     }
+
     public void save(PostCard card) {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
@@ -66,7 +109,6 @@ public class PostCardDAO {
         }
         return null;
     }
-
     public List<PostCard> findByUserId(int userId) {
         List<PostCard> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
@@ -82,37 +124,6 @@ public class PostCardDAO {
         }
         return list;
     }
-
-    public List<PostCard> findLatest(int limit) {
-        List<PostCard> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_LATEST)) {
-
-            stmt.setInt(1, limit);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) list.add(map(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка поиска последних постов", e);
-        }
-        return list;
-    }
-
-    public List<PostCard> findAll() {
-        List<PostCard> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(FIND_ALL);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) list.add(map(rs));
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка получения всех PostCard", e);
-        }
-        return list;
-    }
-
     public void update(PostCard card) {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE)) {

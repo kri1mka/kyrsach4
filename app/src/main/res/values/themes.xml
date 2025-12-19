@@ -45,5 +45,15 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_primary</item>
     </style>
+
     <style name="Theme.Kyrsach4" parent="Base.Theme.Kyrsach4" />
+
+    <style name="Theme.Kyrsach4.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Kyrsach4.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Kyrsach4.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

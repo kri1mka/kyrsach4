@@ -70,7 +70,7 @@ public class CreatePostDetailsActivityKs extends AppCompatActivity {
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
         // Загружаем фото на сервер
-        ApiClient.api.uploadPostImage(body).enqueue(new Callback<Map<String, String>>() {
+        ApiClient.serverApi.uploadPostImage(body).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -109,9 +109,8 @@ public class CreatePostDetailsActivityKs extends AppCompatActivity {
         post.setLocation(location);
         post.setDescription(description);
         post.setPhotoIt(imageUrl); // полный URL
-
         // Создаем пост на сервере
-        ApiClient.api.createPost(post).enqueue(new Callback<PostCard>() {
+        ApiClient.serverApi.createPost(post).enqueue(new Callback<PostCard>() {
             @Override
             public void onResponse(Call<PostCard> call, Response<PostCard> response) {
                 if (response.isSuccessful() && response.body() != null) {

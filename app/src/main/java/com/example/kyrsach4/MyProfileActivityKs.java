@@ -21,6 +21,7 @@ import com.example.kyrsach4.entity.PostCard;
 import com.example.kyrsach4.entity.TripCard;
 import com.example.kyrsach4.entity.UserProfile;
 import com.example.kyrsach4.network.ApiClient;
+import com.example.kyrsach4.network.SessionStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,26 +54,28 @@ public class MyProfileActivityKs extends AppCompatActivity {
     private PostAdapterKs postAdapter;
     private ImageView ivAvatar;
 
-    private int currentUserId = 1; // Замените на реальный ID пользователя
+    private Integer currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pfofile_ks);
 
+        currentUserId = SessionStorage.userId;
+
+        if (currentUserId == null) {
+            // пользователь не авторизован
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
         // Инициализация элементов
         initViews();
 
-        // Получаем ID пользователя из SharedPreferences или Intent
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        currentUserId = prefs.getInt("userId", 1);
-
         // Инициализация адаптеров
         tripsAdapter = new TripsAdapterKs(tripList);
-
         rvTrips.setLayoutManager(new LinearLayoutManager(this));
         rvTrips.setAdapter(tripsAdapter);
-
 
         // Загрузка данных
         loadUserData();
@@ -111,7 +114,6 @@ public class MyProfileActivityKs extends AppCompatActivity {
         // Кнопки действий
         btnBack = findViewById(R.id.btn_back);
         btnBell = findViewById(R.id.btn_bell);
-
         // Нижняя навигация
         navHome = findViewById(R.id.nav_home);
         navChat = findViewById(R.id.nav_chat);
@@ -121,7 +123,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        ApiClient.api.getUserProfile(currentUserId).enqueue(new Callback<UserProfile>() {
+        ApiClient.serverApi.getUserProfile(currentUserId).enqueue(new Callback<UserProfile>() {
             @Override
             public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -142,7 +144,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
     }
 
     private void loadUserPosts() {
-        ApiClient.api.getUserPosts(currentUserId).enqueue(new Callback<List<PostCard>>() {
+        ApiClient.serverApi.getUserPosts(currentUserId).enqueue(new Callback<List<PostCard>>() {
             @Override
             public void onResponse(Call<List<PostCard>> call, Response<List<PostCard>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -164,7 +166,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
     }
 
     private void loadUserTrips() {
-        ApiClient.api.getUserTrips(currentUserId)
+        ApiClient.serverApi.getUserTrips(currentUserId)
                 .enqueue(new Callback<List<TripCard>>() {
                     @Override
                     public void onResponse(Call<List<TripCard>> call, Response<List<TripCard>> response) {
@@ -209,7 +211,6 @@ public class MyProfileActivityKs extends AppCompatActivity {
         userAge.setText(user.getAge() != null ? user.getAge() + " лет" : "—");
         userLocation.setText(user.getLocation() != null ? user.getLocation() : "—");
         userTripType.setText(user.getTravelType() != null ? user.getTravelType() : "—");
-
         if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
             Glide.with(MyProfileActivityKs.this)
                     .load(user.getPhoto())
@@ -232,7 +233,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
         tvEmptyPosts.setVisibility(View.GONE);
 
         for (PostCard post : postList) {
-            View postView = getLayoutInflater().inflate(R.layout.item_post, postsContainer, false);
+            View postView = getLayoutInflater().inflate(R.layout.item_post_ks, postsContainer, false);
 
             bindPost(postView, post);
 
@@ -312,7 +313,6 @@ public class MyProfileActivityKs extends AppCompatActivity {
         } else {
             image.setImageResource(R.drawable.sample_photo1);
         }
-
         // Дата
         if (post.getCreatedAt() != null && !post.getCreatedAt().isEmpty()) {
             try {
@@ -379,7 +379,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
 
     private void setupBottomNavigation() {
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         });
 
@@ -392,7 +392,8 @@ public class MyProfileActivityKs extends AppCompatActivity {
         });
 
         navTranslate.setOnClickListener(v -> {
-            Toast.makeText(this, "Перевод", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, TranslatorActivity.class));
+            finish();
         });
 
         navProfile.setOnClickListener(v -> {

@@ -50,7 +50,7 @@ public class TripsActivity2 extends AppCompatActivity {
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(rvTrips);
 
-        // ❗ Инициализация кнопок
+        // Инициализация кнопок
         btnBack = findViewById(R.id.btn_back);
         navHome = findViewById(R.id.nav_home);
         navChat = findViewById(R.id.nav_chat);
@@ -89,9 +89,9 @@ public class TripsActivity2 extends AppCompatActivity {
 
     private void loadUserTrips() {
 
-        int userId = 1; // ❗ временно. Потом возьмёшь из сессии
+        int userId = 1; // временно. Потом возьмёшь из сессии
 
-        ApiClient.api.getUserTrips(userId)
+        ApiClient.serverApi.getUserTrips(userId)
                 .enqueue(new Callback<List<TripCard>>() {
 
                     @Override
@@ -108,7 +108,6 @@ public class TripsActivity2 extends AppCompatActivity {
                                     trips.add(trip);
                                 }
                             }
-
                             adapter.notifyDataSetChanged();
                         }
                     }
