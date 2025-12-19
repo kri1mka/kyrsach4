@@ -91,39 +91,19 @@
                                 app:shapeAppearanceOverlay="@style/CircleImage" />
                         </FrameLayout>
                     </FrameLayout>
-
-                    <!-- Аватар -->
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp">
-
-                        <FrameLayout
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:background="@drawable/circle_bg">
-
-                            <ImageView
-                                android:id="@+id/imageProfileAvatar"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/circle_bg"
-                                app:shapeAppearanceOverlay="@style/CircleImage" />
-                        </FrameLayout>
-                    </FrameLayout>
                 </LinearLayout>
 
-                <!-- Текст "Изменить фото или аватар" -->
+                <!-- Текст "Изменить фото" -->
                 <TextView
+                    android:id="@+id/textChangePhoto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Изменить фото или аватар"
-                    android:textSize="14sp"
-                    android:textColor="#435986"
-                    android:textStyle="normal"
+                    android:gravity="center"
                     android:padding="8dp"
-                    android:gravity="center" />
+                    android:text="Изменить фото"
+                    android:textColor="#435986"
+                    android:textSize="14sp"
+                    android:textStyle="normal" />
             </LinearLayout>
 
             <!-- Имя и фамилия в строку -->

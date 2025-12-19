@@ -2,199 +2,211 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:padding="16dp">
 
-    <!-- Top: back + username -->
+    <!-- Top: back + title -->
     <ImageButton
         android:id="@+id/btn_back"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Назад"
         android:src="@drawable/icons8_arri_re_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#435986" />
 
     <TextView
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name"
+        android:gravity="center"
+        android:text="Новая поездка"
+        android:textColor="#212121"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@id/btn_back"
-        app:layout_constraintTop_toTopOf="@id/btn_back"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="6dp"/>
+        app:layout_constraintTop_toTopOf="@id/btn_back"/>
 
-    <!-- Big placeholder icon -->
-    <ImageView
-        android:id="@+id/iv_big_image"
+    <!-- Big circular ImageView -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_big_image_container"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="24dp"
-        android:contentDescription="Добавить фото"
-        android:scaleType="centerInside"
-        android:src="@android:drawable/gallery_thumb"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/a"
+        app:layout_constraintTop_toBottomOf="@id/btn_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_back" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImage"/>
 
-    <!-- Поля формы: спиннеры и edittext -->
+    <!-- Gallery RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_thumbnails"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:scrollbars="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/iv_big_image_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Form container -->
     <LinearLayout
         android:id="@+id/form_container"
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/iv_big_image"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/rv_thumbnails"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Куда (spinner-like) -->
-        <LinearLayout
+        <!-- Куда -->
+        <EditText
+            android:id="@+id/et_where"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:background="@drawable/field_bg"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/tv_where"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Куда"
-                android:textColor="#808080"/>
+            android:background="@drawable/edittext_bg"
+            android:hint="Куда"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
 
-            <ImageView
-                android:layout_width="19dp"
-                android:layout_height="15dp"
-                android:src="@drawable/m3_split_button_chevron_avd" />
-        </LinearLayout>
-
-        <!-- Когда (spinner-like) -->
-        <LinearLayout
+        <EditText
+            android:id="@+id/et_when"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:background="@drawable/field_bg"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/tv_when"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Когда"
-                android:textColor="#808080"/>
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/m3_split_button_chevron_avd" />
-        </LinearLayout>
-
-        <!-- Вид поездки (spinner-like) -->
-        <LinearLayout
-            android:id="@+id/ll_trip_type"
+            android:background="@drawable/edittext_bg"
+            android:hint="С какого числа"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:focusable="false"
+            android:clickable="true"
+            android:layout_marginBottom="8dp"/>
+        <EditText
+            android:id="@+id/et_when2"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:background="@drawable/field_bg"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/tv_trip_type"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Вид поездки"
-                android:textColor="#808080"/>
+            android:background="@drawable/edittext_bg"
+            android:hint="По какое число"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:focusable="false"
+            android:clickable="true"
+            android:layout_marginBottom="8dp"/>
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/m3_split_button_chevron_avd" />
-        </LinearLayout>
+        <!-- Вид поездки -->
+        <EditText
+            android:id="@+id/et_trip_type"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/edittext_bg"
+            android:hint="Вид поездки"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
 
-        <!-- Цена (EditText) -->
+        <!-- Цена -->
         <EditText
             android:id="@+id/et_price"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/field_bg"
+            android:background="@drawable/edittext_bg"
             android:hint="Цена"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:inputType="text"
-            android:layout_marginBottom="10dp"/>
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="numberDecimal"
+            android:textSize="16sp"
+            android:textColor="#212121"
+            android:layout_marginBottom="8dp"/>
 
-        <!-- Описание (multi-line) -->
+        <!-- Описание -->
         <EditText
             android:id="@+id/et_description"
             android:layout_width="match_parent"
-            android:layout_height="96dp"
-            android:background="@drawable/field_bg"
+            android:layout_height="80dp"
+            android:background="@drawable/edittext_bg"
             android:hint="Описание"
             android:padding="12dp"
             android:gravity="top"
-            android:inputType="textMultiLine"/>
+            android:inputType="textMultiLine"
+            android:textSize="16sp"
+            android:textColor="#212121"
+            android:minLines="3"
+            android:maxLines="4"/>
     </LinearLayout>
 
-    <!-- Большая кнопка действия -->
-    <Button
+    <!-- Кнопка создания -->
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_primary"
         android:layout_width="0dp"
-        android:layout_height="44dp"
+        android:layout_height="48dp"
         android:text="Создать поездку"
         android:textStyle="bold"
         android:textColor="@android:color/white"
-        android:background="@drawable/main_button"
-        android:layout_marginTop="18dp"
+        android:textSize="16sp"
+        android:background="@drawable/button_ks"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/form_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Нижний переключатель: ПУБЛИКАЦИЯ | ПОЕЗДКА -->
+    <!-- Нижний переключатель -->
     <LinearLayout
         android:id="@+id/bottom_toggle"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="48dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="12dp"
-        android:padding="6dp"
+        android:layout_marginTop="16dp"
+        android:padding="4dp"
+        app:layout_constraintTop_toBottomOf="@id/btn_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_publication"
-            android:layout_width="2dp"
-            android:layout_height="44dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/button_left"
+            android:background="@drawable/button_left_inactive"
             android:text="ПУБЛИКАЦИЯ"
-            android:textAllCaps="false" />
-
-        <Button
+            android:textColor="#CCCCCC"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_trip"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="44dp"
+            android:layout_height="match_parent"
             android:text="ПОЕЗДКА"
+            android:textColor="@android:color/white"
             android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
             android:background="@drawable/button_right"/>
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

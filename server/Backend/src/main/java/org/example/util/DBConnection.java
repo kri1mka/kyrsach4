@@ -1,37 +1,58 @@
 package org.example.util;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Properties;
+
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DBConnection {
+public final class DBConnection {
 
-    public static Connection getConnection() throws SQLException {
-        Properties props = new Properties();
-        try (InputStream input = DBConnection.class.getClassLoader().getResourceAsStream("db.properties")) {
-            if (input == null) {
-                throw new RuntimeException("db.properties не найден");
-            }
-            props.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException("ошибка загрузки db.properties", e);
-        }
+    private static final String PROPERTIES_FILE = "db.properties";
 
-        String url = props.getProperty("db.url");
-        String user = props.getProperty("db.user");
-        String password = props.getProperty("db.password");
-
-
+    static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            System.err.println("MySQL driver not found!");
-            throw new RuntimeException(e);
+            throw new ExceptionInInitializerError("MySQL JDBC Driver not found");
         }
+    }
 
-        return DriverManager.getConnection(url, user, password);
+    private DBConnection() {}
+
+    public static Connection getConnection() {
+        try {
+            Properties props = new Properties();
+            try (InputStream is = DBConnection.class
+                    .getClassLoader()
+                    .getResourceAsStream(PROPERTIES_FILE)) {
+
+                if (is == null) {
+                    throw new RuntimeException("db.properties not found in classpath");
+                }
+                props.load(is);
+            }
+
+            Connection connection = DriverManager.getConnection(
+                    props.getProperty("db.url"),
+                    props.getProperty("db.user"),
+                    props.getProperty("db.password")
+            );
+
+            if (!connection.isValid(2)) {
+                throw new SQLException("Connection is not valid");
+            }
+
+            System.out.println("DB connection established successfully");
+            return connection;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create DB connection", e);
+        }
     }
 }

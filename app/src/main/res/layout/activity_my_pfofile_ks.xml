@@ -100,7 +100,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/numb_of_friends"
+                android:id="@+id/tv_followers_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -163,32 +163,35 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
-        android:gravity="start"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_bio">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_change"
-            style="@style/ButtonKsStyle"
-            android:layout_width="151dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:background="@drawable/button_ks"
-            android:text="Изменить" />
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="1dp"
+            android:background="@drawable/button_outline_ks"
+            android:text="Изменить"
+            android:textColor="#435986"
+            android:textSize="14sp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_travel_history"
-            style="@style/ButtonKsStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/button_ks"
-            android:text="История поездок" />
+            android:text="История поездок"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
 
         <ImageButton
             android:id="@+id/btn_add_image"
@@ -205,73 +208,73 @@
 
     <HorizontalScrollView
         android:id="@+id/type_of_view"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="72dp"
-        android:layout_marginTop="35dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:layout_marginTop="16dp"
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_buttons">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="100dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-            <!-- Первая кнопка -->
             <LinearLayout
+                android:id="@+id/btn_posts_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="52dp"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="8dp">
 
                 <ImageButton
-                    android:id="@+id/bth_photos"
-                    android:layout_width="55dp"
-                    android:layout_height="45dp"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/icons8_camera_50" />
+                    android:id="@+id/btn_posts"
+                    android:layout_width="50dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/icons8_camera_50"
+                    app:tint="#435986" />
 
                 <View
-                    android:id="@+id/indicator_photos"
+                    android:id="@+id/indicator_posts"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
                     android:layout_marginTop="4dp"
-                    android:background="@android:color/darker_gray"
-                    android:visibility="gone" />
+                    android:background="#435986"
+                    android:visibility="visible" />
             </LinearLayout>
 
-            <!-- Вторая кнопка -->
-            <Space
-                android:layout_width="150dp"
-                android:layout_height="match_parent" />
-
             <LinearLayout
+                android:id="@+id/btn_trips_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="8dp">
 
                 <ImageButton
                     android:id="@+id/btn_trips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/icons8_trip_50" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/icons8_trip_50"
+                    app:tint="#757575" />
 
                 <View
                     android:id="@+id/indicator_trips"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
                     android:layout_marginTop="4dp"
-                    android:background="@android:color/darker_gray"
+                    android:background="#435986"
                     android:visibility="gone" />
             </LinearLayout>
-
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -284,32 +287,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Фото -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_photos"
+        <!-- Посты (скролл с одним постом на всю ширину) -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_posts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="4dp"
-            android:clipToPadding="false" />
+            android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/tv_empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Пока нет фото"
-            android:textSize="16sp"
-            android:textColor="@android:color/darker_gray"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
+            <LinearLayout
+                android:id="@+id/posts_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </androidx.core.widget.NestedScrollView>
 
-        <!-- Поездки -->
+        <!-- Поездки (RecyclerView) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_trips"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="4dp"
+            android:padding="8dp"
             android:clipToPadding="false"
             android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_empty_posts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Пока нет публикаций"
+            android:textSize="16sp"
+            android:textColor="#9E9E9E"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_empty_trips"
@@ -317,7 +326,7 @@
             android:layout_height="wrap_content"
             android:text="Пока нет поездок"
             android:textSize="16sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="#9E9E9E"
             android:layout_gravity="center"
             android:visibility="gone"/>
     </FrameLayout>

@@ -4,35 +4,34 @@ import java.util.Date;
 
 public class PostCard {
     private Integer id;
-    private Integer user_id;
+    private Integer userId;
     private String description;
     private String location;
-    private Date created_at;
-    private String photo_it;
-
+    private Date createdAt;
+    private String photoIt;
     public PostCard() {}
 
     public PostCard(Integer user_id, String description, String location, String photo_it) {
-        this.user_id = user_id;
+        this.userId = user_id;
         this.description = description;
         this.location = location;
-        this.photo_it = photo_it;
+        this.photoIt = photo_it;
     }
+    // Новое поле для полного имени пользователя
+    private String userName;
+    private Integer likesCount;
 
-    public Integer getId() {
-        return id;
-    }
-
+    public Integer getId() { return id; }
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer user_id) {
+        this.userId = user_id;
     }
 
     public String getDescription() {
@@ -51,19 +50,28 @@ public class PostCard {
         this.location = location;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date created_at) {
+        this.createdAt = created_at;
+    }
+    // Геттер и сеттер для полного имени пользователя
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
+
+    public Integer getLikesCount() { return likesCount; }
+    public void setLikesCount(Integer likesCount) { this.likesCount = likesCount; }
+
+    public String getPhotoIt() {
+        return photoIt;
     }
 
-    public String getPhoto_it() {
-        return photo_it;
+    public void setPhotoIt(String photo_it) {
+        this.photoIt = photo_it;
     }
 
-    public void setPhoto_it(String photo_it) {
-        this.photo_it = photo_it;
-    }
+
 }

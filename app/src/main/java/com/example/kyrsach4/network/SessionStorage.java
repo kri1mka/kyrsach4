@@ -1,10 +1,19 @@
 package com.example.kyrsach4.network;
 
 public class SessionStorage {
-    // сохраняем JSESSIONID
+
+    // JSESSIONID для сервера
     public static String sessionId = null;
 
+    // ID пользователя для приложения
+    public static Integer userId = null;
+
     public static boolean isLoggedIn() {
-        return sessionId != null;
+        return sessionId != null && userId != null;
+    }
+
+    public static void clear() {
+        sessionId = null;
+        userId = null;
     }
 }

@@ -3,23 +3,28 @@ package org.example.entity;
 import java.util.Date;
 
 public class UsersInfo {
-    private Integer id;
-    private Integer user_id;
-    private Date date_of_birth;
+    private int id;
+    private int userId;
+    private int age;
+    private Date dateOfBirth;
     private String sex;
-    private Integer age;
-    private String interests;
     private String about;
+    private String interests;
+    private String city;
+    private String travelType;
+    private String avatarUrl;
+
 
     public UsersInfo() {}
 
-    public UsersInfo(Integer user_id, Date date_of_birth, String sex, Integer age, String interests, String about) {
-        this.user_id = user_id;
-        this.date_of_birth = date_of_birth;
+    public UsersInfo(int id, int userId, Date dateOfBirth, String sex, int age, String interests, String about) {
+        this.id = id;
+        this.userId = userId;
         this.sex = sex;
         this.age = age;
-        this.interests = interests;
+        this.dateOfBirth = dateOfBirth;
         this.about = about;
+        this.interests = interests;
     }
 
     public Integer getId() {
@@ -30,20 +35,20 @@ public class UsersInfo {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Date getDate_of_birth() {
-        return date_of_birth;
+    public java.sql.Date getDateOfBirth() {
+        return (java.sql.Date) dateOfBirth;
     }
 
-    public void setDate_of_birth(Date date_of_birth) {
-        this.date_of_birth = date_of_birth;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getSex() {
@@ -76,5 +81,29 @@ public class UsersInfo {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getTravelType() {
+        return travelType;
+    }
+
+    public void setTravelType(String travelType) {
+        this.travelType = travelType;
+    }
+
+    public String getAvatarUrl() {
+        return  avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this. avatarUrl = avatarUrl;
     }
 }
