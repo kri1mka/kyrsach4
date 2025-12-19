@@ -87,10 +87,11 @@ public class FriendsActivity extends AppCompatActivity {
                     adapter.setOnItemClickListener(friend -> {
                         Intent intent = new Intent(FriendsActivity.this, ChatActivity.class);
 
-                        intent.putExtra("firstName", friend.getFirstName());
-                        intent.putExtra("lastName", friend.getLastName());
+                        intent.putExtra("name", friend.getName());
+                        intent.putExtra("surname", friend.getSurname());
                         intent.putExtra("avatarUrl", friend.getAvatarUrl()); // если есть
                         intent.putExtra("otherUserId", friend.getId());
+
 
                         startActivity(intent);
                     });
