@@ -3,6 +3,7 @@ package com.example.kyrsach4;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,11 +33,53 @@ public class SwipeActivity extends AppCompatActivity {
     private CardAdapter adapter;
     private List<TripCard> cards = new ArrayList<>();
     private ApiService apiService;
+    ImageButton btnHome, btnChat, btnHeart, btnTranslate, btnProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe);
+
+        btnHome = findViewById(R.id.nav_home);
+        btnChat = findViewById(R.id.nav_chat);
+        btnHeart = findViewById(R.id.nav_heart);
+        btnTranslate = findViewById(R.id.nav_translate);
+        btnProfile = findViewById(R.id.nav_profile);
+
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(SwipeActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnChat.setOnClickListener(v -> {
+            Intent intent = new Intent(SwipeActivity.this, MessagesActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnTranslate.setOnClickListener(v -> {
+            // Возвращаемся на TranslatorActivity
+            Intent intent = new Intent(SwipeActivity.this, TranslatorActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            // Возвращаемся на MyProfileActivityKs
+            Intent intent = new Intent(SwipeActivity.this, MyProfileActivityKs.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnHeart.setOnClickListener(v -> {
+            // Возвращаемся на HomeActivity
+            Intent intent = new Intent(SwipeActivity.this, SwipeActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+
 
         cardStackView = findViewById(R.id.card_stack);
 
@@ -154,14 +197,12 @@ public class SwipeActivity extends AppCompatActivity {
                 if (!userGender.equalsIgnoreCase(gender)) match = false;
             }
 
-// Фильтр по возрасту
+            // Фильтр по возрасту
             if (card.getUser() != null && card.getUser().getInfo() != null) {
                 int userAge = card.getUser().getInfo().getAge();
                 if (ageFrom != -1 && userAge < ageFrom) match = false;
                 if (ageTo != -1 && userAge > ageTo) match = false;
             }
-
-
 
             if (match) filtered.add(card);
         }
