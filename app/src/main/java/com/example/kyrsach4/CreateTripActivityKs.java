@@ -204,10 +204,18 @@ public class CreateTripActivityKs extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<TripCard> call, Response<TripCard> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Toast.makeText(CreateTripActivityKs.this, "Поездка создана", Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(CreateTripActivityKs.this,
+                                "Поездка создана", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(CreateTripActivityKs.this, MyProfileActivityKs.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         finish();
+
                     } else {
-                        Toast.makeText(CreateTripActivityKs.this, "Ошибка создания поездки", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateTripActivityKs.this,
+                                "Ошибка создания поездки", Toast.LENGTH_SHORT).show();
                     }
                 }
 

@@ -15,6 +15,7 @@ public class UserProfile {
     private Integer age;
     private String location;
     private String travelType;
+    @SerializedName("photo")
     private String avatarUrl;
     private String interests;
     private String about;

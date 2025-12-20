@@ -71,7 +71,7 @@
             android:background="@drawable/image_frame_bg_ks"
             android:contentDescription="Selected image"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_photo1" />
+            android:src="@drawable/placeholder" />
 
         <!-- Нижняя панель -->
         <LinearLayout

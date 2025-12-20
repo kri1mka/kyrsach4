@@ -46,13 +46,13 @@ public class GalleryAdapterTripKs extends RecyclerView.Adapter<GalleryAdapterTri
         if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
             Glide.with(context)
                     .load(pathOrUrl)
-                    .placeholder(R.drawable.sample_photo1)
+                    .placeholder(R.drawable.placeholder)//placeholder(R.drawable.sample_photo1)
                     .centerCrop()
                     .into(holder.thumbnail);
         } else {
             Glide.with(context)
                     .load(new File(pathOrUrl))
-                    .placeholder(R.drawable.sample_photo1)
+                    .placeholder(R.drawable.placeholder)//placeholder(R.drawable.sample_photo1)
                     .centerCrop()
                     .into(holder.thumbnail);
         }

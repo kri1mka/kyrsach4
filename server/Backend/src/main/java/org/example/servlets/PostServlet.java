@@ -85,43 +85,41 @@ public class PostServlet extends HttpServlet {
     // Создать новый пост
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        String contentType = req.getContentType();
+        if (req.getContentType() != null && req.getContentType().startsWith("multipart/form-data")) {
 
-        if (contentType != null && contentType.startsWith("multipart/form-data")) {
-            handleUpload(req, resp);
+            Part filePart = req.getPart("file");
+            String savedFileName = null;
+            if (filePart != null && filePart.getSize() > 0) {
+                String uploadPath = getServletContext().getRealPath("/images");
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) uploadDir.mkdirs();
+
+                savedFileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
+                File file = new File(uploadDir, savedFileName);
+                try (InputStream in = filePart.getInputStream()) {
+                    Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+
+            int userId = Integer.parseInt(req.getParameter("user_id"));
+            String location = req.getParameter("location");
+            String description = req.getParameter("description");
+
+            PostCard post = new PostCard();
+            post.setUserId(userId);
+            post.setLocation(location);
+            post.setDescription(description);
+            post.setPhotoIt(savedFileName);
+
+            postDAO.save(post);
+
+            writeJson(resp, 201, post);
         } else {
+            // старый способ через JSON
             PostCard post = gson.fromJson(req.getReader(), PostCard.class);
-            if (post.getUserId() == null) {
-                writeJson(resp, 400, Map.of("error", "userId is required"));
-                return;
-            }
-
-            try {
-                postDAO.save(post);
-                writeJson(resp, 201, post);
-            } catch (RuntimeException e) {
-                writeJson(resp, 500, Map.of("error", e.getMessage()));
-            }
+            postDAO.save(post);
+            writeJson(resp, 201, post);
         }
-    }
-
-    private void handleUpload(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        Part filePart = req.getPart("file");
-        if (filePart == null || filePart.getSize() == 0) {
-            writeJson(resp, 400, Map.of("error", "File not found in request"));
-            return;
-        }
-
-        String fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
-        File uploadDir = new File("images/");
-        if (!uploadDir.exists()) uploadDir.mkdirs();
-
-        File file = new File(uploadDir, fileName);
-        try (InputStream in = filePart.getInputStream()) {
-            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        writeJson(resp, 200, Map.of("fileName", fileName));
     }
 
     @Override

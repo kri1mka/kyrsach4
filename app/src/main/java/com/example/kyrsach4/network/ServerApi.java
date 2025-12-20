@@ -82,6 +82,15 @@ public interface ServerApi {
     Call<Map<String, String>> uploadPostImage(@Part MultipartBody.Part file);
 
     @Multipart
+    @POST("api/posts")
+    Call<PostCard> createPostMultipart(
+            @Part("user_id") RequestBody userId,
+            @Part("location") RequestBody location,
+            @Part("description") RequestBody description,
+            @Part MultipartBody.Part file
+    );
+
+    @Multipart
     @POST("api/users/trips/images")
     Call<Map<String, String>> uploadTripImage(@Part MultipartBody.Part file);
 
