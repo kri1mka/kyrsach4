@@ -208,14 +208,17 @@ public class ProfileActivityKs extends AppCompatActivity {
             postDate.setText("Только что");
         }
 
-        if (post.getPhoto() != null && !post.getPhoto().isEmpty()) {
-            Glide.with(postView)
-                    .load(post.getPhoto())
+        if (post.getAvatarUrl() != null && !post.getAvatarUrl().isEmpty()) {
+            Glide.with(this)
+                    .load(post.getAvatarUrl())
+                    .circleCrop()
                     .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                    .error(R.drawable.pngtreecat_default_avatar_5416936)
                     .into(postAvatar);
         } else {
             postAvatar.setImageResource(R.drawable.pngtreecat_default_avatar_5416936);
         }
+
         int likes = post.getLikesCount() != null ? post.getLikesCount() : 0;
         likesCount.setText(String.valueOf(likes));
 

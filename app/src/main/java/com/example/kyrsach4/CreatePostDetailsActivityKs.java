@@ -79,27 +79,35 @@ public class CreatePostDetailsActivityKs extends AppCompatActivity {
             RequestBody requestFile = RequestBody.create(file, MediaType.parse("image/*"));
             MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-            ApiClient.serverApi.uploadPostImage(body).enqueue(new Callback<Map<String, String>>() {
-                @Override
-                public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        String fileName = response.body().get("fileName");
-                        if (fileName != null && !fileName.isEmpty()) {
-                            String imageUrl = fileName;
-                            createPost(imageUrl);
-                        } else {
-                            Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка загрузки фото", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка сервера при загрузке фото", Toast.LENGTH_SHORT).show();
-                    }
-                }
+            RequestBody userIdBody = RequestBody.create(userId.toString(), MediaType.parse("text/plain"));
+            RequestBody locationBody = RequestBody.create(etLocation.getText().toString(), MediaType.parse("text/plain"));
+            RequestBody descriptionBody = RequestBody.create(etDescription.getText().toString(), MediaType.parse("text/plain"));
 
-                @Override
-                public void onFailure(Call<Map<String, String>> call, Throwable t) {
-                    Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка сети: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            ApiClient.serverApi.createPostMultipart(userIdBody, locationBody, descriptionBody, body)
+                    .enqueue(new Callback<PostCard>() {
+                        @Override
+                        public void onResponse(Call<PostCard> call, Response<PostCard> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+
+                                Toast.makeText(CreatePostDetailsActivityKs.this,
+                                        "Публикация создана", Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(CreatePostDetailsActivityKs.this, MyProfileActivityKs.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+
+                            } else {
+                                Toast.makeText(CreatePostDetailsActivityKs.this,
+                                        "Ошибка создания поста", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<PostCard> call, Throwable t) {
+                            Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка сети: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
         } catch (IOException e) {
             Toast.makeText(this, "Ошибка чтения файла: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -139,13 +147,18 @@ public class CreatePostDetailsActivityKs extends AppCompatActivity {
             @Override
             public void onResponse(Call<PostCard> call, Response<PostCard> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(CreatePostDetailsActivityKs.this, "Публикация создана", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(CreatePostDetailsActivityKs.this,
+                            "Публикация создана", Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(CreatePostDetailsActivityKs.this, MyProfileActivityKs.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
+
                 } else {
-                    Toast.makeText(CreatePostDetailsActivityKs.this, "Ошибка создания поста", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePostDetailsActivityKs.this,
+                            "Ошибка создания поста", Toast.LENGTH_SHORT).show();
                 }
             }
 

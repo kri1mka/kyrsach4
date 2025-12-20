@@ -53,21 +53,26 @@ public class UsersInfoDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
 
-            stmt.setInt(1, info.getUserId());
-            stmt.setDate(2, info.getDateOfBirth() != null ? new Date(info.getDateOfBirth().getTime()) : null);
-            stmt.setString(3, info.getSex());
-            stmt.setString(4, info.getCity());
-            stmt.setString(5, info.getTravelType());
-            stmt.setString(6, info.getAvatarUrl());
-            stmt.setInt(7, info.getAge());
-            stmt.setString(8, info.getInterests());
-            stmt.setString(9, info.getAbout());
+            stmt.setDate(1, info.getDateOfBirth() != null
+                    ? new java.sql.Date(info.getDateOfBirth().getTime())
+                    : null);
+
+            stmt.setString(2, info.getSex());
+            stmt.setInt(3, info.getAge());
+            stmt.setString(4, info.getInterests());
+            stmt.setString(5, info.getAbout());
+            stmt.setString(6, info.getCity());
+            stmt.setString(7, info.getTravelType());
+            stmt.setString(8, info.getAvatarUrl());
+
+            stmt.setInt(9, info.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка обновления UsersInfo", e);
         }
     }
+
 
     private UsersInfo map(ResultSet rs) throws SQLException {
         UsersInfo info = new UsersInfo();
