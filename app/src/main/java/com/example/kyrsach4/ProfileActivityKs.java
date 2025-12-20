@@ -200,14 +200,17 @@ public class ProfileActivityKs extends AppCompatActivity {
             postDate.setText("Только что");
         }
 
-        if (post.getPhoto() != null && !post.getPhoto().isEmpty()) {
-            Glide.with(postView)
-                    .load(post.getPhoto())
+        if (post.getAvatarUrl() != null && !post.getAvatarUrl().isEmpty()) {
+            Glide.with(this)
+                    .load(post.getAvatarUrl())
+                    .circleCrop()
                     .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                    .error(R.drawable.pngtreecat_default_avatar_5416936)
                     .into(postAvatar);
         } else {
             postAvatar.setImageResource(R.drawable.pngtreecat_default_avatar_5416936);
         }
+
         int likes = post.getLikesCount() != null ? post.getLikesCount() : 0;
         likesCount.setText(String.valueOf(likes));
 
@@ -367,24 +370,28 @@ public class ProfileActivityKs extends AppCompatActivity {
     }
     private void setupBottomNavigation() {
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         });
 
         navChat.setOnClickListener(v -> {
-            Toast.makeText(this, "Чат", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MessagesActivity.class));
+            finish();
         });
+
         navHeart.setOnClickListener(v -> {
-            Toast.makeText(this, "Свапы", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, SwipeActivity.class));
+            finish();
         });
 
         navTranslate.setOnClickListener(v -> {
-            Toast.makeText(this, "Перевод", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, TranslatorActivity.class));
+            finish();
         });
 
         navProfile.setOnClickListener(v -> {
-            // Уже на профиле
-            Toast.makeText(this, "Вы уже в профиле", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MyProfileActivityKs.class));
+            finish();
         });
     }
 }

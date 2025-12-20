@@ -18,13 +18,26 @@ public class PostCardDAO {
     private static final String INSERT =
             "INSERT INTO postcard (user_id, description, location, created_at, photo_id) VALUES (?, ?, ?, ?, ?)";
 
-    private static final String FIND_BY_ID = "SELECT * FROM postcard WHERE id = ?";
-    private static final String FIND_BY_USER =
-            "SELECT p.*, CONCAT(u.name, ' ', u.surname) AS user_name " +
+    //private static final String FIND_BY_ID = "SELECT * FROM postcard WHERE id = ?";
+    private static final String FIND_BY_ID =
+            "SELECT p.*, " +
+                    "CONCAT(u.name, ' ', u.surname) AS user_name, " +
+                    "ui.avatarUrl AS avatar_url " +
                     "FROM postcard p " +
                     "JOIN users u ON p.user_id = u.id " +
+                    "LEFT JOIN usersinfo ui ON ui.user_id = u.id " +
+                    "WHERE p.id = ?";
+
+    private static final String FIND_BY_USER =
+            "SELECT p.*, " +
+                    "CONCAT(u.name, ' ', u.surname) AS user_name, " +
+                    "ui.avatarUrl AS avatar_url " +
+                    "FROM postcard p " +
+                    "JOIN users u ON p.user_id = u.id " +
+                    "LEFT JOIN usersinfo ui ON ui.user_id = u.id " +
                     "WHERE p.user_id = ? " +
                     "ORDER BY p.created_at DESC";
+
 
     private static final String FIND_LATEST = "SELECT * FROM postcard ORDER BY created_at DESC LIMIT ?";
     private static final String FIND_ALL = "SELECT * FROM postcard";
@@ -160,6 +173,13 @@ public class PostCardDAO {
         card.setCreatedAt(rs.getTimestamp("created_at"));
         card.setPhotoIt(rs.getString("photo_id"));
         card.setUserName(rs.getString("user_name"));
+        card.setUserName(rs.getString("user_name"));
+
+        String avatar = rs.getString("avatar_url");
+        if (avatar != null && !avatar.isBlank()) {
+            card.setAvatarUrl(IMAGE_BASE_URL + avatar);
+        }
+
         return card;
     }
 

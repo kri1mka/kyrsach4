@@ -61,7 +61,7 @@
             android:layout_height="300dp"
             android:contentDescription="Пост"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_photo1" />
+            android:src="@drawable/placeholder" />
 
         <!-- Действия -->
         <LinearLayout

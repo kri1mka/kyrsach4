@@ -78,6 +78,9 @@ public class MyProfileActivityKs extends AppCompatActivity {
         }
         // Инициализация элементов
         initViews();
+        tvEmptyPosts.setVisibility(View.GONE);
+        //tvEmptyTrips.setVisibility(View.GONE);
+
 
         // Инициализация адаптеров
         tripsAdapter = new TripsAdapterKs(tripList);
@@ -190,7 +193,7 @@ public class MyProfileActivityKs extends AppCompatActivity {
                             }
 
                             tripsAdapter.updateData(tripList);
-                            tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
+                            //tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
                         }
                     }
 
@@ -279,22 +282,18 @@ public class MyProfileActivityKs extends AppCompatActivity {
     }
 
     private void showPosts() {
-        // Обновление индикаторов
         indicatorPosts.setVisibility(View.VISIBLE);
         indicatorTrips.setVisibility(View.GONE);
 
-        // Обновляем цвет кнопок
         btnPosts.setColorFilter(getResources().getColor(R.color.primary));
         btnTrips.setColorFilter(getResources().getColor(R.color.text_hint));
 
-        // Показать посты
         postsContainer.setVisibility(View.VISIBLE);
-        tvEmptyPosts.setVisibility(postList.isEmpty() ? View.VISIBLE : View.GONE);
 
-        // Скрыть поездки
         rvTrips.setVisibility(View.GONE);
         tvEmptyTrips.setVisibility(View.GONE);
     }
+
 
     private void bindPost(View postView, PostCard post) {
         TextView username = postView.findViewById(R.id.post_username);
@@ -338,10 +337,12 @@ public class MyProfileActivityKs extends AppCompatActivity {
         }
 
         // Аватарка пользователя
-        if (post.getPhoto() != null && !post.getPhoto().isEmpty()) {
+        if (post.getAvatarUrl() != null && !post.getAvatarUrl().isEmpty()) {
             Glide.with(this)
-                    .load(post.getPhoto())
+                    .load(post.getAvatarUrl())
+                    .circleCrop()
                     .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                    .error(R.drawable.pngtreecat_default_avatar_5416936)
                     .into(postAvatar);
         } else {
             postAvatar.setImageResource(R.drawable.pngtreecat_default_avatar_5416936);
@@ -382,9 +383,15 @@ public class MyProfileActivityKs extends AppCompatActivity {
         rvTrips.setVisibility(View.VISIBLE);
         postsContainer.setVisibility(View.GONE);
 
-        tvEmptyTrips.setVisibility(tripList.isEmpty() ? View.VISIBLE : View.GONE);
         tvEmptyPosts.setVisibility(View.GONE);
+
+        if (tripList.isEmpty()) {
+            tvEmptyTrips.setVisibility(View.VISIBLE);
+        } else {
+            tvEmptyTrips.setVisibility(View.GONE);
+        }
     }
+
 
 
     private void setupBottomNavigation() {
