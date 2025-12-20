@@ -29,8 +29,7 @@ public class UserServler extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            Connection connection = DBConnection.getConnection();
-            userDao = new UserDAO(connection);
+            userDao = new UserDAO();
         } catch (RuntimeException e) {
             throw new ServletException("Cannot initialize DAO: " + e.getMessage(), e);
         }

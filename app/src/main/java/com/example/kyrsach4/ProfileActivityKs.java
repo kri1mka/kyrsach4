@@ -54,13 +54,21 @@ public class ProfileActivityKs extends AppCompatActivity {
     private ImageView ivAvatar;
     private boolean isFriend = false;
     private int followersCount = 120;
+    private int userId;
 
-    private int userId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_ks);
+
+        userId = getIntent().getIntExtra("user_id", -1);
+
+        if (userId == -1) {
+            Toast.makeText(this, "Ошибка: пользователь не найден", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         initViews();
         setupListeners();

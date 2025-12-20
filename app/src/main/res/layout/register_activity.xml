@@ -61,23 +61,39 @@
             android:padding="15dp"
             android:layout_marginTop="15dp" />
 
-        <EditText
-            android:id="@+id/gender"
+
+        <RadioGroup
+            android:id="@+id/genderGroup"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Пол"
-            android:background="@drawable/rounded_text_fields"
-            android:padding="15dp"
-            android:layout_marginTop="15dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <RadioButton
+                android:id="@+id/radioWoman"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Woman"/>
+
+            <RadioButton
+                android:id="@+id/radioMan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Man"
+                android:layout_marginStart="32dp"/>
+
+        </RadioGroup>
 
         <EditText
             android:id="@+id/birthdate"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Дата рождения"
+            android:hint="Дата рождения (дд.MM.гггг)"
+            android:inputType="date"
             android:background="@drawable/rounded_text_fields"
             android:padding="15dp"
             android:layout_marginTop="15dp" />
+
 
         <EditText
             android:id="@+id/about"

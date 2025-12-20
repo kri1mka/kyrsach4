@@ -76,7 +76,7 @@
                 app:tint="#435986"/>
 
             <TextView
-                android:id="@+id/likesCount"
+                android:id="@+id/likes_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
