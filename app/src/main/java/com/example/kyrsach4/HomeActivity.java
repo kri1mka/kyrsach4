@@ -2,6 +2,7 @@ package com.example.kyrsach4;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -31,15 +32,13 @@ public class HomeActivity extends AppCompatActivity {
     ImageButton btnHelp;
     Integer userId = SessionStorage.userId;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         if (userId == null) {
-            finish(); // пользователь не авторизован
+            finish();
             return;
         }
 
@@ -76,20 +75,40 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-
     private void setupRecycler() {
         postsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PostsAdapter(this, postList);
+
+        adapter = new PostsAdapter(
+                this,
+                postList,
+                userIdFromPost -> {
+                    Intent intent = new Intent(
+                            HomeActivity.this,
+                            ProfileActivityKs.class
+                    );
+                    intent.putExtra("user_id", userIdFromPost);
+                    startActivity(intent);
+                }
+        );
         postsRecycler.setAdapter(adapter);
     }
+
 
     private void loadPosts() {
         ApiClient.serverApi.getPosts().enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+
                     postList.clear();
-                    postList.addAll(response.body());
+
+                    for (Post post : response.body()) {
+                        if (post.user_id != userId) {
+                            postList.add(post);
+                        }
+                    }
+                    Log.d("bbbbbbbbbbbbbbbbbbbb", "onResponse: " + response.body());
+
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(HomeActivity.this,
@@ -104,6 +123,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void setupBottomNav() {
         navTranslate.setOnClickListener(v -> {

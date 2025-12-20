@@ -54,13 +54,21 @@ public class ProfileActivityKs extends AppCompatActivity {
     private ImageView ivAvatar;
     private boolean isFriend = false;
     private int followersCount = 120;
+    private int userId;
 
-    private int userId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_ks);
+
+        userId = getIntent().getIntExtra("user_id", -1);
+
+        if (userId == -1) {
+            Toast.makeText(this, "Ошибка: пользователь не найден", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         initViews();
         setupListeners();
@@ -367,24 +375,28 @@ public class ProfileActivityKs extends AppCompatActivity {
     }
     private void setupBottomNavigation() {
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         });
 
         navChat.setOnClickListener(v -> {
-            Toast.makeText(this, "Чат", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MessagesActivity.class));
+            finish();
         });
+
         navHeart.setOnClickListener(v -> {
-            Toast.makeText(this, "Свапы", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, SwipeActivity.class));
+            finish();
         });
 
         navTranslate.setOnClickListener(v -> {
-            Toast.makeText(this, "Перевод", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, TranslatorActivity.class));
+            finish();
         });
 
         navProfile.setOnClickListener(v -> {
-            // Уже на профиле
-            Toast.makeText(this, "Вы уже в профиле", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MyProfileActivityKs.class));
+            finish();
         });
     }
 }

@@ -7,7 +7,7 @@ import com.example.kyrsach4.dto.UpdateProfileRequest;
 import com.example.kyrsach4.entity.PostCard;
 import com.example.kyrsach4.entity.TripCard;
 import com.example.kyrsach4.entity.UserProfile;
-import com.example.kyrsach4.entity.Users;
+import com.example.kyrsach4.reqresp.ResetPasswordRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +29,10 @@ public interface ServerApi {
 
     @POST("auth/register")
     Call<AuthResponse> register(@Body RegisterRequest request);
+
+    @POST("auth/reset-password")
+    Call<Void> resetPassword(@Body ResetPasswordRequest request);
+
 
     @GET("api/users/{userId}")
     Call<UserProfile> getUserProfile(@Path("userId") int userId);
@@ -74,6 +78,7 @@ public interface ServerApi {
     @POST("auth/login")
     Call<AuthResponse> login(@Body LoginRequest request);
 
+    //посты на главную
     @GET("posts")
     Call<List<Post>> getPosts();
 

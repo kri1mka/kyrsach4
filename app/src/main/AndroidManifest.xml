@@ -39,7 +39,7 @@
         <activity android:name=".TripsActivity2" />
         <activity android:name=".TranslatorActivity" />
         <activity android:name=".HelpActivity" />
-        <activity android:name=".PdfActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".MyProfileActivityKs" />
         <activity android:name=".ProfileActivityKs" />
         <activity android:name=".RegisterActivity" />

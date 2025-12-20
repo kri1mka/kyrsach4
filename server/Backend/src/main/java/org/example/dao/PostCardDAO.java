@@ -39,16 +39,34 @@ public class PostCardDAO {
         List<PostDto> list = new ArrayList<>();
 
         String sql = """
-            SELECT 
+            SELECT
                 p.id,
+                p.user_id,
                 p.description,
                 p.location,
                 p.created_at,
                 p.photo_id AS photo_url,
-                CONCAT(u.name, ' ', u.surname) AS user_name
+                CONCAT(u.name, ' ', u.surname) AS user_name,
+                ui.avatarUrl AS avatar_url,
+                COUNT(l.post_id) AS likes_count
             FROM PostCard p
-            JOIN Users u ON p.user_id = u.id
-            ORDER BY p.created_at DESC
+            JOIN Users u
+                ON p.user_id = u.id
+            LEFT JOIN UsersInfo ui
+                ON ui.user_id = u.id
+            LEFT JOIN Likes l
+                ON l.post_id = p.id
+            GROUP BY
+                p.id,
+                p.user_id,
+                p.description,
+                p.location,
+                p.created_at,
+                p.photo_id,
+                u.name,
+                u.surname,
+                ui.avatarUrl
+            ORDER BY p.created_at DESC;
         """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
@@ -57,12 +75,16 @@ public class PostCardDAO {
             while (rs.next()) {
                 PostDto dto = new PostDto();
                 dto.id = rs.getInt("id");
+                dto.user_id = rs.getInt("user_id");
                 dto.description = rs.getString("description");
                 dto.location = rs.getString("location");
                 dto.createdAt = rs.getTimestamp("created_at").toString();
                 String fileName = rs.getString("photo_url");
                 dto.photoUrl = IMAGE_BASE_URL + fileName;
                 dto.userName = rs.getString("user_name");
+                String avatar_filename = rs.getString("avatar_url");
+                dto.avatarUrl = IMAGE_BASE_URL + avatar_filename;
+                dto.likes_count = rs.getInt("likes_count");
                 list.add(dto);
             }
 

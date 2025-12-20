@@ -11,21 +11,17 @@ import java.util.List;
 
 
 public class UserDAO {
-    private final Connection connection;
-    public UserDAO(Connection connection) {
-        this.connection = connection;
-    }
-
     private static final String INSERT = "INSERT INTO Users (name, surname, email, phone_number, password) VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT id, name, surname, email, phone_number FROM Users WHERE id = ?";
     private static final String FIND_ALL = "SELECT id, name, surname, email, phone_number FROM Users";
     private static final String UPDATE = "UPDATE Users SET name=?, surname=?, email=?, phone_number=? WHERE id=?";
     private static final String DELETE = "DELETE FROM Users WHERE id=?";
+    private static final String CHANGE_PASS = "UPDATE users SET password = ? WHERE id = ?";
 
 
     public void save(User user) {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
 
             stmt.setString(1, user.getName());
@@ -139,11 +135,23 @@ public class UserDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(DELETE)) {
 
-
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка удаления пользователя", e);
         }
     }
+
+    public void updatePassword(int userId, String newPassword) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CHANGE_PASS)) {
+
+            stmt.setString(1, newPassword);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка удаления пользователя", e);
+        }
+    }
+
 }

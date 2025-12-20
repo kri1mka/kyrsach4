@@ -25,8 +25,7 @@ public class AuthServlet extends HttpServlet {
 
     public AuthServlet() {
         try {
-            Connection conn = DBConnection.getConnection();
-            this.userDAO = new UserDAO(conn);
+            this.userDAO = new UserDAO();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -34,6 +33,8 @@ public class AuthServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        System.out.println("AuthServlet called: " + req.getRequestURI());
+
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
@@ -47,6 +48,10 @@ public class AuthServlet extends HttpServlet {
             case "/login":
                 handleLogin(req, resp);
                 break;
+            case "/reset-password":
+                handleResetPassword(req, resp);
+                break;
+
             default:
                 resp.setStatus(404);
                 resp.getWriter().write("{\"error\":\"Неизвестное действие авторизации\"}");
@@ -168,6 +173,49 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
+    private void handleResetPassword(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        Map<String, Object> map = gson.fromJson(readBody(req), Map.class);
+
+        String email = (String) map.get("email");
+        String newPassword = (String) map.get("newPassword");
+
+        if (email == null || newPassword == null || newPassword.length() < 6) {
+            resp.setStatus(400);
+            resp.getWriter().write(
+                    "{\"error\":\"Некорректные данные\"}"
+            );
+            return;
+        }
+
+        try {
+            User user = userDAO.findByEmail(email);
+
+            if (user == null) {
+                resp.setStatus(404);
+                resp.getWriter().write(
+                        "{\"error\":\"Пользователь не найден\"}"
+                );
+                return;
+            }
+
+            user.setPassword(newPassword);
+            userDAO.updatePassword(user.getId(), newPassword);
+
+            resp.setStatus(200);
+            resp.getWriter().write(
+                    "{\"message\":\"Пароль успешно изменён\"}"
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(500);
+            resp.getWriter().write(
+                    "{\"error\":\"Ошибка сервера\"}"
+            );
+        }
+    }
 
 
     private String readBody(HttpServletRequest req) throws IOException {

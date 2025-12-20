@@ -45,9 +45,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        forgotPass.setOnClickListener(v ->
-                Toast.makeText(this, "Функция восстановления пока недоступна", Toast.LENGTH_SHORT).show()
-        );
+        forgotPass.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+        });
+
     }
 
     private void validateLogin() {
