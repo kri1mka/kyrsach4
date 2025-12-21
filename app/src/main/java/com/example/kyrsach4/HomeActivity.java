@@ -14,6 +14,8 @@ import com.example.kyrsach4.Adapter.PostsAdapter;
 import com.example.kyrsach4.entity.Post;
 import com.example.kyrsach4.network.ApiClient;
 import com.example.kyrsach4.network.SessionStorage;
+import com.example.kyrsach4.reqresp.LikeRequest;
+import com.example.kyrsach4.reqresp.LikeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
         setupRecycler();
         setupBottomNav();
         loadPosts();
+
     }
 
     private void initViews() {
@@ -110,6 +113,25 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d("bbbbbbbbbbbbbbbbbbbb", "onResponse: " + response.body());
 
                     adapter.notifyDataSetChanged();
+
+
+                    for (Post post : postList) {
+                        ApiClient.serverApi.isLiked(
+                                new LikeRequest(post.id, SessionStorage.userId)
+                        ).enqueue(new Callback<LikeResponse>() {
+                            @Override
+                            public void onResponse(Call<LikeResponse> call, Response<LikeResponse> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    post.is_liked = response.body().is_liked;
+                                    adapter.notifyItemChanged(postList.indexOf(post));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<LikeResponse> call, Throwable t) {}
+                        });
+                    }
+
                 } else {
                     Toast.makeText(HomeActivity.this,
                             "Ошибка загрузки постов", Toast.LENGTH_SHORT).show();

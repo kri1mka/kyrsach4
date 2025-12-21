@@ -143,6 +143,7 @@ public class PostCardDAO {
         }
         return null;
     }
+
     public List<PostCard> findByUserId(int userId) {
         List<PostCard> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
@@ -158,6 +159,7 @@ public class PostCardDAO {
         }
         return list;
     }
+
     public void update(PostCard card) {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE)) {

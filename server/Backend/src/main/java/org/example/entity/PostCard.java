@@ -10,15 +10,9 @@ public class PostCard {
     private Date createdAt;
     private String photoIt;
     private String avatarUrl;
+
     public PostCard() {}
 
-    public PostCard(Integer user_id, String description, String location, String photo_it) {
-        this.userId = user_id;
-        this.description = description;
-        this.location = location;
-        this.photoIt = photo_it;
-    }
-    // Новое поле для полного имени пользователя
     private String userName;
     private Integer likesCount;
 

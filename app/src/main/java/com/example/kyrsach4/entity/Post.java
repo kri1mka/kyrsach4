@@ -26,4 +26,5 @@ public class Post {
     public int likes_count;
     public String photoUrl;
     public String avatarUrl;
+    public boolean is_liked;
 }

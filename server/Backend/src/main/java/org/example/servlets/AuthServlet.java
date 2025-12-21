@@ -69,28 +69,24 @@ public class AuthServlet extends HttpServlet {
         String about = (String) map.get("about");
         String birthdateStr = (String) map.get("birthdate");
 
-        // Проверка обязательных полей
         if (email == null || password == null || name == null || surname == null) {
             resp.setStatus(400);
             resp.getWriter().write("{\"error\":\"Заполните обязательные поля\"}");
             return;
         }
 
-        // Проверка email
         if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             resp.setStatus(400);
             resp.getWriter().write("{\"error\":\"Неверный формат email\"}");
             return;
         }
 
-        // Проверка уникальности email
         if (userDAO.findByEmail(email) != null) {
             resp.setStatus(400);
             resp.getWriter().write("{\"error\":\"Email уже существует\"}");
             return;
         }
 
-        // Создание User
         User user = new User(email, password, name, surname, null);
         try {
             userDAO.save(user);
@@ -100,7 +96,6 @@ public class AuthServlet extends HttpServlet {
             return;
         }
 
-        // Создание UsersInfo
         UsersInfo info = new UsersInfo();
         info.setUserId(user.getId());
         info.setAbout((about != null && !about.isEmpty()) ? about : null);
@@ -116,30 +111,23 @@ public class AuthServlet extends HttpServlet {
                 return;
             }
         }
-
         try {
             new UsersInfoDAO().save(info);
         } catch (Exception e) {
-            e.printStackTrace(); // ← СМОТРИ ЭТО В CONSOLE TOMCAT
+            e.printStackTrace();
             resp.setStatus(500);
             resp.getWriter().write("{\"error\":\"DB error: " + e.getMessage() + "\"}");
             return;
         }
-
-
         resp.setStatus(201);
         resp.getWriter().write("{\"message\":\"ok\",\"userId\":" + user.getId() + "}");
     }
 
     private void handleLogin(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-
         Map<String, Object> map = gson.fromJson(readBody(req), Map.class);
-
         String email = (String) map.get("email");
         String password = (String) map.get("password");
-
-        System.out.println("LOGIN email=" + email + " password=" + password);
 
         if (email == null || password == null) {
             resp.setStatus(400);
@@ -149,7 +137,6 @@ public class AuthServlet extends HttpServlet {
 
         try {
             User user = userDAO.findByEmail(email);
-
             if (user == null || !user.getPassword().equals(password)) {
                 resp.setStatus(401);
                 resp.getWriter().write(
@@ -157,8 +144,6 @@ public class AuthServlet extends HttpServlet {
                 );
                 return;
             }
-
-            // УСПЕШНЫЙ ЛОГИН
             resp.setStatus(200);
             resp.getWriter().write(
                     "{\"status\":\"ok\",\"userId\":" + user.getId() + "}"

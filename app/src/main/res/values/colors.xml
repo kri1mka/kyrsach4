@@ -23,5 +23,9 @@
     <color name="error">#F44336</color>
     <color name="success">#4CAF50</color>
     <color name="warning">#FFC107</color>
+    <color name="gray">#B05447</color>
+    <color name="blue">#C2524A</color>
+    <color name="like_red">#AB433E</color>
+    <color name="like_gray">#B5BAEE</color>
 
 </resources>
