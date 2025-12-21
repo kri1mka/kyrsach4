@@ -16,22 +16,32 @@ public class LikesDAO {
     private static final String COUNT_LIKES = "SELECT COUNT(*) FROM Likes WHERE post_id = ?";
     private static final String IS_LIKED = "SELECT COUNT(*) FROM Likes WHERE user_id = ? AND post_id = ?";
 
-    public void save(Likes like) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+    private final Connection connection;
 
-            stmt.setInt(1, like.getUserId());
-            stmt.setInt(2, like.getPostId());
-            stmt.executeUpdate();
+    public LikesDAO(Connection connection) {
+        this.connection = connection;
+    }
 
-            try (ResultSet keys = stmt.getGeneratedKeys()) {
-                if (keys.next()) like.setId(keys.getInt(1));
+    public boolean addLike(int postId, int userId) throws SQLException {
+        String checkSql = "SELECT 1 FROM Likes WHERE post_id = ? AND user_id = ?";
+        try (PreparedStatement check = connection.prepareStatement(checkSql)) {
+            check.setInt(1, postId);
+            check.setInt(2, userId);
+            ResultSet rs = check.executeQuery();
+            if (rs.next()) {
+                return false;
             }
+        }
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка сохранения лайка", e);
+        String insertSql = "INSERT INTO Likes (post_id, user_id) VALUES (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(insertSql)) {
+            stmt.setInt(1, postId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+            return true;
         }
     }
+
 
     public Likes findById(int id) {
         try (Connection conn = DBConnection.getConnection();
@@ -86,34 +96,29 @@ public class LikesDAO {
         }
     }
 
-    public int countLikes(int postId) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(COUNT_LIKES)) {
+    public int countLikes(int postId) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT COUNT(*) FROM Likes WHERE post_id = ?")) {
 
             stmt.setInt(1, postId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return rs.getInt(1);
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка подсчёта лайков", e);
         }
         return 0;
     }
 
-    public boolean isLiked(int userId, int postId) {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(IS_LIKED)) {
+    public boolean isLiked(int userId, int postId) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT COUNT(*) FROM Likes WHERE user_id = ? AND post_id = ?")) {
 
             stmt.setInt(1, userId);
             stmt.setInt(2, postId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return rs.getInt(1) > 0;
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка проверки лайка", e);
         }
         return false;
     }
+
 }

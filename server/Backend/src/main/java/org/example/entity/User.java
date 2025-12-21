@@ -9,9 +9,7 @@ public class User {
     private String surname;
     private String phoneNumber;
 
-
     public User() {}
-
 
     public User(String email, String password, String name, String surname, String phoneNumber) {
         this.email = email;
@@ -20,7 +18,6 @@ public class User {
         this.surname = surname;
         this.phoneNumber = phoneNumber;
     }
-
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }

@@ -11,16 +11,13 @@ public class SessionInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-
         Request.Builder requestBuilder = chain.request().newBuilder();
 
         // добавляем Cookie если есть
         if (SessionStorage.sessionId != null) {
             requestBuilder.addHeader("Cookie", "JSESSIONID=" + SessionStorage.sessionId);
         }
-
         Response response = chain.proceed(requestBuilder.build());
-
         // читаем Set-Cookie и сохраняем JSESSIONID
         for (String header : response.headers("Set-Cookie")) {
             if (header.startsWith("JSESSIONID")) {
