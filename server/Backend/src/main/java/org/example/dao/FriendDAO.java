@@ -14,13 +14,9 @@ public class FriendDAO {
     public List<Friend> findAll() {
         List<Friend> friends = new ArrayList<>();
 
-        // Берем данные из Friends + UsersInfo (имя/фамилия и avatarUrl)
-        String sql = "SELECT f.id AS friend_id, f.user_id, f.country, " +
-                "u.name, u.surname, ui.avatarUrl " +
-                "FROM Friends f " +
-                "JOIN Users u ON f.user_id = u.id " +
-                "JOIN UsersInfo ui ON f.user_id = ui.user_id";
-
+        String sql = "SELECT u.id, u.name, u.surname, ui.city, ui.avatarUrl " +
+                "FROM Users u " +
+                "LEFT JOIN UsersInfo ui ON u.id = ui.user_id";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -28,19 +24,18 @@ public class FriendDAO {
 
             while (rs.next()) {
                 Friend friend = new Friend(
-                        rs.getInt("friend_id"),
-                        rs.getString("name"),       // вместо firstName
-                        rs.getString("surname"),    // вместо lastName
-                        rs.getString("country"),
-                        rs.getString("avatarUrl")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("surname"),
+                        rs.getString("city") != null ? rs.getString("city") : "",       // country
+                        rs.getString("avatarUrl") != null ? rs.getString("avatarUrl") : "" // avatar
                 );
-
                 friends.add(friend);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Ошибка чтения друзей из БД", e);
+            throw new RuntimeException("Ошибка загрузки друзей из БД", e);
         }
 
         return friends;

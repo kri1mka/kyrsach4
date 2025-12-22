@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -105,9 +106,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
 
         // Аватар
-        String avatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + message.getAvatarUrl();
+        String avatarUrl = "http://10.0.2.2:8080/Backend/images/" + message.getAvatarUrl();
+
         Glide.with(context)
                 .load(avatarUrl)
+                .circleCrop()
+                .skipMemoryCache(true) // не использовать кэш памяти
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -153,4 +158,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         messages = newList;
         notifyDataSetChanged();
     }
+
+
 }

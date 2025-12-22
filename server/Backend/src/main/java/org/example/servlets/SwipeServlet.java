@@ -26,4 +26,3 @@ public class SwipeServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
-

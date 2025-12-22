@@ -92,7 +92,6 @@ public class MessagesActivity extends AppCompatActivity {
                 Message[] messagesArray = gson.fromJson(json, Message[].class);
                 allMessages = Arrays.asList(messagesArray);
 
-// Убираем дубликаты по имени
                 List<Message> uniqueMessages = new ArrayList<>();
                 Set<String> seenNames = new HashSet<>();
 
@@ -104,7 +103,7 @@ public class MessagesActivity extends AppCompatActivity {
                     }
                 }
 
-// Сортировка по времени: новые сообщения вверху
+
                 uniqueMessages.sort((m1, m2) -> m2.getCreatedAt().compareTo(m1.getCreatedAt()));
 
                 allMessages = uniqueMessages;

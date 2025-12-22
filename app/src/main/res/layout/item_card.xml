@@ -8,10 +8,10 @@
     android:layout_margin="8dp"
     android:background="@android:color/white">
 
-    <!-- CardView с закруглением только верхних углов -->
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="380dp"
         android:layout_gravity="center"
         app:cardCornerRadius="24dp"
         app:cardElevation="4dp"
@@ -22,11 +22,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:clipToOutline="true"/>
+            android:adjustViewBounds="true" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Текст под фото -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,8 +85,6 @@
             android:layout_height="wrap_content"
             android:text="Цена"
             />
-
-
 
 
         <TextView

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -11,20 +12,22 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        tools:ignore="MissingConstraints"
+        app:contentInsetStart="10dp">
 
-        <!-- Кнопка назад слева -->
         <ImageButton
             android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
             android:layout_gravity="start|center_vertical"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/icons8_arri_re_24"
-            app:tint="#313B50"/>
+            android:src="@drawable/colocol"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            app:tint="#313B50" />
 
-        <!-- Заголовок по центру -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,22 +35,23 @@
             android:text="Интересное"
             android:textColor="#313B50"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+          />
 
-        <!-- Иконка меню справа -->
         <ImageView
             android:id="@+id/btnMenu"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
-            android:src="@drawable/more"/>
+            android:src="@drawable/more"
+            android:layout_marginRight="10dp"
+            />
     </androidx.appcompat.widget.Toolbar>
 
 
 
 
 
-    <!-- CardStackView -->
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/card_stack"
         android:layout_width="0dp"
@@ -57,7 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Скрытый пустой элемент для нижнего ограничения карточки -->
+
     <View
         android:id="@+id/dummyBottom"
         android:layout_width="0dp"
@@ -77,7 +81,7 @@
         app:layout_constraintBottom_toTopOf="@id/dummyBottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="180dp"> <!-- регулируем высоту над картой -->
+        android:layout_marginBottom="200dp"> <!-- регулируем высоту над картой -->
 
         <!-- DISLIKE -->
         <ImageButton
@@ -99,6 +103,8 @@
             />
 
     </LinearLayout>
+    <!-- Нижняя панель (НЕ скроллится) -->
+
     <LinearLayout
         android:id="@+id/bottom_nav"
         android:layout_width="0dp"
@@ -107,47 +113,52 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
+            android:id="@+id/nav_home"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_accueil_24"/>
+            android:src="@drawable/icons8_accueil_24" />
 
         <ImageButton
+            android:id="@+id/nav_chat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_messages_group_s_24"/>
+            android:src="@drawable/icons8_messages_group_s_24" />
 
         <ImageButton
+            android:id="@+id/nav_heart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_aime_rempli_24"/>
+            android:src="@drawable/icons8_aime_rempli_24" />
 
         <ImageButton
+            android:id="@+id/nav_translate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_google_traduction_24"/>
+            android:src="@drawable/icons8_google_traduction_24" />
 
         <ImageButton
+            android:id="@+id/nav_profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_utilisateur_24"/>
+            android:src="@drawable/icons8_utilisateur_24" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

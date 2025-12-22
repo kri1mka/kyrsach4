@@ -15,6 +15,7 @@ public class Friend {
         this.avatarUrl = avatarUrl;
     }
 
+
     // Геттеры
     public int getId() { return id; }
     public String getName() { return name; }

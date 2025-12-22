@@ -11,8 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class FiltersActivity extends AppCompatActivity {
 
-    private Spinner spinnerGender, spinnerCountry, spinnerDirection, spinnerTripType;
+    private Spinner spinnerGender, spinnerCountry, spinnerTripType;
     private EditText editAgeFrom, editAgeTo;
+    private EditText editPriceFrom, editPriceTo;
     private Button btnApply;
 
     @Override
@@ -22,60 +23,128 @@ public class FiltersActivity extends AppCompatActivity {
 
         spinnerGender = findViewById(R.id.spinnerGender);
         spinnerCountry = findViewById(R.id.spinnerCountry);
-        spinnerDirection = findViewById(R.id.spinnerDirection);
+
         spinnerTripType = findViewById(R.id.spinnerTripType);
         editAgeFrom = findViewById(R.id.editAgeFrom);
         editAgeTo = findViewById(R.id.editAgeTo);
         btnApply = findViewById(R.id.btnApplyFilters);
+        editPriceFrom = findViewById(R.id.editPriceFrom);
+        editPriceTo = findViewById(R.id.editPriceTo);
 
-        // Пол как Spinner
+
+
+        // ---------- Пол ----------
         String[] genders = {"Любой", "Мужской", "Женский"};
-        ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genders);
+        ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                genders
+        );
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(genderAdapter);
 
-        // Остальные Spinner
-        String[] countries = {"Любая", "France", "Japan", "Italy"};
-        String[] directions = {"Любое", "Romantic", "Adventure", "Business"};
-        String[] tripTypes = {"Любой", "Tour", "Cruise", "Excursion"};
+        // ---------- Страна ----------
+        String[] countries = {"Любая", "Барселона", "Рим", "Париж"};
+        spinnerCountry.setAdapter(new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                countries
+        ));
 
-        spinnerCountry.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, countries));
-        spinnerDirection.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, directions));
-        spinnerTripType.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, tripTypes));
+
+
+        // ---------- Тип поездки ----------
+        String[] tripTypes = {"Любой", "Тур", "Круиз", "Экскурсия"};
+        spinnerTripType.setAdapter(new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                tripTypes
+        ));
 
         btnApply.setOnClickListener(v -> applyFilters());
     }
 
     private void applyFilters() {
-        // Получаем выбранный пол
-        String gender = spinnerGender.getSelectedItem().toString();
-        if (gender.equals("Любой")) {
-            gender = "";
-        }
-
-        String country = spinnerCountry.getSelectedItem().toString();
-        String direction = spinnerDirection.getSelectedItem().toString();
-        String tripType = spinnerTripType.getSelectedItem().toString();
-
-        int ageFrom = -1;
-        int ageTo = -1;
-
-        if (!editAgeFrom.getText().toString().trim().isEmpty()) {
-            ageFrom = Integer.parseInt(editAgeFrom.getText().toString().trim());
-        }
-        if (!editAgeTo.getText().toString().trim().isEmpty()) {
-            ageTo = Integer.parseInt(editAgeTo.getText().toString().trim());
-        }
-
         Intent intent = new Intent();
-        intent.putExtra("gender", gender);
-        intent.putExtra("country", country);
-        intent.putExtra("direction", direction);
-        intent.putExtra("tripType", tripType);
-        intent.putExtra("ageFrom", ageFrom);
-        intent.putExtra("ageTo", ageTo);
 
+        // ---------- ПОЛ ----------
+        String genderDb = null;
+        if (spinnerGender != null && spinnerGender.getSelectedItem() != null) {
+            String genderUi = spinnerGender.getSelectedItem().toString();
+            if ("Мужской".equals(genderUi)) {
+                genderDb = "Муж"; // ДОЛЖНО совпадать с БД
+            } else if ("Женский".equals(genderUi)) {
+                genderDb = "Жен";
+            }
+        }
+        if (genderDb != null) {
+            intent.putExtra("gender", genderDb);
+        }
+
+        // ---------- Страна ----------
+        if (spinnerCountry != null && spinnerCountry.getSelectedItem() != null) {
+            String country = spinnerCountry.getSelectedItem().toString();
+            if (!"Любая".equals(country)) {
+                intent.putExtra("country", country);
+            }
+        }
+
+
+
+        // ---------- Тип поездки ----------
+        if (spinnerTripType != null && spinnerTripType.getSelectedItem() != null) {
+            String tripType = spinnerTripType.getSelectedItem().toString();
+            if (!"Любой".equals(tripType)) {
+                intent.putExtra("tripType", tripType);
+            }
+        }
+
+        // ---------- Возраст ----------
+        try {
+            if (editAgeFrom != null && editAgeFrom.getText() != null) {
+                String ageFromStr = editAgeFrom.getText().toString().trim();
+                if (!ageFromStr.isEmpty()) {
+                    intent.putExtra("ageFrom", Integer.parseInt(ageFromStr));
+                }
+            }
+
+            if (editAgeTo != null && editAgeTo.getText() != null) {
+                String ageToStr = editAgeTo.getText().toString().trim();
+                if (!ageToStr.isEmpty()) {
+                    intent.putExtra("ageTo", Integer.parseInt(ageToStr));
+                }
+            }
+        } catch (NumberFormatException e) {
+            // Если введено не число — игнорируем
+            e.printStackTrace();
+        }
+// ---------- Цена ----------
+        try {
+            if (editPriceFrom != null && editPriceFrom.getText() != null) {
+                String priceFromStr = editPriceFrom.getText().toString().trim();
+                if (!priceFromStr.isEmpty()) {
+                    // Передаем как double
+                    intent.putExtra("priceFrom", Double.parseDouble(priceFromStr));
+                }
+            }
+
+            if (editPriceTo != null && editPriceTo.getText() != null) {
+                String priceToStr = editPriceTo.getText().toString().trim();
+                if (!priceToStr.isEmpty()) {
+                    // Передаем как double
+                    intent.putExtra("priceTo", Double.parseDouble(priceToStr));
+                }
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+
+        // ---------- Отправка результата ----------
         setResult(RESULT_OK, intent);
         finish();
+
     }
+
+
 }

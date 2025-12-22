@@ -3,6 +3,7 @@ package com.example.kyrsach4;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,11 +33,24 @@ public class SwipeActivity extends AppCompatActivity {
     private CardAdapter adapter;
     private List<TripCard> cards = new ArrayList<>();
     private ApiService apiService;
+    ImageButton btnHome, btnChat, btnHeart, btnTranslate, btnProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe);
+
+        btnHome = findViewById(R.id.nav_home);
+        btnChat = findViewById(R.id.nav_chat);
+        btnHeart = findViewById(R.id.nav_heart);
+        btnTranslate = findViewById(R.id.nav_translate);
+        btnProfile = findViewById(R.id.nav_profile);
+
+        btnHome.setOnClickListener(v -> navigate(HomeActivity.class));
+        btnChat.setOnClickListener(v -> navigate(MessagesActivity.class));
+        btnTranslate.setOnClickListener(v -> navigate(TranslatorActivity.class));
+        btnProfile.setOnClickListener(v -> navigate(MyProfileActivityKs.class));
+        btnHeart.setOnClickListener(v -> {}); // свайп экран, можно оставить пустым
 
         cardStackView = findViewById(R.id.card_stack);
 
@@ -50,7 +64,6 @@ public class SwipeActivity extends AppCompatActivity {
                 if (direction == Direction.Right) sendSwipe(card.getId(), true);
                 else if (direction == Direction.Left) sendSwipe(card.getId(), false);
             }
-
             @Override public void onCardDragging(Direction direction, float ratio) {}
             @Override public void onCardRewound() {}
             @Override public void onCardCanceled() {}
@@ -58,6 +71,14 @@ public class SwipeActivity extends AppCompatActivity {
             @Override public void onCardDisappeared(View view, int position) {}
         });
 
+
+        ImageButton backButton = findViewById(R.id.btn_back);
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(SwipeActivity.this, RightSwipeActivity.class);
+            startActivity(intent);
+            finish();
+        });
         cardStackView.setLayoutManager(manager);
 
         adapter = new CardAdapter(cards, this);
@@ -75,6 +96,12 @@ public class SwipeActivity extends AppCompatActivity {
         });
 
         loadCardsFromServer();
+    }
+
+    private void navigate(Class<?> cls) {
+        Intent intent = new Intent(SwipeActivity.this, cls);
+        startActivity(intent);
+        finish();
     }
 
     private void swipeRight() {
@@ -103,7 +130,6 @@ public class SwipeActivity extends AppCompatActivity {
                     Toast.makeText(SwipeActivity.this, "Ошибка загрузки карточек", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<TripCard>> call, Throwable t) {
                 Toast.makeText(SwipeActivity.this, "Ошибка сервера: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -113,10 +139,8 @@ public class SwipeActivity extends AppCompatActivity {
 
     private void sendSwipe(int cardId, boolean liked) {
         apiService.sendSwipe(cardId, liked).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {}
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            @Override public void onResponse(Call<Void> call, Response<Void> response) {}
+            @Override public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(SwipeActivity.this, "Не удалось отправить свайп", Toast.LENGTH_SHORT).show();
             }
         });
@@ -133,35 +157,49 @@ public class SwipeActivity extends AppCompatActivity {
             String tripType = data.getStringExtra("tripType");
             int ageFrom = data.getIntExtra("ageFrom", -1);
             int ageTo = data.getIntExtra("ageTo", -1);
+            double priceFrom = data.getDoubleExtra("priceFrom", -1);
+            double priceTo = data.getDoubleExtra("priceTo", -1);
 
-            filterCards(gender, country, direction, tripType, ageFrom, ageTo);
+            filterCards(gender, country, direction, tripType, ageFrom, ageTo, priceFrom, priceTo);
         }
     }
 
-    private void filterCards(String gender, String country, String direction, String tripType, int ageFrom, int ageTo) {
+    private void filterCards(String gender, String country, String direction, String tripType,
+                             int ageFrom, int ageTo, double priceFrom, double priceTo) {
         List<TripCard> filtered = new ArrayList<>();
         for (TripCard card : cards) {
             boolean match = true;
 
-            // Фильтры по стране, типу поездки и направлению
-            if (!country.equals("Любая") && !card.getLocation().equals(country)) match = false;
-            if (!direction.equals("Любое") && !card.getType().equals(direction)) match = false;
-            if (!tripType.equals("Любой") && !card.getType().equals(tripType)) match = false;
-
-            // Фильтр по полу
-            if (!gender.isEmpty() && card.getUser() != null && card.getUser().getInfo() != null) {
-                String userGender = card.getUser().getInfo().getSex();
-                if (!userGender.equalsIgnoreCase(gender)) match = false;
+            // ---------- Страна ----------
+            if (country != null && !"Любая".equalsIgnoreCase(country)) {
+                if (card.getLocation() == null || !card.getLocation().equalsIgnoreCase(country)) match = false;
             }
 
-// Фильтр по возрасту
+            // ---------- Тип поездки ----------
+            if (tripType != null && !"Любой".equalsIgnoreCase(tripType)) {
+                if (card.getType() == null || !card.getType().equalsIgnoreCase(tripType)) match = false;
+            }
+
+            // ---------- Пол ----------
+            if (gender != null && !gender.isEmpty()) {
+                String userGender = null;
+                if (card.getUser() != null && card.getUser().getInfo() != null) {
+                    userGender = card.getUser().getInfo().getSex();
+                }
+                if (userGender == null || !userGender.equalsIgnoreCase(gender)) match = false;
+            }
+
+            // ---------- Возраст ----------
             if (card.getUser() != null && card.getUser().getInfo() != null) {
-                int userAge = card.getUser().getInfo().getAge();
-                if (ageFrom != -1 && userAge < ageFrom) match = false;
-                if (ageTo != -1 && userAge > ageTo) match = false;
+                Integer userAge = card.getUser().getInfo().getAge();
+                if (userAge != null) {
+                    if ((ageFrom != -1 && userAge < ageFrom) || (ageTo != -1 && userAge > ageTo)) match = false;
+                }
             }
 
-
+            // ---------- Цена ----------
+            double cardPrice = card.getPrice();
+            if ((priceFrom != -1 && cardPrice < priceFrom) || (priceTo != -1 && cardPrice > priceTo)) match = false;
 
             if (match) filtered.add(card);
         }

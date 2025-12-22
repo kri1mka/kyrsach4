@@ -3,12 +3,12 @@ package org.example.daos;
 import org.example.entities.TripCard;
 import org.example.entities.User;
 import org.example.entities.UserInfo;
-import org.example.entities.Photo;
 import org.example.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +16,8 @@ public class TripCardDAO {
 
     public List<TripCard> findAll() {
         List<TripCard> cards = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // формат даты для Android
 
-        // SQL с JOIN на UsersInfo
         String sql = """
             SELECT 
                 t.id AS trip_id,
@@ -27,7 +27,6 @@ public class TripCardDAO {
                 t.price AS price,
                 t.type AS type,
                 t.description AS description,
-                t.photo_it AS photo_file,
 
                 u.id AS user_id,
                 u.name AS name,
@@ -35,7 +34,8 @@ public class TripCardDAO {
 
                 ui.id AS userinfo_id,
                 ui.sex AS sex,
-                ui.age AS age
+                ui.age AS age,
+                ui.avatarUrl AS avatar_url
 
             FROM TripCard t
             JOIN Users u ON t.user_id = u.id
@@ -53,34 +53,29 @@ public class TripCardDAO {
                 userInfo.setUserId(rs.getInt("user_id"));
                 userInfo.setSex(rs.getString("sex"));
                 userInfo.setAge(rs.getInt("age"));
+                userInfo.setAvatarUrl(rs.getString("avatar_url"));
 
                 // User
                 User user = new User();
                 user.setId(rs.getInt("user_id"));
                 user.setName(rs.getString("name"));
                 user.setSurname(rs.getString("surname"));
-                user.setInfo(userInfo); // связываем UserInfo с User
-
-                // Photo
-                Photo photo = new Photo();
-                String photoFile = rs.getString("photo_file"); // имя файла из БД
-                String photoUrl = "http://10.0.2.2:8080/Backend/images/" + photoFile; // формируем URL
-                photo.setPhotoUrl(photoUrl);
-
-                // Логируем URL картинки
-                System.out.println("TripCard ID: " + rs.getInt("trip_id") + " | Photo URL: " + photoUrl);
+                user.setInfo(userInfo);
 
                 // TripCard
                 TripCard card = new TripCard();
                 card.setId(rs.getInt("trip_id"));
                 card.setLocation(rs.getString("location"));
-                card.setStartDate(rs.getDate("start_date"));
-                card.setEndDate(rs.getDate("end_date"));
+                card.setStartDate(rs.getDate("start_date") != null ? sdf.format(rs.getDate("start_date")) : null);
+                card.setEndDate(rs.getDate("end_date") != null ? sdf.format(rs.getDate("end_date")) : null);
                 card.setPrice(rs.getDouble("price"));
                 card.setType(rs.getString("type"));
                 card.setDescription(rs.getString("description"));
                 card.setUser(user);
-                card.setPhoto(photo);
+                String avatarFile = rs.getString("avatar_url");
+                if (avatarFile != null && !avatarFile.isEmpty()) {
+                    userInfo.setAvatarUrl("http://10.0.2.2:8080/Backend/images/" + avatarFile);
+                }
 
                 cards.add(card);
             }
