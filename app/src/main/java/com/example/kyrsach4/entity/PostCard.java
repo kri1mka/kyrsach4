@@ -8,7 +8,6 @@ public class PostCard {
 
     private Integer id;
 
-    @SerializedName("user_id")
     private Integer userId;
 
     private String description;
@@ -18,7 +17,8 @@ public class PostCard {
 
     private String photoIt;
 
-    private String userName; // имя пользователя
+    private String userName;
+    private String avatarUrl;
     private Integer likesCount;
 
 
@@ -62,4 +62,12 @@ public class PostCard {
 
     public Integer getLikesCount() { return likesCount; }
     public void setLikesCount(Integer likesCount) { this.likesCount = likesCount; }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 }

@@ -9,15 +9,10 @@ public class PostCard {
     private String location;
     private Date createdAt;
     private String photoIt;
+    private String avatarUrl;
+
     public PostCard() {}
 
-    public PostCard(Integer user_id, String description, String location, String photo_it) {
-        this.userId = user_id;
-        this.description = description;
-        this.location = location;
-        this.photoIt = photo_it;
-    }
-    // Новое поле для полного имени пользователя
     private String userName;
     private Integer likesCount;
 
@@ -73,5 +68,11 @@ public class PostCard {
         this.photoIt = photo_it;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
 
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 }

@@ -15,7 +15,8 @@ public class UserProfile {
     private Integer age;
     private String location;
     private String travelType;
-    private String photo;
+    @SerializedName("photo")
+    private String avatarUrl;
     private String interests;
     private String about;
 
@@ -52,9 +53,9 @@ public class UserProfile {
     public void setAbout(String about) { this.about = about; }
 
     public String getPhoto() {
-        return photo;
+        return avatarUrl;
     }
     public void setPhoto(String photo) {
-        this.photo = photo;
+        this.avatarUrl = photo;
     }
 }

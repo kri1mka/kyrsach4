@@ -46,11 +46,40 @@ public class SwipeActivity extends AppCompatActivity {
         btnTranslate = findViewById(R.id.nav_translate);
         btnProfile = findViewById(R.id.nav_profile);
 
-        btnHome.setOnClickListener(v -> navigate(HomeActivity.class));
-        btnChat.setOnClickListener(v -> navigate(MessagesActivity.class));
-        btnTranslate.setOnClickListener(v -> navigate(TranslatorActivity.class));
-        btnProfile.setOnClickListener(v -> navigate(MyProfileActivityKs.class));
-        btnHeart.setOnClickListener(v -> {}); // свайп экран, можно оставить пустым
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(SwipeActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnChat.setOnClickListener(v -> {
+            Intent intent = new Intent(SwipeActivity.this, MessagesActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnTranslate.setOnClickListener(v -> {
+            // Возвращаемся на TranslatorActivity
+            Intent intent = new Intent(SwipeActivity.this, TranslatorActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            // Возвращаемся на MyProfileActivityKs
+            Intent intent = new Intent(SwipeActivity.this, MyProfileActivityKs.class);
+            startActivity(intent);
+            finish();
+        });
+
+        btnHeart.setOnClickListener(v -> {
+            // Возвращаемся на HomeActivity
+            Intent intent = new Intent(SwipeActivity.this, SwipeActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+
 
         cardStackView = findViewById(R.id.card_stack);
 
@@ -180,26 +209,12 @@ public class SwipeActivity extends AppCompatActivity {
                 if (card.getType() == null || !card.getType().equalsIgnoreCase(tripType)) match = false;
             }
 
-            // ---------- Пол ----------
-            if (gender != null && !gender.isEmpty()) {
-                String userGender = null;
-                if (card.getUser() != null && card.getUser().getInfo() != null) {
-                    userGender = card.getUser().getInfo().getSex();
-                }
-                if (userGender == null || !userGender.equalsIgnoreCase(gender)) match = false;
-            }
-
-            // ---------- Возраст ----------
+            // Фильтр по возрасту
             if (card.getUser() != null && card.getUser().getInfo() != null) {
-                Integer userAge = card.getUser().getInfo().getAge();
-                if (userAge != null) {
-                    if ((ageFrom != -1 && userAge < ageFrom) || (ageTo != -1 && userAge > ageTo)) match = false;
-                }
+                int userAge = card.getUser().getInfo().getAge();
+                if (ageFrom != -1 && userAge < ageFrom) match = false;
+                if (ageTo != -1 && userAge > ageTo) match = false;
             }
-
-            // ---------- Цена ----------
-            double cardPrice = card.getPrice();
-            if ((priceFrom != -1 && cardPrice < priceFrom) || (priceTo != -1 && cardPrice > priceTo)) match = false;
 
             if (match) filtered.add(card);
         }

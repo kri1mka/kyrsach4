@@ -29,8 +29,7 @@ public class UserServler extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            Connection connection = DBConnection.getConnection();
-            userDao = new UserDAO(connection);
+            userDao = new UserDAO();
         } catch (RuntimeException e) {
             throw new ServletException("Cannot initialize DAO: " + e.getMessage(), e);
         }
@@ -137,13 +136,11 @@ public class UserServler extends HttpServlet {
             // Читаем тело запроса
             UpdateProfileRequest request = gson.fromJson(req.getReader(), UpdateProfileRequest.class);
 
-            // Обновляем только те поля, которые пришли
             if (request.getAge() != null) info.setAge(Integer.parseInt(request.getAge()));
             if (request.getLocation() != null) info.setCity(request.getLocation());
             if (request.getTravelType() != null) info.setTravelType(request.getTravelType());
             if (request.getPhoto() != null) info.setAvatarUrl(request.getPhoto());
 
-            // При необходимости можно сохранять имя/фамилию в Users таблице
             User user = userDao.findById(userId);
             if (user != null) {
                 if (request.getName() != null) user.setName(request.getName());

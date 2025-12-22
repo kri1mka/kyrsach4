@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kyrsach4.adapters.TripsAdapter2;
 import com.example.kyrsach4.entity.TripCard;
 import com.example.kyrsach4.network.ApiClient;
+import com.example.kyrsach4.network.SessionStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,18 +40,15 @@ public class TripsActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trips_ks);
 
-        // Инициализация RecyclerView
         rvTrips = findViewById(R.id.rvTrips);
         trips = new ArrayList<>();
         adapter = new TripsAdapter2(trips, trip -> {
-            // обработка клика
         });
         rvTrips.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvTrips.setAdapter(adapter);
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(rvTrips);
 
-        // Инициализация кнопок
         btnBack = findViewById(R.id.btn_back);
         navHome = findViewById(R.id.nav_home);
         navChat = findViewById(R.id.nav_chat);
@@ -78,18 +76,23 @@ public class TripsActivity2 extends AppCompatActivity {
         });
 
         navProfile.setOnClickListener(v -> {
-            // Уже на профиле
             Toast.makeText(this, "Вы уже в профиле", Toast.LENGTH_SHORT).show();
         });
 
-        // Загрузка поездок
         loadUserTrips();
     }
 
 
     private void loadUserTrips() {
 
-        int userId = 1; // временно. Потом возьмёшь из сессии
+        Integer userId;
+        userId = SessionStorage.userId;
+
+        if (userId == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
 
         ApiClient.serverApi.getUserTrips(userId)
                 .enqueue(new Callback<List<TripCard>>() {

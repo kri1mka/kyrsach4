@@ -54,13 +54,21 @@ public class ProfileActivityKs extends AppCompatActivity {
     private ImageView ivAvatar;
     private boolean isFriend = false;
     private int followersCount = 120;
+    private int userId;
 
-    private int userId = 1; // TODO: передавать реальный userId через Intent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_ks);
+
+        userId = getIntent().getIntExtra("user_id", -1);
+
+        if (userId == -1) {
+            Toast.makeText(this, "Ошибка: пользователь не найден", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         initViews();
         setupListeners();
@@ -99,7 +107,6 @@ public class ProfileActivityKs extends AppCompatActivity {
         tvFollowersCount.setText(String.valueOf(followersCount));
         updateSubscribeButton();
 
-        // Нижняя навигация
         navHome = findViewById(R.id.nav_home);
         navChat = findViewById(R.id.nav_chat);
         navHeart = findViewById(R.id.nav_heart);
@@ -170,19 +177,14 @@ public class ProfileActivityKs extends AppCompatActivity {
 
         ImageButton btnLike = postView.findViewById(R.id.btn_like);
 
-        // Имя пользователя
         username.setText(post.getUserName() != null ? post.getUserName() : "Пользователь");
 
-        // Локация
         location.setText(post.getLocation() != null ? post.getLocation() : "");
 
-        // Описание
         description.setText(post.getDescription() != null ? post.getDescription() : "");
 
-        // Лайки
         likesCount.setText(String.valueOf(post.getLikesCount() != null ? post.getLikesCount() : 0));
 
-        // Фото
         if (post.getPhotoIt() != null && !post.getPhotoIt().isEmpty()) {
             String photoUrl = post.getPhotoIt().replaceAll("\\s+", "%20").trim();
             Glide.with(this)
@@ -192,7 +194,6 @@ public class ProfileActivityKs extends AppCompatActivity {
         } else {
             image.setImageResource(R.drawable.sample_photo1);
         }
-        // Дата
         if (post.getCreatedAt() != null && !post.getCreatedAt().isEmpty()) {
             try {
                 String cleaned = post.getCreatedAt().replaceAll("\\s+", " ").trim();
@@ -207,29 +208,29 @@ public class ProfileActivityKs extends AppCompatActivity {
             postDate.setText("Только что");
         }
 
-        if (post.getPhoto() != null && !post.getPhoto().isEmpty()) {
-            Glide.with(postView)
-                    .load(post.getPhoto())
+        if (post.getAvatarUrl() != null && !post.getAvatarUrl().isEmpty()) {
+            Glide.with(this)
+                    .load(post.getAvatarUrl())
+                    .circleCrop()
                     .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                    .error(R.drawable.pngtreecat_default_avatar_5416936)
                     .into(postAvatar);
         } else {
             postAvatar.setImageResource(R.drawable.pngtreecat_default_avatar_5416936);
         }
+
         int likes = post.getLikesCount() != null ? post.getLikesCount() : 0;
         likesCount.setText(String.valueOf(likes));
 
-// начальное состояние иконки
         updateLikeUI(post.isLiked(), btnLike);
 
         btnLike.setOnClickListener(v -> {
             boolean liked = post.isLiked();
 
             if (!liked) {
-                // лайк
                 post.setLiked(true);
                 post.setLikesCount(likes + 1);
             } else {
-                // анлайк
                 post.setLiked(false);
                 post.setLikesCount(likes);
                 post.setLikesCount(post.getLikesCount());
@@ -269,7 +270,6 @@ public class ProfileActivityKs extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     List<TripCard> trips = response.body();
 
-                    // Фильтруем поездки: оставляем только те, у которых endDate >= текущая дата
                     long now = System.currentTimeMillis();
                     List<TripCard> futureTrips = new ArrayList<>();
                     for (TripCard trip : trips) {
@@ -378,24 +378,28 @@ public class ProfileActivityKs extends AppCompatActivity {
     }
     private void setupBottomNavigation() {
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         });
 
         navChat.setOnClickListener(v -> {
-            Toast.makeText(this, "Чат", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MessagesActivity.class));
+            finish();
         });
+
         navHeart.setOnClickListener(v -> {
-            Toast.makeText(this, "Свапы", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, SwipeActivity.class));
+            finish();
         });
 
         navTranslate.setOnClickListener(v -> {
-            Toast.makeText(this, "Перевод", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, TranslatorActivity.class));
+            finish();
         });
 
         navProfile.setOnClickListener(v -> {
-            // Уже на профиле
-            Toast.makeText(this, "Вы уже в профиле", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MyProfileActivityKs.class));
+            finish();
         });
     }
 }
