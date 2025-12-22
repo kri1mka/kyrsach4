@@ -7,6 +7,7 @@ public class UserInfo {
     private int userId;
     private String sex;
     private int age;
+    private String avatarUrl;
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -19,5 +20,8 @@ public class UserInfo {
 
     public int getAge() { return age; }
     public void setAge(int age) { this.age = age; }
+
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 }
 
