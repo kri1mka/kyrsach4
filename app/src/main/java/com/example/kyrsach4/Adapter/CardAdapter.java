@@ -1,19 +1,21 @@
 package com.example.kyrsach4.Adapter;
-import android.widget.ImageView;
-
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.kyrsach4.R;
 import com.example.kyrsach4.entities.TripCard;
+import com.example.kyrsach4.entities.UserInfo;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -21,6 +23,22 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
     private List<TripCard> cards;
     private Context context;
+
+    private static final String IMAGE_BASE_URL = "http://10.0.2.2:8080/Backend/images/";
+
+    // массив дефолтных аватаров
+    private static final int[] DEFAULT_AVATARS = {
+            R.drawable.user1,
+            R.drawable.user3,
+            R.drawable.user2,
+            R.drawable.user4,
+            R.drawable.user5,
+            R.drawable.user6,
+            R.drawable.user7
+    };
+
+    // индекс текущего дефолтного фото
+    private int defaultAvatarIndex = 0;
 
     public CardAdapter(List<TripCard> cards, Context context) {
         this.cards = cards;
@@ -38,48 +56,53 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TripCard card = cards.get(position);
 
+        // ---------- Имя и возраст ----------
         if (card.getUser() != null) {
             String fullName = card.getUser().getName() + " " + card.getUser().getSurname();
-            if (card.getUser().getInfo() != null) {
-                fullName += ", " + card.getUser().getInfo().getAge();
+            if (card.getUserInfo() != null) {
+                fullName += ", " + card.getUserInfo().getAge();
             }
             holder.name.setText(fullName);
         } else {
             holder.name.setText("Unknown");
         }
 
+        // ---------- Остальные данные ----------
+        holder.location.setText(card.getLocation() != null ? card.getLocation() : "");
+        holder.type.setText(card.getType() != null ? card.getType() : "");
+        holder.description.setText(card.getDescription() != null ? card.getDescription() : "");
+        holder.price.setText("$" + card.getPrice());
         holder.dateRange.setText(
-                "" +
-                        (card.getStartDate() != null ? card.getStartDate() : "") + " - " +
+                (card.getStartDate() != null ? card.getStartDate() : "") +
+                        " - " +
                         (card.getEndDate() != null ? card.getEndDate() : "")
         );
 
-        holder.location.setText("" + (card.getLocation() != null ? card.getLocation() : ""));
-        holder.type.setText("" + (card.getType() != null ? card.getType() : ""));
-        holder.description.setText(card.getDescription() != null ? card.getDescription() : "");
-        holder.price.setText("$" + card.getPrice());
-
-        if (card.getUser() != null &&
-                card.getUser().getInfo() != null &&
-                card.getUser().getInfo().getAvatarUrl() != null) {
-
+        // ---------- Фото ----------
+        UserInfo userInfo = card.getUserInfo();
+        if (userInfo != null && userInfo.getAvatarUrl() != null && !userInfo.getAvatarUrl().isEmpty()) {
+            String avatarUrl = IMAGE_BASE_URL + userInfo.getAvatarUrl();
             Glide.with(context)
-                    .load(card.getPhoto().getPhotoUrl())
+                    .load(avatarUrl)
+                    .circleCrop()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(holder.image);
-
-
+        } else {
+            // циклический выбор дефолтного аватара
+            holder.image.setImageResource(DEFAULT_AVATARS[defaultAvatarIndex]);
+            defaultAvatarIndex = (defaultAvatarIndex + 1) % DEFAULT_AVATARS.length;
         }
-
     }
 
     @Override
     public int getItemCount() {
-        return cards.size();
+        return cards != null ? cards.size() : 0;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView age, name, location, type, description, dateRange, price;
+        TextView name, location, type, description, dateRange, price;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -90,14 +113,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             description = itemView.findViewById(R.id.card_description);
             dateRange = itemView.findViewById(R.id.card_dateRange);
             price = itemView.findViewById(R.id.card_price);
-            age = itemView.findViewById(R.id.card_age);
         }
     }
 
     public void updateList(List<TripCard> newCards) {
-        this.cards.clear();
-        this.cards.addAll(newCards);
+        cards.clear();
+        cards.addAll(newCards);
         notifyDataSetChanged();
     }
-
 }

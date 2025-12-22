@@ -6,9 +6,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <application
         android:usesCleartextTraffic="true"
@@ -31,28 +29,32 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ProfileActivityKs" />
+        <activity android:name=".MyProfileActivityKs" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".TripsActivity2" />
-        <activity android:name=".TranslatorActivity" />
         <activity android:name=".HelpActivity" />
-        <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".MyProfileActivityKs" />
-        <activity android:name=".ProfileActivityKs" />
+        <activity android:name=".PdfActivity" />
+        <activity android:name=".FriendsActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ChangeDataActivityKs"/>
         <activity android:name=".CreatePublicationActivityKs"/>
-        <activity android:name=".CreatePostDetailsActivityKs"/>
-        <activity android:name=".CreateTripActivityKs"/>
-        <activity android:name=".FriendsActivity"/>
-        <activity android:name=".ChatActivity"/>
-        <activity android:name=".DialogActivity"/>
-        <activity android:name=".SwipeActivity"/>
+
+        <activity
+            android:name=".ChatActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity android:name=".MessagesActivity"/>
+
         <activity android:name=".FiltersActivity"/>
+        <activity android:name=".SwipeActivity"/>
+        <activity android:name=".TranslatorActivity"/>
+        <activity android:name=".RightSwipeActivity"/>
+
+
+
 
     </application>
 
