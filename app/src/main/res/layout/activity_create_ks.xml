@@ -21,21 +21,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="#435986" />
 
+    <!-- Big circular ImageView -->
+
     <TextView
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:gravity="center"
         android:text="Новая поездка"
         android:textColor="#212121"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.424"
         app:layout_constraintStart_toEndOf="@id/btn_back"
-        app:layout_constraintTop_toTopOf="@id/btn_back"/>
+        app:layout_constraintTop_toTopOf="@id/btn_back" />
 
-    <!-- Big circular ImageView -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_big_image_container"
         android:layout_width="120dp"
@@ -160,16 +162,16 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_primary"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_ks"
         android:text="Создать поездку"
-        android:textStyle="bold"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:background="@drawable/button_ks"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/form_container"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/form_container" />
 
     <!-- Нижний переключатель -->
     <LinearLayout

@@ -61,7 +61,7 @@
             android:layout_height="300dp"
             android:contentDescription="Пост"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_photo1" />
+            android:src="@drawable/placeholder" />
 
         <!-- Действия -->
         <LinearLayout
@@ -83,7 +83,7 @@
                 android:id="@+id/likes_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
+                android:text="2"
                 android:textColor="#212121"
                 android:textSize="14sp"
                 android:layout_marginStart="8dp" />

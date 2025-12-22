@@ -64,11 +64,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
                 card.getUser().getInfo().getAvatarUrl() != null) {
 
             Glide.with(context)
-                    .load(card.getUser().getInfo().getAvatarUrl())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.placeholder)
-                    .skipMemoryCache(true) // не использовать кэш памяти
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) // не использовать кэш диска
+                    .load(card.getPhoto().getPhotoUrl())
                     .into(holder.image);
 
 

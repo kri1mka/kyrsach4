@@ -2,6 +2,7 @@ package com.example.kyrsach4;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -13,6 +14,8 @@ import com.example.kyrsach4.Adapter.PostsAdapter;
 import com.example.kyrsach4.entity.Post;
 import com.example.kyrsach4.network.ApiClient;
 import com.example.kyrsach4.network.SessionStorage;
+import com.example.kyrsach4.reqresp.LikeRequest;
+import com.example.kyrsach4.reqresp.LikeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,22 +34,21 @@ public class HomeActivity extends AppCompatActivity {
     ImageButton btnHelp;
     Integer userId = SessionStorage.userId;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         if (userId == null) {
-            finish(); // пользователь не авторизован
+            finish();
             return;
         }
 
         initViews();
         setupRecycler();
         setupBottomNav();
-        loadPosts(); // 🔹 ЗАГРУЗКА С СЕРВЕРА
+        loadPosts();
+
     }
 
     private void initViews() {
@@ -64,33 +66,72 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, MessagesActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            finish(); // чтобы закрыть HomeActivity, если нужно
+            finish();
         });
 
         navHeart.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, SwipeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            finish(); // чтобы закрыть HomeActivity, если нужно
+            finish();
         });
 
     }
 
-
     private void setupRecycler() {
         postsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PostsAdapter(this, postList);
+
+        adapter = new PostsAdapter(
+                this,
+                postList,
+                userIdFromPost -> {
+                    Intent intent = new Intent(
+                            HomeActivity.this,
+                            ProfileActivityKs.class
+                    );
+                    intent.putExtra("user_id", userIdFromPost);
+                    startActivity(intent);
+                }
+        );
         postsRecycler.setAdapter(adapter);
     }
+
 
     private void loadPosts() {
         ApiClient.serverApi.getPosts().enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+
                     postList.clear();
-                    postList.addAll(response.body());
+
+                    for (Post post : response.body()) {
+                        if (post.user_id != userId) {
+                            postList.add(post);
+                        }
+                    }
+                    Log.d("bbbbbbbbbbbbbbbbbbbb", "onResponse: " + response.body());
+
                     adapter.notifyDataSetChanged();
+
+
+                    for (Post post : postList) {
+                        ApiClient.serverApi.isLiked(
+                                new LikeRequest(post.id, SessionStorage.userId)
+                        ).enqueue(new Callback<LikeResponse>() {
+                            @Override
+                            public void onResponse(Call<LikeResponse> call, Response<LikeResponse> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    post.is_liked = response.body().is_liked;
+                                    adapter.notifyItemChanged(postList.indexOf(post));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<LikeResponse> call, Throwable t) {}
+                        });
+                    }
+
                 } else {
                     Toast.makeText(HomeActivity.this,
                             "Ошибка загрузки постов", Toast.LENGTH_SHORT).show();
@@ -104,6 +145,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void setupBottomNav() {
         navTranslate.setOnClickListener(v -> {

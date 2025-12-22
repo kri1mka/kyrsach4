@@ -45,7 +45,6 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PostCard post = postList.get(position);
 
-        // Имя пользователя
         holder.tvUserName.setText(
                 post.getUserName() != null ? post.getUserName() : "Пользователь"
         );
@@ -62,7 +61,6 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
                 String.valueOf(post.getLikesCount() != null ? post.getLikesCount() : 0)
         );
 
-        // ✅ ДАТА (БЕЗ parse!)
         if (post.getCreatedAt() != null) {
             SimpleDateFormat displayFormat =
                     new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
@@ -70,17 +68,25 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
         } else {
             holder.tvDate.setText("Только что");
         }
-
-        // ✅ ФОТО (ПОЛНЫЙ URL)
         if (post.getPhotoIt() != null && !post.getPhotoIt().isEmpty()) {
 
 
             Glide.with(holder.itemView.getContext())
                     .load(post.getPhotoIt())
-                    .placeholder(R.drawable.sample_photo1)
+                    .placeholder(R.drawable.placeholder)//placeholder(R.drawable.sample_photo1)
                     .into(holder.ivPostImage);
         } else {
-            holder.ivPostImage.setImageResource(R.drawable.sample_photo1);
+            holder.ivPostImage.setImageResource(R.drawable.placeholder);
+        }
+        if (post.getAvatarUrl() != null && !post.getAvatarUrl().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(post.getAvatarUrl())
+                    .circleCrop()
+                    .placeholder(R.drawable.pngtreecat_default_avatar_5416936)
+                    .error(R.drawable.pngtreecat_default_avatar_5416936)
+                    .into(holder.ivAvatar);
+        } else {
+            holder.ivAvatar.setImageResource(R.drawable.pngtreecat_default_avatar_5416936);
         }
     }
 
@@ -91,7 +97,7 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvUserName, tvDescription, tvLocation, tvLikes, tvDate;
-        ImageView ivPostImage;
+        ImageView ivPostImage, ivAvatar;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -101,6 +107,7 @@ public class PostAdapterKs extends RecyclerView.Adapter<PostAdapterKs.ViewHolder
             tvLikes = itemView.findViewById(R.id.likes_count);
             tvDate = itemView.findViewById(R.id.post_date);
             ivPostImage = itemView.findViewById(R.id.post_image);
+            ivAvatar = itemView.findViewById(R.id.post_avatar);
         }
     }
 }

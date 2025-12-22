@@ -1,17 +1,22 @@
 package com.example.kyrsach4;
 
+import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import java.io.File;
+
+import com.example.kyrsach4.network.SessionStorage;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CreatePublicationActivityKs extends AppCompatActivity {
@@ -19,99 +24,117 @@ public class CreatePublicationActivityKs extends AppCompatActivity {
     private ImageView ivSelected;
     private RecyclerView rvThumbnails;
     private GalleryAdapterKs galleryAdapter;
-    private List<String> imagePaths = new ArrayList<>();
-    private String lastSelectedImagePath;
+    private final List<String> imageUris = new ArrayList<>();
+    private String lastSelectedImageUri;
+
+    private static final int PERMISSION_REQUEST = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post_ks);
 
+        if (SessionStorage.userId == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
         ivSelected = findViewById(R.id.iv_selected);
         rvThumbnails = findViewById(R.id.rv_thumbnails);
 
-        rvThumbnails.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
-
-        galleryAdapter = new GalleryAdapterKs(imagePaths, this::onImageSelected);
+        rvThumbnails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        galleryAdapter = new GalleryAdapterKs(imageUris, this::onImageSelected);
         rvThumbnails.setAdapter(galleryAdapter);
 
-        // Кнопка "назад"
         findViewById(R.id.topAppBar).setOnClickListener(v -> finish());
 
-        // Кнопка "поездка"
         findViewById(R.id.btn_trip).setOnClickListener(v -> {
-            startActivity(new Intent(this, CreateTripActivityKs.class));
-            finish();
+            startActivity(new Intent(CreatePublicationActivityKs.this, CreateTripActivityKs.class));
         });
 
         findViewById(R.id.tv_next).setOnClickListener(v -> {
-            if (lastSelectedImagePath == null) {
+            if (lastSelectedImageUri == null) {
                 Toast.makeText(this, "Выберите изображение", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            Intent intent = new Intent(this, CreatePostDetailsActivityKs.class);
-            intent.putExtra("image_path", lastSelectedImagePath);
+            Intent intent = new Intent(CreatePublicationActivityKs.this, CreatePostDetailsActivityKs.class);
+            intent.putExtra("image_uri", lastSelectedImageUri);
             startActivity(intent);
         });
 
-
-        loadImagesFromFolder();
+        requestGalleryPermission();
     }
 
-    private void loadImagesFromFolder() {
+    private void requestGalleryPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(
+                    new String[]{android.Manifest.permission.READ_MEDIA_IMAGES},
+                    PERMISSION_REQUEST
+            );
+        } else {
+            requestPermissions(
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST) {
+            loadImagesFromGallery();
+        }
+    }
+
+    private void loadImagesFromGallery() {
         new Thread(() -> {
-            List<String> images = getImagesFromFolder();
+            List<String> images = getImagesFromMediaStore();
             runOnUiThread(() -> {
                 if (images.isEmpty()) {
-                    Toast.makeText(this, "Фото не найдены. Положите изображения в /sdcard/Pictures/TestImages", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Фотографии не найдены", Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                imagePaths.clear();
-                imagePaths.addAll(images);
+                imageUris.clear();
+                imageUris.addAll(images);
                 galleryAdapter.notifyDataSetChanged();
 
-                // Устанавливаем первую фотографию в большой ImageView
-                lastSelectedImagePath = images.get(0);
-                updateSelectedImage(lastSelectedImagePath);
+                lastSelectedImageUri = images.get(0);
+                updateSelectedImage(lastSelectedImageUri);
             });
         }).start();
     }
 
-    private List<String> getImagesFromFolder() {
+    private List<String> getImagesFromMediaStore() {
         List<String> images = new ArrayList<>();
-        File picturesDir = new File(Environment.getExternalStorageDirectory(), "Pictures/TestImages");
+        Uri collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-        if (!picturesDir.exists() || !picturesDir.isDirectory()) return images;
+        String[] projection = {MediaStore.Images.Media._ID};
+        String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
-        File[] files = picturesDir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                String name = file.getName().toLowerCase();
-                if ((name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")) && file.isFile()) {
-                    images.add(file.getAbsolutePath());
+        try (Cursor cursor = getContentResolver().query(collection, projection, null, null, sortOrder)) {
+            if (cursor != null) {
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                while (cursor.moveToNext()) {
+                    long id = cursor.getLong(idColumn);
+                    Uri contentUri = ContentUris.withAppendedId(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id
+                    );
+                    images.add(contentUri.toString());
                 }
             }
         }
-
-        Collections.reverse(images);
         return images;
     }
 
-    private void onImageSelected(String imagePath) {
-        lastSelectedImagePath = imagePath;
-        updateSelectedImage(imagePath);
+    private void onImageSelected(String imageUri) {
+        lastSelectedImageUri = imageUri;
+        updateSelectedImage(imageUri);
     }
 
-    private void updateSelectedImage(String imagePath) {
-        File file = new File(imagePath);
-        if (file.exists()) {
-            ivSelected.setImageURI(Uri.fromFile(file));
-        } else {
-            Toast.makeText(this, "Файл не найден: " + imagePath, Toast.LENGTH_SHORT).show();
-        }
+    private void updateSelectedImage(String imageUri) {
+        ivSelected.setImageURI(Uri.parse(imageUri));
     }
-
 }

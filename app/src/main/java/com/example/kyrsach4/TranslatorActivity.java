@@ -19,7 +19,7 @@ public class TranslatorActivity extends AppCompatActivity {
     EditText inputText;
     TextView outputText;
     TextView langFrom, langTo;
-    ImageView swapBtn, backBtn;
+    ImageView swapBtn, nav_home, nav_profile, nav_translate, nav_heart, nav_chat;
 
     String sourceLang = TranslateLanguage.RUSSIAN;
     String targetLang = TranslateLanguage.ENGLISH;
@@ -34,7 +34,12 @@ public class TranslatorActivity extends AppCompatActivity {
         langFrom = findViewById(R.id.langFrom);
         langTo = findViewById(R.id.langTo);
         swapBtn = findViewById(R.id.swapBtn);
-        backBtn = findViewById(R.id.backtomainBtn);
+
+        nav_home = findViewById(R.id.nav_home);
+        nav_profile = findViewById(R.id.nav_profile);
+        nav_translate = findViewById(R.id.nav_translate);
+        nav_heart = findViewById(R.id.nav_heart);
+        nav_chat = findViewById(R.id.nav_chat);
 
         findViewById(R.id.btnTranslate).setOnClickListener(v -> {
             String text = inputText.getText().toString().trim();
@@ -47,7 +52,39 @@ public class TranslatorActivity extends AppCompatActivity {
 
         swapBtn.setOnClickListener(v -> swapLanguages());
 
-        backBtn.setOnClickListener(v -> {
+        nav_chat.setOnClickListener(v -> {
+            // Возвращаемся на ChatActivity !!!!!!!!! вставить когда добавим
+            Intent intent = new Intent(TranslatorActivity.this, MessagesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
+        nav_heart.setOnClickListener(v -> {
+            // Возвращаемся на HeartActivity !!!!!!!!! вставить когда добавим
+            Intent intent = new Intent(TranslatorActivity.this, SwipeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
+        nav_translate.setOnClickListener(v -> {
+            // Возвращаемся на TranslatorActivity
+            Intent intent = new Intent(TranslatorActivity.this, TranslatorActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
+        nav_profile.setOnClickListener(v -> {
+            // Возвращаемся на MyProfileActivityKs
+            Intent intent = new Intent(TranslatorActivity.this, MyProfileActivityKs.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
+        nav_home.setOnClickListener(v -> {
             // Возвращаемся на HomeActivity
             Intent intent = new Intent(TranslatorActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

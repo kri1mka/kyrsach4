@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.kyrsach4.network.SessionStorage;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.example.kyrsach4.adapters.GalleryAdapterTripKs;
 import com.example.kyrsach4.entity.TripCard;
@@ -46,7 +47,7 @@ public class CreateTripActivityKs extends AppCompatActivity {
     private Uri lastSelectedImageUri;
     private ImageView buttonBack;
 
-    private int userId = 1; // по умолчанию, брать из SharedPreferences
+    private Integer userId;
 
     private Calendar startDate = Calendar.getInstance();
     private Calendar endDate = Calendar.getInstance();
@@ -55,6 +56,13 @@ public class CreateTripActivityKs extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_ks);
+
+        userId = SessionStorage.userId;
+        if (userId == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
 
         ivBigImage = findViewById(R.id.iv_big_image_container);
         etWhere = findViewById(R.id.et_where);
@@ -69,7 +77,6 @@ public class CreateTripActivityKs extends AppCompatActivity {
 
         findViewById(R.id.btn_publication).setOnClickListener(v -> {
             startActivity(new Intent(this, CreatePublicationActivityKs.class));
-            finish();
         });
 
         rvThumbnails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -78,13 +85,12 @@ public class CreateTripActivityKs extends AppCompatActivity {
             lastSelectedImageUri = path.startsWith("http") ? Uri.parse(path) : Uri.fromFile(new File(path));
             Glide.with(this)
                     .load(lastSelectedImageUri)
-                    .circleCrop() // круглая картинка
+                    .circleCrop()
                     .placeholder(R.drawable.sample_photo1)
                     .into(ivBigImage);
         }, this);
 
         rvThumbnails.setAdapter(galleryAdapter);
-
         loadLocalImages();
 
         ivBigImage.setOnClickListener(v -> openImagePicker());
@@ -96,6 +102,7 @@ public class CreateTripActivityKs extends AppCompatActivity {
         etWhen2.setFocusable(false);
         etWhen2.setClickable(true);
         etWhen2.setOnClickListener(v -> showDatePicker(etWhen2, false));
+
         findViewById(R.id.btn_primary).setOnClickListener(v -> {
             if (lastSelectedImageUri != null || selectedImageUri != null) {
                 createTripWithImage(lastSelectedImageUri != null ? lastSelectedImageUri : selectedImageUri);
@@ -135,7 +142,7 @@ public class CreateTripActivityKs extends AppCompatActivity {
             if (files != null) {
                 for (File f : files) {
                     if (f.getName().toLowerCase().endsWith(".jpg") ||
-                    f.getName().toLowerCase().endsWith(".jpeg") ||
+                            f.getName().toLowerCase().endsWith(".jpeg") ||
                             f.getName().toLowerCase().endsWith(".png")) {
                         galleryImages.add(f.getAbsolutePath());
                     }
@@ -197,10 +204,18 @@ public class CreateTripActivityKs extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<TripCard> call, Response<TripCard> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Toast.makeText(CreateTripActivityKs.this, "Поездка создана", Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(CreateTripActivityKs.this,
+                                "Поездка создана", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(CreateTripActivityKs.this, MyProfileActivityKs.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         finish();
+
                     } else {
-                        Toast.makeText(CreateTripActivityKs.this, "Ошибка создания поездки", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateTripActivityKs.this,
+                                "Ошибка создания поездки", Toast.LENGTH_SHORT).show();
                     }
                 }
 

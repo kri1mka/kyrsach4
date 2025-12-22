@@ -1,13 +1,15 @@
 package com.example.kyrsach4.network;
 
 import com.example.kyrsach4.entity.Post;
+import com.example.kyrsach4.reqresp.LikeRequest;
+import com.example.kyrsach4.reqresp.LikeResponse;
 import com.example.kyrsach4.reqresp.LoginRequest;
 import com.example.kyrsach4.reqresp.RegisterRequest;
 import com.example.kyrsach4.dto.UpdateProfileRequest;
 import com.example.kyrsach4.entity.PostCard;
 import com.example.kyrsach4.entity.TripCard;
 import com.example.kyrsach4.entity.UserProfile;
-import com.example.kyrsach4.entity.Users;
+import com.example.kyrsach4.reqresp.ResetPasswordRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,23 @@ public interface ServerApi {
 
     @POST("auth/register")
     Call<AuthResponse> register(@Body RegisterRequest request);
+
+    @POST("auth/login")
+    Call<AuthResponse> login(@Body LoginRequest request);
+
+    @POST("auth/reset-password")
+    Call<Void> resetPassword(@Body ResetPasswordRequest request);
+
+    @POST("home_likes")
+    Call<LikeResponse> addLike(@Body LikeRequest request);
+
+    @POST("/home_is_liked")
+    Call<LikeResponse> isLiked(@Body LikeRequest request);
+
+    @GET("posts")
+    Call<List<Post>> getPosts();
+
+
 
     @GET("api/users/{userId}")
     Call<UserProfile> getUserProfile(@Path("userId") int userId);
@@ -71,21 +90,26 @@ public interface ServerApi {
             @Body UpdateProfileRequest request
     );
 
-    @POST("auth/login")
-    Call<AuthResponse> login(@Body LoginRequest request);
 
-    @GET("posts")
-    Call<List<Post>> getPosts();
+
 
     @Multipart
     @POST("api/posts/upload")
     Call<Map<String, String>> uploadPostImage(@Part MultipartBody.Part file);
 
     @Multipart
+    @POST("api/posts")
+    Call<PostCard> createPostMultipart(
+            @Part("user_id") RequestBody userId,
+            @Part("location") RequestBody location,
+            @Part("description") RequestBody description,
+            @Part MultipartBody.Part file
+    );
+
+    @Multipart
     @POST("api/users/trips/images")
     Call<Map<String, String>> uploadTripImage(@Part MultipartBody.Part file);
 
-    // Создание поездки через multipart
     @Multipart
     @POST("api/users/trips")
     Call<TripCard> createTripMultipart(

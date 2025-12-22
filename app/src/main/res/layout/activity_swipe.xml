@@ -7,14 +7,15 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="56dp"
         android:background="@android:color/white"
-        tools:ignore="MissingConstraints"
-        app:contentInsetStart="10dp">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/btn_back"
@@ -48,42 +49,28 @@
             />
     </androidx.appcompat.widget.Toolbar>
 
-
-
-
-
+    <!-- CardStackView -->
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/card_stack"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toTopOf="@id/dummyBottom"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-
-    <View
-        android:id="@+id/dummyBottom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <!-- Кнопки поверх карточек, чуть выше нижнего края карточки -->
+    <!-- Кнопки свайпа -->
     <LinearLayout
         android:id="@+id/cardButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/dummyBottom"
+        app:layout_constraintBottom_toBottomOf="@id/card_stack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="200dp"> <!-- регулируем высоту над картой -->
+        android:layout_marginBottom="240dp">
 
-        <!-- DISLIKE -->
         <ImageButton
             android:id="@+id/btnDislike"
             android:layout_width="64dp"
@@ -94,17 +81,13 @@
 
         <ImageButton
             android:id="@+id/btnLike"
-            android:layout_width="37dp"
-            android:layout_height="37dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:background="@drawable/circle_white"
-            android:src="@drawable/heart_filled"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            />
-
+            android:src="@drawable/heart_filled"/>
     </LinearLayout>
-    <!-- Нижняя панель (НЕ скроллится) -->
 
+    <!-- Bottom navigation -->
     <LinearLayout
         android:id="@+id/bottom_nav"
         android:layout_width="0dp"
@@ -161,4 +144,5 @@
             android:padding="10dp"
             android:src="@drawable/icons8_utilisateur_24" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

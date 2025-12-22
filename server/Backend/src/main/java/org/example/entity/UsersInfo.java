@@ -14,7 +14,6 @@ public class UsersInfo {
     private String travelType;
     private String avatarUrl;
 
-
     public UsersInfo() {}
 
     public UsersInfo(int id, int userId, Date dateOfBirth, String sex, int age, String interests, String about) {

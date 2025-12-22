@@ -14,14 +14,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText name, surname, email, password, gender, birthdate, about;
+    EditText name, surname, email, password, birthdate, about;
+    RadioGroup genderGroup;
     Button btnNext;
 
     @Override
@@ -33,60 +33,92 @@ public class RegisterActivity extends AppCompatActivity {
         surname = findViewById(R.id.surname);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password_reg);
-        gender = findViewById(R.id.gender);
         birthdate = findViewById(R.id.birthdate);
         about = findViewById(R.id.about);
+        genderGroup = findViewById(R.id.genderGroup);
         btnNext = findViewById(R.id.btn_next);
 
         btnNext.setOnClickListener(v -> register());
     }
 
     private void register() {
-        String emailStr = email.getText().toString().trim();
         String nameStr = name.getText().toString().trim();
         String surnameStr = surname.getText().toString().trim();
+        String emailStr = email.getText().toString().trim();
         String passwordStr = password.getText().toString().trim();
-        String sexStr = gender.getText().toString().trim();
         String aboutStr = about.getText().toString().trim();
+        String birthInput = birthdate.getText().toString().trim();
 
-        if (nameStr.isEmpty() || surnameStr.isEmpty() || emailStr.isEmpty() || passwordStr.isEmpty()) {
-            toast("Заполните обязательные поля");
+        // Проверка обязательных полей
+        if (nameStr.isEmpty() || surnameStr.isEmpty() ||
+                emailStr.isEmpty() || passwordStr.isEmpty()) {
+            toast("Заполните все обязательные поля");
             return;
         }
 
+        // Email
         if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
             toast("Неверный формат email");
             return;
         }
 
-        String birthInput = birthdate.getText().toString().trim();
-        String birthFormatted;
-        try {
-            Date date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(birthInput);
-            birthFormatted = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
-        } catch (Exception e) {
-            toast("Неверный формат даты: дд.MM.гггг");
+        // Пароль ()
+        if (passwordStr.length() < 6) {
+            toast("Пароль должен быть не менее 6 символов");
             return;
         }
 
+        // Пол
+        int checkedGenderId = genderGroup.getCheckedRadioButtonId();
+        if (checkedGenderId == -1) {
+            toast("Выберите пол");
+            return;
+        }
 
-        ApiClient.serverApi.register(new RegisterRequest(nameStr, surnameStr, emailStr, passwordStr, sexStr, birthFormatted, aboutStr))
-                .enqueue(new Callback<AuthResponse>() {
-                    @Override
-                    public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Registered", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                finish();
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Register failed: " + response.code(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
+        String genderStr =
+                checkedGenderId == R.id.radioWoman ? "woman" : "man";
 
-                    @Override
-                    public void onFailure(Call<AuthResponse> call, Throwable t) {
-                        Toast.makeText(RegisterActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+        // Дата рождения
+        String birthFormatted;
+        try {
+            SimpleDateFormat input = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+            input.setLenient(false);
+            Date date = input.parse(birthInput);
+
+            birthFormatted = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    .format(date);
+        } catch (Exception e) {
+            toast("Дата рождения должна быть в формате дд.MM.гггг");
+            return;
+        }
+
+        // Отправка
+        ApiClient.serverApi.register(
+                new RegisterRequest(
+                        nameStr,
+                        surnameStr,
+                        emailStr,
+                        passwordStr,
+                        genderStr,
+                        birthFormatted,
+                        aboutStr
+                )
+        ).enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                if (response.isSuccessful()) {
+                    toast("Регистрация успешна");
+                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                    finish();
+                } else {
+                    toast("Ошибка регистрации: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                toast("Ошибка сети: " + t.getMessage());
+            }
         });
     }
 
@@ -94,3 +126,4 @@ public class RegisterActivity extends AppCompatActivity {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }
+

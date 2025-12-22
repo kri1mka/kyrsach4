@@ -13,13 +13,13 @@ public class TripCardDAO {
     private final Connection connection;
 
     private static final String INSERT =
-            "INSERT INTO TripCard (user_id, location, start_date, end_date, price, type, description, photo_it) " +
+            "INSERT INTO TripCard (user_id, location, start_date, end_date, price, type, description, photo_id) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT * FROM TripCard WHERE id = ?";
     private static final String FIND_BY_USER = "SELECT * FROM TripCard WHERE user_id = ?";
     private static final String FIND_ALL = "SELECT * FROM TripCard";
     private static final String UPDATE =
-            "UPDATE TripCard SET location=?, start_date=?, end_date=?, price=?, type=?, description=?, photo_it=? WHERE id=?";
+            "UPDATE TripCard SET location=?, start_date=?, end_date=?, price=?, type=?, description=?, photo_id=? WHERE id=?";
     private static final String DELETE = "DELETE FROM TripCard WHERE id=?";
 
     public TripCardDAO(Connection connection) {
@@ -116,7 +116,7 @@ public class TripCardDAO {
         Timestamp created = rs.getTimestamp("created_at");
         if (created != null) card.setCreatedAt(new Date(created.getTime()));
 
-        card.setPhotoIt(rs.getString("photo_it"));
+        card.setPhotoIt(rs.getString("photo_id"));
         return card;
     }
 }

@@ -1,44 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="16dp">
+    android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/backtomainBtn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:src="@android:drawable/ic_menu_revert"/>
-
-    <!-- Верхняя панель: выбор языков -->
+    <!-- Верхняя панель языков -->
     <LinearLayout
         android:id="@+id/langPanel"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
-        android:layout_marginVertical="50dp"
         android:padding="12dp"
         android:gravity="center"
         android:background="@drawable/lang_panel_bg">
 
         <TextView
             android:id="@+id/langFrom"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="РУССКИЙ"
-            android:textSize="16sp"
             android:textColor="@color/white"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/swapBtn"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginHorizontal="20dp"
             android:src="@android:drawable/ic_menu_rotate"/>
 
         <TextView
@@ -46,51 +38,101 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="АНГЛИЙСКИЙ"
-            android:textSize="16sp"
             android:textColor="@color/white"
+            android:textSize="16sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
-    <!-- Поле ввода -->
+    <!-- Ввод текста -->
     <EditText
-        android:inputType="text"
         android:id="@+id/inputText"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:hint="Начните писать текст"
+        android:layout_height="180dp"
         android:layout_below="@id/langPanel"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Начните писать текст"
         android:textSize="18sp"
         android:padding="16dp"
         android:background="@drawable/textbox_bg"
-        android:gravity="top" />
+        android:gravity="top"/>
 
-    <!-- Поле результата -->
+    <!-- Результат -->
     <TextView
         android:id="@+id/outputText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/inputText"
-        android:layout_marginTop="20dp"
+        android:layout_margin="16dp"
+        android:minHeight="120dp"
         android:padding="16dp"
         android:textSize="18sp"
         android:background="@drawable/textbox_bg"
-        android:minHeight="120dp"
-        android:gravity="top" />
+        android:gravity="top"/>
 
-    <!-- Кнопка -->
+    <!-- Кнопка перевода -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnTranslate"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="45dp"
-        android:layout_marginBottom="100dp"
+        android:layout_above="@id/bottom_nav"
+        android:layout_margin="16dp"
         android:background="@drawable/button_round"
         android:backgroundTint="#435986"
         android:text="Перевести"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
+
+    <!-- 🔹 Нижняя навигация (НА ВСЮ ШИРИНУ И В САМОМ НИЗУ) -->
+    <LinearLayout
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/nav_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/icons8_accueil_24"/>
+
+        <ImageButton
+            android:id="@+id/nav_chat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/icons8_messages_group_s_24"/>
+
+        <ImageButton
+            android:id="@+id/nav_heart"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/icons8_aime_rempli_24"/>
+
+        <ImageButton
+            android:id="@+id/nav_translate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/icons8_google_traduction_24"/>
+
+        <ImageButton
+            android:id="@+id/nav_profile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/icons8_utilisateur_24"/>
+    </LinearLayout>
 
 </RelativeLayout>
