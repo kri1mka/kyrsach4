@@ -6,16 +6,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.kyrsach4.R;
 import com.example.kyrsach4.entities.TripCard;
-import com.example.kyrsach4.entities.User;
-import com.example.kyrsach4.entities.Photo;
 
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         if (card.getUser() != null) {
             String fullName = card.getUser().getName() + " " + card.getUser().getSurname();
             if (card.getUser().getInfo() != null) {
-                fullName += ", " + card.getUser().getInfo().getAge(); // вот здесь запятая
+                fullName += ", " + card.getUser().getInfo().getAge();
             }
             holder.name.setText(fullName);
         } else {
@@ -61,11 +59,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         holder.description.setText(card.getDescription() != null ? card.getDescription() : "");
         holder.price.setText("$" + card.getPrice());
 
-        if (card.getPhoto() != null && card.getPhoto().getPhotoUrl() != null) {
+        if (card.getUser() != null &&
+                card.getUser().getInfo() != null &&
+                card.getUser().getInfo().getAvatarUrl() != null) {
+
             Glide.with(context)
                     .load(card.getPhoto().getPhotoUrl())
                     .into(holder.image);
+
+
         }
+
     }
 
     @Override

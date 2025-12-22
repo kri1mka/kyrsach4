@@ -6,6 +6,7 @@ import org.example.entity.Message;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @WebServlet("/chat")
 public class ChatServlet extends HttpServlet {
 
-    private ChatDAO dao = new ChatDAO(); // DAO сам подключается к БД
+    private ChatDAO dao = new ChatDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

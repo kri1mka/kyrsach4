@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -18,13 +19,15 @@
 
         <ImageButton
             android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
             android:layout_gravity="start|center_vertical"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/icons8_arri_re_24"
-            app:tint="#313B50"/>
+            android:src="@drawable/colocol"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            app:tint="#313B50" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,14 +36,17 @@
             android:text="Интересное"
             android:textColor="#313B50"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+          />
 
         <ImageView
             android:id="@+id/btnMenu"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
-            android:src="@drawable/more"/>
+            android:src="@drawable/more"
+            android:layout_marginRight="10dp"
+            />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- CardStackView -->
@@ -90,8 +96,8 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
             android:id="@+id/nav_home"
@@ -100,7 +106,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_accueil_24"/>
+            android:src="@drawable/icons8_accueil_24" />
 
         <ImageButton
             android:id="@+id/nav_chat"
@@ -109,7 +115,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_messages_group_s_24"/>
+            android:src="@drawable/icons8_messages_group_s_24" />
 
         <ImageButton
             android:id="@+id/nav_heart"
@@ -118,7 +124,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_aime_rempli_24"/>
+            android:src="@drawable/icons8_aime_rempli_24" />
 
         <ImageButton
             android:id="@+id/nav_translate"
@@ -127,7 +133,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_google_traduction_24"/>
+            android:src="@drawable/icons8_google_traduction_24" />
 
         <ImageButton
             android:id="@+id/nav_profile"
@@ -136,7 +142,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
-            android:src="@drawable/icons8_utilisateur_24"/>
+            android:src="@drawable/icons8_utilisateur_24" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

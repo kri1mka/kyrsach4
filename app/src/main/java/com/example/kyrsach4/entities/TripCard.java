@@ -12,13 +12,13 @@ public class TripCard {
     private String startDate;
     private String endDate;
     private User user;
-    private Photo photo;
+    private UserInfo userInfo;
 
-    // Конструкторы
+
     public TripCard() {}
 
     public TripCard(int id, String location, String type, String description, double price,
-                    String startDate, String endDate, User user, Photo photo) {
+                    String startDate, String endDate, User user, UserInfo userInfo) {
         this.id = id;
         this.location = location;
         this.type = type;
@@ -27,7 +27,7 @@ public class TripCard {
         this.startDate = startDate;
         this.endDate = endDate;
         this.user = user;
-        this.photo = photo;
+        this.userInfo = userInfo;
     }
 
     // Геттеры и сеттеры
@@ -55,10 +55,15 @@ public class TripCard {
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 
-    public Photo getPhoto() { return photo; }
-    public void setPhoto(Photo photo) { this.photo = photo; }
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
 
-    // Удобные методы для доступа к полу и возрасту
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+
     public String getUserSex() {
         return user != null && user.getInfo() != null ? user.getInfo().getSex() : null;
     }

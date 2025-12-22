@@ -25,7 +25,6 @@ public class MessagesServlet extends HttpServlet {
 
         List<Message> messages = messageDAO.findAll();
 
-        // ВАЖНО: задаём формат даты для Timestamp
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();

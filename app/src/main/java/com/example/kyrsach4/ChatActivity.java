@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.kyrsach4.Adapter.ChatAdapter;
 import com.example.kyrsach4.entity.Message;
 import com.google.gson.Gson;
@@ -77,10 +78,13 @@ public class ChatActivity extends AppCompatActivity {
 
         // Загружаем аватар через Glide с круговой маской
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
-            String fullAvatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + avatarUrl;
+            String fullAvatarUrl = "http://10.0.2.2:8080/Backend/images/" + avatarUrl
+                    ;
             Glide.with(this)
                     .load(fullAvatarUrl)
                     .circleCrop()
+                    .skipMemoryCache(true) // не использовать кэш памяти
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .placeholder(R.drawable.bg_item_trip_ks) // плейсхолдер, пока грузится
                     .into(avatarImage);
         }

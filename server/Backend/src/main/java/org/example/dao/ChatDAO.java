@@ -12,14 +12,15 @@ public class ChatDAO {
     public List<Message> getMessagesBetweenUsers(int user1, int user2) {
         List<Message> messages = new ArrayList<>();
 
-        String sql = "SELECT m.id, m.from_user_id, m.to_user_id, m.message, m.created_at, " +
-                "u.name AS name, u.surname AS surname, f.avatarUrl " +
-                "FROM Messages m " +
-                "JOIN Users u ON m.from_user_id = u.id " +
-                "LEFT JOIN Friends f ON u.id = f.user_id " +
-                "WHERE (m.from_user_id = ? AND m.to_user_id = ?) " +
-                "   OR (m.from_user_id = ? AND m.to_user_id = ?) " +
-                "ORDER BY m.created_at ASC";
+        String sql =
+                "SELECT m.id, m.from_user_id, m.to_user_id, m.message, m.created_at, " +
+                        "u.name AS name, u.surname AS surname, ui.avatarUrl AS avatarUrl " +
+                        "FROM Messages m " +
+                        "JOIN Users u ON m.from_user_id = u.id " +
+                        "LEFT JOIN UsersInfo ui ON ui.user_id = u.id " +
+                        "WHERE (m.from_user_id = ? AND m.to_user_id = ?) " +
+                        "   OR (m.from_user_id = ? AND m.to_user_id = ?) " +
+                        "ORDER BY m.created_at ASC";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -53,7 +54,9 @@ public class ChatDAO {
     }
 
     public void insertMessage(int fromUser, int toUser, String message) {
-        String sql = "INSERT INTO Messages (from_user_id, to_user_id, message, created_at) VALUES (?, ?, ?, NOW())";
+        String sql =
+                "INSERT INTO Messages (from_user_id, to_user_id, message, created_at) " +
+                        "VALUES (?, ?, ?, NOW())";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

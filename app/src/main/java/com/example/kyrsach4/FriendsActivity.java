@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class FriendsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private List<Friend> allFriends = new ArrayList<>(); // полный список
+    private List<Friend> allFriends = new ArrayList<>();
     private FriendAdapter adapter;
     private EditText searchEditText;
 
@@ -40,7 +40,7 @@ public class FriendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        Log.e("FRIENDS", "onCreate FriendsActivity");
+
 
         recyclerView = findViewById(R.id.friendsRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -54,7 +54,7 @@ public class FriendsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-        // Добавляем TextWatcher для фильтрации
+
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -89,21 +89,22 @@ public class FriendsActivity extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     allFriends = new ArrayList<>(friendList);
-                    adapter = new FriendAdapter(this, new ArrayList<>(allFriends));
-                    recyclerView.setAdapter(adapter);
 
-                    adapter.setOnItemClickListener(friend -> {
-                        Intent intent = new Intent(FriendsActivity.this, ChatActivity.class);
+                    if (adapter == null) {
+                        adapter = new FriendAdapter(this, new ArrayList<>(allFriends));
+                        recyclerView.setAdapter(adapter);
 
-                        intent.putExtra("name", friend.getName());
-                        intent.putExtra("surname", friend.getSurname());
-                        intent.putExtra("avatarUrl", friend.getAvatarUrl()); // если есть
-                        intent.putExtra("otherUserId", friend.getId());
-
-
-                        startActivity(intent);
-                    });
-
+                        adapter.setOnItemClickListener(friend -> {
+                            Intent intent = new Intent(FriendsActivity.this, ChatActivity.class);
+                            intent.putExtra("name", friend.getFirstName());
+                            intent.putExtra("surname", friend.getLastName());
+                            intent.putExtra("avatarUrl", friend.getAvatarUrl());
+                            intent.putExtra("otherUserId", friend.getId());
+                            startActivity(intent);
+                        });
+                    } else {
+                        adapter.updateList(allFriends);
+                    }
                 });
 
             } catch (Exception e) {
@@ -114,6 +115,7 @@ public class FriendsActivity extends AppCompatActivity {
             }
         }).start();
     }
+
 
     private void filterFriends(String query) {
         if (adapter == null) return;

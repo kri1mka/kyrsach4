@@ -66,8 +66,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.messageText);
-
-
+            userName = itemView.findViewById(R.id.userName); // ID из layout
+            avatar = itemView.findViewById(R.id.avatarImage);     // ID из layout
         }
     }
+
 }

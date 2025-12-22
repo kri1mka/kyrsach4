@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -55,14 +56,16 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
     public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
         Friend friend = friends.get(position);
 
-        // Текст
         holder.name.setText(friend.getFirstName() + " " + friend.getLastName());
         holder.country.setText(friend.getCountry());
 
-        // Аватар
-        String avatarUrl = "http://10.0.2.2:8080/Backend/avatar?file=" + friend.getAvatarUrl();
+
+        String avatarUrl = "http://10.0.2.2:8080/Backend/images/" + friend.getAvatarUrl();
         Glide.with(context)
                 .load(avatarUrl)
+                .circleCrop()
+                .skipMemoryCache(true) // не использовать кэш памяти
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(
@@ -88,10 +91,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
                 })
                 .into(holder.avatar);
 
-        // ❌ УБРАЛИ клик со всего itemView
-        // holder.itemView.setOnClickListener(...);
 
-        // ✅ КЛИК ТОЛЬКО НА КНОПКЕ
         holder.messageBtn.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(friend);
@@ -123,4 +123,5 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
         friends.addAll(newList);
         notifyDataSetChanged();
     }
+
 }
